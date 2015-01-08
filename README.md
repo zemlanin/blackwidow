@@ -1,6 +1,9 @@
 # blackwidow
 engine for multiplayer game
 
+# demo
+http://blackwidow.bitballoon.com
+
 # setup
 ```bash
 npm install -g grunt-cli
