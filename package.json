@@ -1,0 +1,29 @@
+{
+  "name": "blackwidow",
+  "version": "0.0.1",
+  "description": "TBA",
+  "main": "src/js/main.js",
+  "repository": "zemlanin/blackwidow",
+  "readme": "TBA",
+  "dependencies": {
+    "baconjs": "^0.7.41",
+    "firebase": "^2.1.0",
+    "lodash": "^2.4.1",
+    "react": "^0.12.2",
+    "reactfire": "^0.4.0"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^3.2.1",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-connect": "^0.9.0",
+    "grunt-contrib-copy": "^0.7.0",
+    "grunt-contrib-watch": "^0.6.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "which grunt > /dev/null && grunt || echo \"install grunt-cli globally via 'npm install grunt-cli -g'\""
+  },
+  "author": "Anton Verinov <github@zemlan.in>",
+  "license": "WTFPL"
+}
