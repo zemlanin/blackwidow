@@ -9,12 +9,15 @@ var MagicButton = React.createClass({
     return {buttonText: this.baseButtonText}
   },
 
-  changeText: function (e){
+  changeText: function (e) {
     if (this.state.buttonText === this.baseButtonText) {
-      this.setState({buttonText: this.baseButtonText + ', ' + this.props.suffix});
+      buttonTextState = {buttonText: this.baseButtonText + ', ' + this.props.suffix};
     } else {
-      this.setState({buttonText: this.baseButtonText});
+      buttonTextState = {buttonText: this.baseButtonText};
     }
+
+    this.setState(buttonTextState);
+    this.props.clickStream.push({event: e, newState: buttonTextState});
   },
 
   render: function () {
@@ -29,10 +32,20 @@ var MagicButton = React.createClass({
       ),
       React.DOM.div({className: "pure-u-2-5"})
     );
-  },
+  }
 });
 
-React.render(
-  React.createFactory(MagicButton)({suffix: 'blackwidow'}),
-  document.getElementsByClassName('wrapper')[0]
-);
+var MagicTitle = React.createClass({
+  displayName: 'MagicTitle',
+  render: function () {
+    return React.DOM.h1(
+      null,
+      this.props.title
+    )
+  }
+});
+
+module.exports = {
+  MagicButton: MagicButton,
+  MagicTitle: MagicTitle,
+}

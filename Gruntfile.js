@@ -25,8 +25,11 @@ module.exports = function(grunt) {
     browserify: {
       app: {
         files: {
-          'public/js/main.js': [
-            'src/js/main.js',
+          'public/js/client.js': [
+            'src/js/client.js',
+          ],
+          'public/js/server.js': [
+            'src/js/server.js',
           ],
         },
       },
