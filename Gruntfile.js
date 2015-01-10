@@ -1,4 +1,6 @@
 module.exports = function(grunt) {
+  var externalModules = ['react/addons', 'baconjs', 'firebase'];
+
   grunt.initConfig({
     // pkg: grunt.file.readJSON('package.json'),
 
@@ -24,38 +26,35 @@ module.exports = function(grunt) {
 
     browserify: {
       app: {
-        files: {
-          'public/js/client.js': [
-            'src/js/client.js',
-          ],
-          'public/js/server.js': [
-            'src/js/server.js',
-          ],
+        files: [
+          {'public/js/client.js': ['src/js/client.js']},
+          {'public/js/server.js': ['src/js/server.js']},
+        ],
+        options: {
+          external: externalModules,
         },
       },
+      core: {
+        src: [],
+        dest: 'public/js/core.js',
+        options: {
+          require: externalModules,
+        },
+      }
     },
 
     watch: {
       js: {
         files: ['src/js/**/*.js'],
         tasks: ['browserify:app'],
-        options: {
-          interrupt: true,
-        },
       },
       css: {
         files: ['src/css/**/*'],
         tasks: ['clean:css', 'copy:css'],
-        options: {
-          interrupt: true,
-        },
       },
       views: {
         files: ['src/views/**/*'],
         tasks: ['clean:views', 'copy:views'],
-        options: {
-          interrupt: true,
-        },
       },
     },
 
@@ -76,6 +75,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('default', ['clean', 'copy', 'browserify']);
+  grunt.registerTask('default', ['clean', 'copy', 'browserify:app']);
+  grunt.registerTask('build', ['clean', 'copy', 'browserify']);
   grunt.registerTask('serve', ['connect:app:keepalive']);
 };

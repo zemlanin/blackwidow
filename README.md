@@ -8,5 +8,5 @@ http://blackwidow.bitballoon.com
 ```bash
 npm install -g grunt-cli
 npm install
-grunt serve # also 'grunt' and 'grunt watch'
+grunt serve # also 'grunt', 'grunt build' and 'grunt watch'
 ```
