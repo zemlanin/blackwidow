@@ -1,3 +1,5 @@
-/server         /server.html
-/server/:id     /server.html#:id
+/server         /server.html    200
+/server/:id     /server#:id
+/client         /               200
+/client/:id     /client#:id
 /:id            /#:id
