@@ -1,4 +1,7 @@
+var _ = require('lodash');
 var React = require('react/addons');
+
+var firebacon = require('./firebacon');
 
 var FullClientPage = React.createClass({
   displayName: "FullClientPage",
@@ -9,6 +12,7 @@ var FullClientPage = React.createClass({
     return {buttonText: this.baseButtonText}
   },
 
+  // TODO: move to client.js
   changeText: function (e) {
     if (this.state.buttonText === this.baseButtonText) {
       buttonTextState = {buttonText: this.baseButtonText + ', ' + this.props.suffix};
@@ -17,7 +21,7 @@ var FullClientPage = React.createClass({
     }
 
     this.setState(buttonTextState);
-    this.props.clickStream.push({event: e, newState: buttonTextState});
+    firebacon.getClientStateBus().push(buttonTextState.buttonText);
   },
 
   render: function () {
@@ -26,7 +30,7 @@ var FullClientPage = React.createClass({
         style: {
           margin: '30px auto',
           width: 920,
-        }
+        },
       },
       React.DOM.div({className: "pure-u-1-5 l-box"}),
       React.DOM.div({
@@ -43,11 +47,13 @@ var FullClientPage = React.createClass({
           className: "pure-u-1-5 l-box",
           style: {
             fontSize: 11,
-            color: 'gray'
+            color: 'gray',
           }
         },
         React.DOM.p(null,
-          this.props.gameId
+          '#' + this.props.gameId,
+          React.DOM.br(),
+          this.props.player ? '@' + this.props.player.name : ''
         )
       )
     );
@@ -64,13 +70,33 @@ var MagicTitle = React.createClass({
   }
 });
 
+var PlayerBadge = React.createClass({
+  displayName: 'PlayerBadge',
+
+  render: function () {
+    return React.DOM.div(
+      null,
+      React.DOM.span({
+          style: {
+            padding: '5px 2px',
+            backgroundColor: this.props.online ? 'green' : 'red',
+            marginRight: 5,
+          },
+        },
+        ''
+      ),
+      React.DOM.span(
+        null,
+        this.props.name
+      )
+    );
+  }
+});
+
+var PlayerBadgeFactory = React.createFactory(PlayerBadge);
+
 var FullServerPage = React.createClass({
   displayName: 'FullServerPage',
-
-  endSession: function(event) {
-    this.props.clickStream.push();
-    this.props.clickStream.end();
-  },
 
   render: function () {
     return React.DOM.div(
@@ -89,19 +115,14 @@ var FullServerPage = React.createClass({
         },
         this.props.gameId
       ),
-      this.props.clickStream.ended ? null : React.DOM.span(
-        null,
-        React.DOM.a({
-            className: 'pure-button',
-            style: {
-              marginTop: 20,
-              fontSize: 11,
-              color: 'red',
-            },
-            onClick: this.endSession,
+      React.DOM.ul({
+          style: {
+            listStyleType: 'none',
           },
-          'end session'
-        )
+        },
+        _(this.props.players).map(function (player, i) {
+          return React.DOM.li({key: i}, PlayerBadgeFactory(player))
+        })
       )
     );
   }

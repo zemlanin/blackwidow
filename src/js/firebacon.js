@@ -12,27 +12,61 @@ function sinkError(sink, error) {
 
 function childOnValue(childPath) {
   return Bacon.fromBinder(function (sink) {
-    var ref = firebaseRef.child(childPath);
     var onSuccess = sinkNext.bind(null, sink);
 
-    firebaseRef.child(childPath).on(
+    childPath.on(
       'value',
       onSuccess,
       sinkError.bind(null, sink)
     );
 
     return function () {
-      ref.off('value', onSuccess);
+      childPath.off('value', onSuccess);
     }
   });
 }
 
 // TODO: wrap in the Bacon.Bus
-function setChildValue(childPath, value) {
-  firebaseRef.child(childPath).set(value)
+function setChildValue(refPath, value) {
+  return refPath.set(value)
+}
+
+function pushChildValue(refPath, value) {
+  return refPath.push(value)
+}
+
+function gameInputStream(gameId) {
+  return childOnValue(getChildPath(gameId).child('gameState'));
+}
+
+function gamePlayersStream(gameId) {
+  return childOnValue(getChildPath(gameId).child('players'));
+}
+
+function getChildPath(gameId, playerId) {
+  if (!gameId) {
+    throw Error('gameId is required')
+  }
+
+  if (playerId) {
+    return firebaseRef.child('tests/' + gameId + '/players/' + playerId);
+  } else {
+    return firebaseRef.child('tests/' + gameId);
+  }
+}
+
+var clientStateBus = new Bacon.Bus();
+
+function getClientStateBus() {
+  return clientStateBus;
 }
 
 module.exports = {
   childOnValue: childOnValue,
   setChildValue: setChildValue,
+  pushChildValue: pushChildValue,
+  gameInputStream: gameInputStream,
+  gamePlayersStream: gamePlayersStream,
+  getChildPath: getChildPath,
+  getClientStateBus: getClientStateBus,
 }

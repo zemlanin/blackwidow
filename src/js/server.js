@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var React = require('react/addons');
 var Bacon = require('baconjs');
 
@@ -13,24 +14,40 @@ if (gameId === null) {
   routing.setGameId(gameId);
 }
 
-var clickStream = new Bacon.Bus();
-titleComponent = React.render(
+serverPage = React.render(
   FullServerPage({
-    title: 'waiting for players',
     gameId: gameId,
-    clickStream: clickStream,
+    title: '…',
+    players: [],
   }),
   document.body
 );
 
-clickStream.onValue(function (value) {
-  firebacon.setChildValue('tests/'+gameId, null);
-  titleComponent.setProps({title: 'session ended'});
-});
+firebacon
+  .gameInputStream(gameId)
+  .filter(function (snapshot) {
+    return snapshot.val() !== null;
+  })
+  .map(function (snapshot) {
+    return {title: snapshot.val()}
+  })
+  .onValue(serverPage.setProps.bind(serverPage));
 
-var valueStream = firebacon.childOnValue('tests/'+gameId);
-valueStream.filter(function (snapshot) {
-  return snapshot.val() !== null;
-}).onValue(function (snapshot) {
-  titleComponent.setProps({title: snapshot.val()});
-});
+var playersStream = firebacon.gamePlayersStream(gameId);
+
+playersStream
+  .take(1)
+  .filter(function (snapshot) {
+    return snapshot.val() === null;
+  })
+  .map({title: 'waiting players'})
+  .onValue(serverPage.setProps.bind(serverPage));
+
+playersStream
+  .filter(function (snapshot) {
+    return snapshot.val() !== null;
+  })
+  .map(function (snapshot) {
+    return {players: _.values(snapshot.val())}
+  })
+  .onValue(serverPage.setProps.bind(serverPage));
