@@ -1,0 +1,3 @@
+/server         /server.html
+/server/:id     /server.html#:id
+/:id            /#:id

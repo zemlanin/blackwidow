@@ -17,6 +17,10 @@ module.exports = function(grunt) {
         src: '**/*.css',
         dest: 'public/css/',
       },
+      bitballoon: {
+        src: '_redirects',
+        dest: 'public/_redirects',
+      },
     },
 
     clean: {
