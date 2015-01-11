@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var Bacon = require('baconjs');
 var React = require('react/addons');
 
@@ -37,8 +38,15 @@ if (gameId) {
   );
 
   firebacon.getClientStateBus()
-    .onValue(firebacon.setChildValue.bind(
-      null, firebacon.getChildPath(gameId).child('gameState')
+    .map(function (input) {
+      return {
+        timestamp: _.now(),
+        input: input,
+        playerId: playerId,
+      }
+    })
+    .onValue(firebacon.pushChildValue.bind(
+      null, firebacon.getChildPath(gameId).child('gameInput')
     ));
 
   var playerRef = firebacon.getChildPath(gameId, playerId);

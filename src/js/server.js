@@ -5,6 +5,7 @@ var Bacon = require('baconjs');
 var firebacon = require('./firebacon');
 var components = require('./components');
 var routing = require('./routing');
+var u = require('./utils');
 
 var FullServerPage = React.createFactory(components.FullServerPage);
 
@@ -23,13 +24,28 @@ serverPage = React.render(
   document.body
 );
 
+var inputStream = (
+  firebacon
+    .gameInputStream(gameId)
+    .map('.val')
+    .filter(_.isObject)
+    .map(_.values)
+    .map('.0.input')
+    .doAction(firebacon.setChildValue.bind(
+      null, firebacon.getChildPath(gameId).child('gameState')
+    ))
+    .doAction(firebacon.setChildValue.bind(
+      null, firebacon.getChildPath(gameId).child('gameInput'), null
+    ))
+    .onValue()
+);
+
 firebacon
-  .gameInputStream(gameId)
-  .filter(function (snapshot) {
-    return snapshot.val() !== null;
-  })
-  .map(function (snapshot) {
-    return {title: snapshot.val()}
+  .gameStateStream(gameId)
+  .map('.val')
+  .filter(_.isString)
+  .map(function (inputData) {
+    return {title: inputData};
   })
   .onValue(serverPage.setProps.bind(serverPage));
 
@@ -37,17 +53,16 @@ var playersStream = firebacon.gamePlayersStream(gameId);
 
 playersStream
   .take(1)
-  .filter(function (snapshot) {
-    return snapshot.val() === null;
-  })
+  .map('.val')
+  .filter(_.isNull)
   .map({title: 'waiting players'})
   .onValue(serverPage.setProps.bind(serverPage));
 
 playersStream
-  .filter(function (snapshot) {
-    return snapshot.val() !== null;
-  })
-  .map(function (snapshot) {
-    return {players: _.values(snapshot.val())}
+  .map('.val')
+  .filter(_.isObject)
+  .map(_.values)
+  .map(function (players) {
+    return {players: players};
   })
   .onValue(serverPage.setProps.bind(serverPage));

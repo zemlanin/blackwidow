@@ -4,47 +4,66 @@ var React = require('react/addons');
 var firebacon = require('./firebacon');
 
 var FullClientPage = React.createClass({
-  displayName: "FullClientPage",
-
-  baseButtonText: 'hello',
+  displayName: 'FullClientPage',
 
   getInitialState: function () {
-    return {buttonText: this.baseButtonText}
+    return {}
   },
 
-  // TODO: move to client.js
-  changeText: function (e) {
-    if (this.state.buttonText === this.baseButtonText) {
-      buttonTextState = {buttonText: this.baseButtonText + ', ' + this.props.suffix};
-    } else {
-      buttonTextState = {buttonText: this.baseButtonText};
-    }
-
-    this.setState(buttonTextState);
-    firebacon.getClientStateBus().push(buttonTextState.buttonText);
+  changeText: function (event) {
+    firebacon.getClientStateBus().push(event.target.textContent);
   },
 
   render: function () {
     return React.DOM.div({
-        className: "pure-g",
+        className: 'pure-g',
         style: {
-          margin: '30px auto',
-          width: 920,
+          margin: '30px 0',
+          width: '100%',
         },
       },
-      React.DOM.div({className: "pure-u-1-5 l-box"}),
+      React.DOM.div({className: 'pure-u-1-5 l-box'}),
       React.DOM.div({
-          className: "pure-u-2-5 l-box",
-          onClick: this.changeText,
+          className: 'pure-u-2-5 l-box',
+          style: {position: 'relative'},
         },
         React.DOM.a({
-            className: "pure-u-1 l-bs-box pure-button pure-button-primary button-xlarge",
+            className: 'button-error pure-button button-xlarge',
+            style: {
+              position: 'absolute',
+              top: '1em',
+              left: '1em',
+            },
+            onClick: this.changeText,
           },
-          this.state.buttonText
+          '-'
+        ),
+        React.DOM.a({
+            className: 'pure-button button-xlarge',
+            style: {
+              position: 'absolute',
+              top: '1em',
+              left: '50%',
+              transform: 'translateX(-50%)'
+            },
+            onClick: this.changeText,
+          },
+          '0'
+        ),
+        React.DOM.a({
+            className: 'button-success pure-button button-xlarge',
+            style: {
+              position: 'absolute',
+              top: '1em',
+              right: '1em',
+            },
+            onClick: this.changeText,
+          },
+          '+'
         )
       ),
       React.DOM.div({
-          className: "pure-u-1-5 l-box",
+          className: 'pure-u-1-5 l-box',
           style: {
             fontSize: 11,
             color: 'gray',

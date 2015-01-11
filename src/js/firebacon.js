@@ -36,6 +36,10 @@ function pushChildValue(refPath, value) {
 }
 
 function gameInputStream(gameId) {
+  return childOnValue(getChildPath(gameId).child('gameInput'));
+}
+
+function gameStateStream(gameId) {
   return childOnValue(getChildPath(gameId).child('gameState'));
 }
 
@@ -66,6 +70,7 @@ module.exports = {
   setChildValue: setChildValue,
   pushChildValue: pushChildValue,
   gameInputStream: gameInputStream,
+  gameStateStream: gameStateStream,
   gamePlayersStream: gamePlayersStream,
   getChildPath: getChildPath,
   getClientStateBus: getClientStateBus,
