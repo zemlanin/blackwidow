@@ -40,7 +40,7 @@ if (gameId) {
   firebacon.getClientStateBus()
     .map(function (input) {
       return {
-        timestamp: _.now(),
+        timestamp: _.now(), // TODO: move timestamp to the server
         input: input,
         playerId: playerId,
       }

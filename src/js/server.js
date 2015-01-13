@@ -24,19 +24,33 @@ serverPage = React.render(
   document.body
 );
 
+// TODO: move to separate file
+function interpretGameInput(inputPair) {
+  var inputId = inputPair[0];
+  var inputObj = inputPair[1];
+  if (inputObj && !_.isUndefined(inputObj.input)) {
+    firebacon.setChildValue(
+      firebacon.getChildPath(gameId).child('gameState'),
+      inputObj.input
+    );
+    firebacon.setChildValue(
+      firebacon.getChildPath(gameId).child('gameInput').child(inputId),
+      null
+    );
+  }
+}
+
+// TODO: move to separate file
+function refPair(ref) {
+  return [ref.key(), ref.val()];
+}
+
 var inputStream = (
   firebacon
     .gameInputStream(gameId)
-    .map('.val')
-    .filter(_.isObject)
-    .map(_.values)
-    .map('.0.input')
-    .doAction(firebacon.setChildValue.bind(
-      null, firebacon.getChildPath(gameId).child('gameState')
-    ))
-    .doAction(firebacon.setChildValue.bind(
-      null, firebacon.getChildPath(gameId).child('gameInput'), null
-    ))
+    .filter('.exists')
+    .map(refPair)
+    .doAction(interpretGameInput)
     .onValue()
 );
 

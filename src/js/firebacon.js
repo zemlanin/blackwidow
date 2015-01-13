@@ -26,6 +26,22 @@ function childOnValue(childPath) {
   });
 }
 
+function childOnChildAdded(childPath) {
+  return Bacon.fromBinder(function (sink) {
+    var onSuccess = sinkNext.bind(null, sink);
+
+    childPath.on(
+      'child_added',
+      onSuccess,
+      sinkError.bind(null, sink)
+    );
+
+    return function () {
+      childPath.off('child_added', onSuccess);
+    }
+  });
+}
+
 // TODO: wrap in the Bacon.Bus
 function setChildValue(refPath, value) {
   return refPath.set(value)
@@ -36,7 +52,7 @@ function pushChildValue(refPath, value) {
 }
 
 function gameInputStream(gameId) {
-  return childOnValue(getChildPath(gameId).child('gameInput'));
+  return childOnChildAdded(getChildPath(gameId).child('gameInput'));
 }
 
 function gameStateStream(gameId) {
