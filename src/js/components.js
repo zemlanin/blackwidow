@@ -1,6 +1,8 @@
 var _ = require('lodash');
 var React = require('react/addons');
 
+var QRCode = React.createFactory(require('qrcode.react'));
+
 var firebacon = require('./firebacon');
 
 var FullClientPage = React.createClass({
@@ -117,7 +119,24 @@ var PlayerBadgeFactory = React.createFactory(PlayerBadge);
 var FullServerPage = React.createClass({
   displayName: 'FullServerPage',
 
+  getInitialState: function () {
+    return {
+      qrDisplayed: false
+    };
+  },
+
+  toggleQR: function () {
+    this.setState({qrDisplayed: !this.state.qrDisplayed});
+  },
+
   render: function () {
+    var qrElement;
+
+    if (this.state.qrDisplayed) {
+      qrElement = QRCode({value: location.origin + '/' + this.props.gameId})
+    } else {
+      qrElement = 'QR'
+    }
     return React.DOM.div(
       null,
       React.DOM.h1(
@@ -133,6 +152,16 @@ var FullServerPage = React.createClass({
           href: '/#' + this.props.gameId,
         },
         this.props.gameId
+      ),
+      React.DOM.span({
+          onClick: this.toggleQR,
+          className: 'l-box',
+          style: {
+            color: 'blue',
+            cursor: 'pointer',
+          },
+        },
+        this.state.qrDisplayed ? QRCode({value: location.origin + '/' + this.props.gameId}) : 'QR'
       ),
       React.DOM.ul({
           style: {
