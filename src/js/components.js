@@ -130,13 +130,6 @@ var FullServerPage = React.createClass({
   },
 
   render: function () {
-    var qrElement;
-
-    if (this.state.qrDisplayed) {
-      qrElement = QRCode({value: location.origin + '/' + this.props.gameId})
-    } else {
-      qrElement = 'QR'
-    }
     return React.DOM.div(
       null,
       React.DOM.h1(
