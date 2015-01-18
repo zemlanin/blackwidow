@@ -28,6 +28,7 @@ if (gameId) {
     playerRef = firebacon.getChildPath(gameId, playerId);
     firebacon.setChildValue(playerRef.child('online'), true);
   }
+  playerRef.child('online').onDisconnect().set(false);
 
   var clientPage = React.render(
     FullClientPage({
@@ -40,7 +41,7 @@ if (gameId) {
   firebacon.getClientStateBus()
     .map(function (input) {
       return {
-        timestamp: _.now(), // TODO: move timestamp to the server
+        // timestamp: _.now(), // TODO: move timestamp to the server
         input: input,
         playerId: playerId,
       }
@@ -49,13 +50,8 @@ if (gameId) {
       null, firebacon.getChildPath(gameId).child('gameInput')
     ));
 
-  var playerRef = firebacon.getChildPath(gameId, playerId);
-
-  playerRef.child('online').onDisconnect().set(false);
   firebacon.childOnValue(playerRef)
-    .filter(function (snapshot) {
-      return snapshot.val() !== null;
-    })
+    .filter('.exists')
     .map(function (snapshot) {
       return {player: snapshot.val()}
     })

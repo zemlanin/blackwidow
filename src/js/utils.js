@@ -1,3 +1,3 @@
 module.exports = {
-  logBind: console.log.bind(console),
+  apply: function (f) { return Function.apply.bind(f, null) },
 }

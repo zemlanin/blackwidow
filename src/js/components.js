@@ -4,6 +4,7 @@ var React = require('react/addons');
 var QRCode = React.createFactory(require('qrcode.react'));
 
 var firebacon = require('./firebacon');
+var inputs = require('./inputs');
 
 var FullClientPage = React.createClass({
   displayName: 'FullClientPage',
@@ -12,11 +13,12 @@ var FullClientPage = React.createClass({
     return {}
   },
 
-  changeText: function (event) {
-    firebacon.getClientStateBus().push(event.target.textContent);
+  _changeText: function (input, event) {
+    firebacon.getClientStateBus().push(input);
   },
 
   render: function () {
+    var changeText = _.curry(this._changeText, 2);
     return React.DOM.div({
         className: 'pure-g',
         style: {
@@ -36,9 +38,9 @@ var FullClientPage = React.createClass({
               top: '1em',
               left: '1em',
             },
-            onClick: this.changeText,
+            onClick: changeText(inputs.GAME.LEFT),
           },
-          '-'
+          '<'
         ),
         React.DOM.a({
             className: 'pure-button button-xlarge',
@@ -48,9 +50,9 @@ var FullClientPage = React.createClass({
               left: '50%',
               transform: 'translateX(-50%)'
             },
-            onClick: this.changeText,
+            onClick: changeText(inputs.GAME.UP),
           },
-          '0'
+          '^'
         ),
         React.DOM.a({
             className: 'button-success pure-button button-xlarge',
@@ -59,9 +61,9 @@ var FullClientPage = React.createClass({
               top: '1em',
               right: '1em',
             },
-            onClick: this.changeText,
+            onClick: changeText(inputs.GAME.RIGHT),
           },
-          '+'
+          '>'
         )
       ),
       React.DOM.div({
@@ -132,10 +134,13 @@ var FullServerPage = React.createClass({
   render: function () {
     return React.DOM.div(
       null,
-      React.DOM.h1(
+      this.props.title ? React.DOM.h1(
         null,
         this.props.title
-      ),
+      ) : null,
+      this.props.gameField ? _(this.props.gameField).map(function (value, dim) {
+        return React.DOM.span({key: dim}, dim, ': ', value, React.DOM.br())
+      }) : null,
       React.DOM.a({
           className: 'l-box',
           style: {

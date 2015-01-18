@@ -6,6 +6,7 @@ var firebacon = require('./firebacon');
 var components = require('./components');
 var routing = require('./routing');
 var u = require('./utils');
+var interpreter = require('./interpreter');
 
 var FullServerPage = React.createFactory(components.FullServerPage);
 
@@ -14,6 +15,8 @@ if (gameId === null) {
   gameId = routing.generateGameId();
   routing.setGameId(gameId);
 }
+
+var gameRef = firebacon.getChildPath(gameId);
 
 serverPage = React.render(
   FullServerPage({
@@ -24,44 +27,27 @@ serverPage = React.render(
   document.body
 );
 
-// TODO: move to separate file
-function interpretGameInput(inputPair) {
-  var inputId = inputPair[0];
-  var inputObj = inputPair[1];
-  if (inputObj && !_.isUndefined(inputObj.input)) {
-    firebacon.setChildValue(
-      firebacon.getChildPath(gameId).child('gameState'),
-      inputObj.input
-    );
-    firebacon.setChildValue(
-      firebacon.getChildPath(gameId).child('gameInput').child(inputId),
-      null
-    );
-  }
-}
+var gameState = firebacon.gameStateStream(gameId).toProperty();
 
-// TODO: move to separate file
-function refPair(ref) {
-  return [ref.key(), ref.val()];
-}
-
-var inputStream = (
-  firebacon
-    .gameInputStream(gameId)
-    .filter('.exists')
-    .map(refPair)
-    .doAction(interpretGameInput)
-    .onValue()
-);
-
-firebacon
-  .gameStateStream(gameId)
+gameState
+  .filter('.exists')
   .map('.val')
-  .filter(_.isString)
-  .map(function (inputData) {
-    return {title: inputData};
+  .map(function (state) {
+    return {
+      title: state.lastInput ? state.lastInput.input.toString() : '?',
+      gameField: state.gameField,
+    };
   })
   .onValue(serverPage.setProps.bind(serverPage));
+
+gameState
+  .sampledBy(
+    firebacon.gameInputStream(gameId).filter('.exists'),
+    function (state, input) { return [state, input] }
+  )
+  .doAction(u.apply(interpreter.interpretGameInput))
+  .doAction(u.apply(interpreter.removeGameInput))
+  .onValue();
 
 var playersStream = firebacon.gamePlayersStream(gameId);
 
