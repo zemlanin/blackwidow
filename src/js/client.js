@@ -23,19 +23,18 @@ if (gameId) {
   var playerIdStream;
 
   if (_.isNull(localPlayerId)) {
-    playerIdStream = firebacon.pushChildValue(
-      firebacon.getChildPath(gameId).child('players'),
+    playerIdStream = firebacon.pushNewPlayer(
+      gameId,
       {
         name: Math.random().toString(16).substring(2),
         online: true,
       }
     ).doAction(localStorage.setItem.bind(localStorage, gameId));
-    //localStorage.setItem(gameId, playerId);
   } else {
     playerIdStream = Bacon.once(localPlayerId);
   }
 
-  playerIdStream.onValue(function playerIdStream_onValue (playerId) {
+  playerIdStream.onValue(function playerIdStream_onValue(playerId) {
     var playerRef;
     playerRef = firebacon.getChildPath(gameId, playerId);
     firebacon.setChildValue(playerRef.child('online'), true);
@@ -49,9 +48,8 @@ if (gameId) {
           playerId: playerId,
         }
       })
-      .flatMap(firebacon.pushChildValue.bind(
-        null, firebacon.getChildPath(gameId).child('gameInput')
-      )).onValue();
+      .flatMap(firebacon.pushNewPlayerInput.bind(null, gameId))
+      .onValue();
 
     firebacon.childOnValue(playerRef)
       .filter('.exists')

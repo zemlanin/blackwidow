@@ -49,8 +49,8 @@ function setChildValue(refPath, value) {
   return refPath.set(value)
 }
 
-function pushChildValue(refPath, value) {
-  return Bacon.fromBinder(function pushChildValueBinder(sink) {
+function _pushChildValue(refPath, value) {
+  return Bacon.fromBinder(function _pushChildValueBinder(sink) {
     var newValueRef = refPath.push();
 
     newValueRef.set(value, function (err) {
@@ -62,6 +62,14 @@ function pushChildValue(refPath, value) {
       sink(new Bacon.End());
     });
   });
+}
+
+function pushNewPlayer(gameId, value) {
+  return _pushChildValue(getChildPath(gameId).child('players'), value);
+}
+
+function pushNewPlayerInput(gameId, value) {
+  return _pushChildValue(getChildPath(gameId).child('gameInput'), value);
 }
 
 function gameInputStream(gameId) {
@@ -97,7 +105,8 @@ function getClientStateBus() {
 module.exports = {
   childOnValue: childOnValue,
   setChildValue: setChildValue,
-  pushChildValue: pushChildValue,
+  pushNewPlayer: pushNewPlayer,
+  pushNewPlayerInput: pushNewPlayerInput,
   gameInputStream: gameInputStream,
   gameStateStream: gameStateStream,
   gamePlayersStream: gamePlayersStream,
