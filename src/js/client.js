@@ -11,25 +11,6 @@ var MagicTitle = React.createFactory(components.MagicTitle);
 
 var gameId = routing.getGameId();
 if (gameId) {
-  var playerId = localStorage.getItem(gameId);
-  var playerRef;
-
-  if (playerId === null) {
-    playerId = firebacon.pushChildValue(
-      firebacon.getChildPath(gameId).child('players'),
-      {
-        name: Math.random().toString(16).substring(2),
-        online: true,
-      }
-    ).key();
-    localStorage.setItem(gameId, playerId);
-    playerRef = firebacon.getChildPath(gameId, playerId);
-  } else {
-    playerRef = firebacon.getChildPath(gameId, playerId);
-    firebacon.setChildValue(playerRef.child('online'), true);
-  }
-  playerRef.child('online').onDisconnect().set(false);
-
   var clientPage = React.render(
     FullClientPage({
       suffix: 'blackwidow',
@@ -38,24 +19,47 @@ if (gameId) {
     document.body
   );
 
-  firebacon.getClientStateBus()
-    .map(function (input) {
-      return {
-        // timestamp: _.now(), // TODO: move timestamp to the server
-        input: input,
-        playerId: playerId,
-      }
-    })
-    .onValue(firebacon.pushChildValue.bind(
-      null, firebacon.getChildPath(gameId).child('gameInput')
-    ));
+  var localPlayerId = localStorage.getItem(gameId);
+  var playerIdStream;
 
-  firebacon.childOnValue(playerRef)
-    .filter('.exists')
-    .map(function (snapshot) {
-      return {player: snapshot.val()}
-    })
-    .onValue(clientPage.setProps.bind(clientPage));
+  if (_.isNull(localPlayerId)) {
+    playerIdStream = firebacon.pushChildValue(
+      firebacon.getChildPath(gameId).child('players'),
+      {
+        name: Math.random().toString(16).substring(2),
+        online: true,
+      }
+    ).doAction(localStorage.setItem.bind(localStorage, gameId));
+    //localStorage.setItem(gameId, playerId);
+  } else {
+    playerIdStream = Bacon.once(localPlayerId);
+  }
+
+  playerIdStream.onValue(function playerIdStream_onValue (playerId) {
+    var playerRef;
+    playerRef = firebacon.getChildPath(gameId, playerId);
+    firebacon.setChildValue(playerRef.child('online'), true);
+    playerRef.child('online').onDisconnect().set(false);
+
+    firebacon.getClientStateBus()
+      .map(function (input) {
+        return {
+          // timestamp: _.now(), // TODO: move timestamp to the server
+          input: input,
+          playerId: playerId,
+        }
+      })
+      .flatMap(firebacon.pushChildValue.bind(
+        null, firebacon.getChildPath(gameId).child('gameInput')
+      )).onValue();
+
+    firebacon.childOnValue(playerRef)
+      .filter('.exists')
+      .map(function (snapshot) {
+        return {player: snapshot.val()}
+      })
+      .onValue(clientPage.setProps.bind(clientPage));
+  });
 
 } else {
   React.render(

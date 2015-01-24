@@ -1,5 +1,7 @@
+var _ = require('lodash');
 var Bacon = require('baconjs');
 var Firebase = require('firebase');
+
 var firebaseRef = new Firebase("https://blistering-torch-7175.firebaseio.com/");
 
 function sinkNext(sink, value) {
@@ -48,7 +50,18 @@ function setChildValue(refPath, value) {
 }
 
 function pushChildValue(refPath, value) {
-  return refPath.push(value)
+  return Bacon.fromBinder(function pushChildValueBinder(sink) {
+    var newValueRef = refPath.push();
+
+    newValueRef.set(value, function (err) {
+      if (_.isNull(err)) {
+        sink(new Bacon.Next(newValueRef.key()));
+      } else {
+        sink(new Bacon.Error(err));
+      }
+      sink(new Bacon.End());
+    });
+  });
 }
 
 function gameInputStream(gameId) {
