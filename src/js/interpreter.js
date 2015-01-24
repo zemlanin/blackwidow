@@ -11,7 +11,7 @@ function interpretGameInput(gameState, gameInput) {
 }
 
 function removeGameInput(gameState, gameInput) {
-  firebacon.setChildValue(gameInput.ref(), null);
+  firebacon.setChildValue(gameInput.ref(), null).onValue();
 }
 
 function inputsMachine(gameState, inputObj) {
@@ -40,7 +40,7 @@ function inputsMachine(gameState, inputObj) {
   firebacon.setChildValue(
     gameState.ref(),
     state
-  );
+  ).onValue();
 }
 
 module.exports = {
