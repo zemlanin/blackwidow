@@ -106,7 +106,10 @@ function gameStateStream(gameId) {
 }
 
 function gamePlayersStream(gameId) {
-  return childOnValue(getChildPath(gameId).child('players'));
+  return (
+    childOnValue(getChildPath(gameId).child('players'))
+      .map(_valuesMapper)
+  );
 }
 
 function _valuesMapper(snapshot) {
