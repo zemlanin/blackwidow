@@ -5,6 +5,7 @@ var React = require('react/addons');
 var components = require('./components');
 var routing = require('./routing');
 var firebacon = require('./firebacon');
+var u = require('./utils');
 
 var FullClientPage = React.createFactory(components.FullClientPage);
 var MagicTitle = React.createFactory(components.MagicTitle);
@@ -34,30 +35,22 @@ if (gameId) {
     playerIdStream = Bacon.once(localPlayerId);
   }
 
-  playerIdStream.onValue(function playerIdStream_onValue(playerId) {
-    var playerRef;
-    playerRef = firebacon.getChildPath(gameId, playerId);
-    firebacon.setChildValue(playerRef.child('online'), true);
-    playerRef.child('online').onDisconnect().set(false);
+  playerIdStream
+    .flatMap(firebacon.connectAsPlayer.bind(null, gameId))
+    .onValue(u.apply(function playerIdStream_onValue(playerId, playerObj) {
+      clientPage.setProps({player: playerObj});
 
-    firebacon.getClientStateBus()
-      .map(function (input) {
-        return {
-          // timestamp: _.now(), // TODO: move timestamp to the server
-          input: input,
-          playerId: playerId,
-        }
-      })
-      .flatMap(firebacon.pushNewPlayerInput.bind(null, gameId))
-      .onValue();
-
-    firebacon.childOnValue(playerRef)
-      .filter('.exists')
-      .map(function (snapshot) {
-        return {player: snapshot.val()}
-      })
-      .onValue(clientPage.setProps.bind(clientPage));
-  });
+      firebacon.getClientStateBus()
+        .map(function (input) {
+          return {
+            // timestamp: _.now(), // TODO: move timestamp to the server
+            input: input,
+            playerId: playerId,
+          }
+        })
+        .flatMap(firebacon.pushNewPlayerInput.bind(null, gameId))
+        .onValue();
+  }));
 
 } else {
   React.render(

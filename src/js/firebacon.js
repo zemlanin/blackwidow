@@ -44,9 +44,17 @@ function childOnChildAdded(childPath) {
   });
 }
 
-// TODO: wrap in the Bacon.Bus
 function setChildValue(refPath, value) {
-  return refPath.set(value)
+  return Bacon.fromBinder(function _pushChildValueBinder(sink) {
+    refPath.set(value, function (err) {
+      if (_.isNull(err)) {
+        sink(new Bacon.Next());
+      } else {
+        sink(new Bacon.Error(err));
+      }
+      sink(new Bacon.End());
+    });
+  });
 }
 
 function _pushChildValue(refPath, value) {
@@ -68,6 +76,23 @@ function pushNewPlayer(gameId, value) {
   return _pushChildValue(getChildPath(gameId).child('players'), value);
 }
 
+function connectAsPlayer(gameId, playerId) {
+  return childOnValue(getChildPath(gameId, playerId))
+    .filter('.exists')
+    .take(1)
+    .doAction(function setPlayerStatus(snapshot) {
+      var playerOnlineRef = snapshot.ref().child('online');
+      setChildValue(playerOnlineRef, true)
+        .map(playerOnlineRef)
+        .map('.onDisconnect')
+        .map('.set', false)
+        .onValue();
+    })
+    .map(_valuesMapper)
+    .map(_.pairs)
+    .map('.0')
+}
+
 function pushNewPlayerInput(gameId, value) {
   return _pushChildValue(getChildPath(gameId).child('gameInput'), value);
 }
@@ -82,6 +107,20 @@ function gameStateStream(gameId) {
 
 function gamePlayersStream(gameId) {
   return childOnValue(getChildPath(gameId).child('players'));
+}
+
+function _valuesMapper(snapshot) {
+  var result = {};
+  result[snapshot.key()] = snapshot.val();
+  return result;
+}
+
+function gameSinglePlayerStream(gameId, playerId) {
+  return (
+    childOnValue(getChildPath(gameId, playerId))
+      .filter('.exists')
+      .map(_valuesMapper)
+  );
 }
 
 function getChildPath(gameId, playerId) {
@@ -106,6 +145,8 @@ module.exports = {
   childOnValue: childOnValue,
   setChildValue: setChildValue,
   pushNewPlayer: pushNewPlayer,
+  connectAsPlayer: connectAsPlayer,
+  gameSinglePlayerStream: gameSinglePlayerStream,
   pushNewPlayerInput: pushNewPlayerInput,
   gameInputStream: gameInputStream,
   gameStateStream: gameStateStream,
