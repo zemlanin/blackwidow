@@ -50,7 +50,7 @@ if (gameId) {
         })
         .flatMap(firebacon.pushNewPlayerInput.bind(null, gameId))
         .onValue();
-  }));
+    }));
 
 } else {
   React.render(
