@@ -1,3 +1,5 @@
+/*eslint strict:0*/
+
 module.exports = function(grunt) {
   var externalModules = ['react/addons', 'baconjs', 'firebase', 'lodash', 'qrcode.react'];
 
@@ -50,7 +52,7 @@ module.exports = function(grunt) {
     watch: {
       js: {
         files: ['src/js/**/*.js'],
-        tasks: ['browserify:app'],
+        tasks: ['eslint', 'browserify:app'],
       },
       css: {
         files: ['src/css/**/*'],
