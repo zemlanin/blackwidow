@@ -12,16 +12,16 @@ function inputsMachine(gameState, inputObj) {
   }
   switch (inputObj.input) {
     case inputs.GAME.UP:
-    state.gameField.x++;
+      state.gameField.x++;
       break;
     case inputs.GAME.DOWN:
-    state.gameField.x--;
+      state.gameField.x--;
       break;
     case inputs.GAME.LEFT:
-    state.gameField.y--;
+      state.gameField.y--;
       break;
     case inputs.GAME.RIGHT:
-    state.gameField.y++;
+      state.gameField.y++;
       break;
     // default:
   }
