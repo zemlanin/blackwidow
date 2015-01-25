@@ -1,6 +1,7 @@
+"use strict";
+
 var _ = require('lodash');
 var React = require('react/addons');
-var Bacon = require('baconjs');
 
 var firebacon = require('./firebacon');
 var components = require('./components');
@@ -16,9 +17,7 @@ if (gameId === null) {
   routing.setGameId(gameId);
 }
 
-var gameRef = firebacon.getChildPath(gameId);
-
-serverPage = React.render(
+var serverPage = React.render(
   FullServerPage({
     gameId: gameId,
     title: '…',
@@ -43,7 +42,7 @@ gameState
 gameState
   .sampledBy(
     firebacon.gameInputStream(gameId).filter('.exists'),
-    function (state, input) { return [state, input] }
+    function (state, input) { return [state, input]; }
   )
   .doAction(u.apply(interpreter.interpretGameInput))
   .doAction(u.apply(interpreter.removeGameInput))

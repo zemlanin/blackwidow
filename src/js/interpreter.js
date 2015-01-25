@@ -1,18 +1,9 @@
+"use strict";
+
 var _ = require('lodash');
 
 var inputs = require('./inputs');
 var firebacon = require('./firebacon');
-
-function interpretGameInput(gameState, gameInput) {
-  var inputObj = gameInput.val();
-  if (inputObj) {
-    inputsMachine(gameState, inputObj);
-  }
-}
-
-function removeGameInput(gameState, gameInput) {
-  firebacon.setChildValue(gameInput.ref(), null).onValue();
-}
 
 function inputsMachine(gameState, inputObj) {
   var state = gameState.val() || {};
@@ -43,7 +34,18 @@ function inputsMachine(gameState, inputObj) {
   ).onValue();
 }
 
+function interpretGameInput(gameState, gameInput) {
+  var inputObj = gameInput.val();
+  if (inputObj) {
+    inputsMachine(gameState, inputObj);
+  }
+}
+
+function removeGameInput(gameState, gameInput) {
+  firebacon.setChildValue(gameInput.ref(), null).onValue();
+}
+
 module.exports = {
   interpretGameInput: interpretGameInput,
   removeGameInput: removeGameInput,
-}
+};

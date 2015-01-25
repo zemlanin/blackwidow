@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('lodash');
 var React = require('react/addons');
 
@@ -10,10 +12,10 @@ var FullClientPage = React.createClass({
   displayName: 'FullClientPage',
 
   getInitialState: function () {
-    return {}
+    return {};
   },
 
-  _changeText: function (input, event) {
+  _changeText: function (input) {
     firebacon.getClientStateBus().push(input);
   },
 
@@ -139,7 +141,7 @@ var FullServerPage = React.createClass({
         this.props.title
       ) : null,
       this.props.gameField ? _(this.props.gameField).map(function (value, dim) {
-        return React.DOM.span({key: dim}, dim, ': ', value, React.DOM.br())
+        return React.DOM.span({key: dim}, dim, ': ', value, React.DOM.br());
       }) : null,
       React.DOM.a({
           className: 'l-box',
@@ -167,7 +169,7 @@ var FullServerPage = React.createClass({
           },
         },
         _(this.props.players).map(function (player, i) {
-          return React.DOM.li({key: i}, PlayerBadgeFactory(player))
+          return React.DOM.li({key: i}, PlayerBadgeFactory(player));
         })
       )
     );
@@ -178,4 +180,4 @@ module.exports = {
   FullClientPage: FullClientPage,
   FullServerPage: FullServerPage,
   MagicTitle: MagicTitle,
-}
+};

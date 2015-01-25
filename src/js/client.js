@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('lodash');
 var Bacon = require('baconjs');
 var React = require('react/addons');
@@ -37,7 +39,7 @@ if (gameId) {
 
   playerIdStream
     .flatMap(firebacon.connectAsPlayer.bind(null, gameId))
-    .onValue(u.apply(function playerIdStream_onValue(playerId, playerObj) {
+    .onValue(u.apply(function playerIdStreamOnValue(playerId, playerObj) {
       clientPage.setProps({player: playerObj});
 
       firebacon.getClientStateBus()
@@ -46,7 +48,7 @@ if (gameId) {
             // timestamp: _.now(), // TODO: move timestamp to the server
             input: input,
             playerId: playerId,
-          }
+          };
         })
         .flatMap(firebacon.pushNewPlayerInput.bind(null, gameId))
         .onValue();
@@ -56,5 +58,5 @@ if (gameId) {
   React.render(
     MagicTitle({title: 'game not found'}),
     document.body
-  )
+  );
 }

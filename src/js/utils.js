@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
-  apply: function (f) { return Function.apply.bind(f, null) },
-}
+  apply: function (f) { return Function.apply.bind(f, null); },
+};

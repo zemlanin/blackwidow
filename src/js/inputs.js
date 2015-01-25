@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
   GAME: {
     UP: 0,
@@ -9,4 +11,4 @@ module.exports = {
   MENU: {
     END_SESSION: 0,
   },
-}
+};

@@ -1,7 +1,9 @@
+"use strict";
+
 function getGameId() {
   var gameId = null;
   if (location.hash && location.hash.match(/^#[0-9a-f]{4,10}$/)) {
-    gameId = location.hash.replace(/^#/, '')
+    gameId = location.hash.replace(/^#/, '');
   }
 
   // TODO: check for current sessions
@@ -21,4 +23,4 @@ module.exports = {
   getGameId: getGameId,
   setGameId: setGameId,
   generateGameId: generateGameId,
-}
+};

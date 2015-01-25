@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('lodash');
 var Bacon = require('baconjs');
 var Firebase = require('firebase');
@@ -24,7 +26,7 @@ function childOnValue(childPath) {
 
     return function () {
       childPath.off('value', onSuccess);
-    }
+    };
   });
 }
 
@@ -40,8 +42,20 @@ function childOnChildAdded(childPath) {
 
     return function () {
       childPath.off('child_added', onSuccess);
-    }
+    };
   });
+}
+
+function getChildPath(gameId, playerId) {
+  if (!gameId) {
+    throw Error('gameId is required')
+  }
+
+  if (playerId) {
+    return firebaseRef.child('tests/' + gameId + '/players/' + playerId);
+  } else {
+    return firebaseRef.child('tests/' + gameId);
+  }
 }
 
 function setChildValue(refPath, value) {
@@ -76,6 +90,12 @@ function pushNewPlayer(gameId, value) {
   return _pushChildValue(getChildPath(gameId).child('players'), value);
 }
 
+function _valuesMapper(snapshot) {
+  var result = {};
+  result[snapshot.key()] = snapshot.val();
+  return result;
+}
+
 function connectAsPlayer(gameId, playerId) {
   return childOnValue(getChildPath(gameId, playerId))
     .filter('.exists')
@@ -90,7 +110,7 @@ function connectAsPlayer(gameId, playerId) {
     })
     .map(_valuesMapper)
     .map(_.pairs)
-    .map('.0')
+    .map('.0');
 }
 
 function pushNewPlayerInput(gameId, value) {
@@ -112,30 +132,12 @@ function gamePlayersStream(gameId) {
   );
 }
 
-function _valuesMapper(snapshot) {
-  var result = {};
-  result[snapshot.key()] = snapshot.val();
-  return result;
-}
-
 function gameSinglePlayerStream(gameId, playerId) {
   return (
     childOnValue(getChildPath(gameId, playerId))
       .filter('.exists')
       .map(_valuesMapper)
   );
-}
-
-function getChildPath(gameId, playerId) {
-  if (!gameId) {
-    throw Error('gameId is required')
-  }
-
-  if (playerId) {
-    return firebaseRef.child('tests/' + gameId + '/players/' + playerId);
-  } else {
-    return firebaseRef.child('tests/' + gameId);
-  }
 }
 
 var clientStateBus = new Bacon.Bus();
@@ -156,4 +158,4 @@ module.exports = {
   gamePlayersStream: gamePlayersStream,
   getChildPath: getChildPath,
   getClientStateBus: getClientStateBus,
-}
+};
