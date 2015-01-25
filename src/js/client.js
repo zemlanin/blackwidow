@@ -53,7 +53,6 @@ if (gameId) {
         .flatMap(firebacon.pushNewPlayerInput.bind(null, gameId))
         .onValue();
     }));
-
 } else {
   React.render(
     MagicTitle({title: 'game not found'}),

@@ -47,15 +47,18 @@ function childOnChildAdded(childPath) {
 }
 
 function getChildPath(gameId, playerId) {
+  var childPath;
   if (!gameId) {
     throw Error('gameId is required')
   }
 
   if (playerId) {
-    return firebaseRef.child('tests/' + gameId + '/players/' + playerId);
+    childPath = firebaseRef.child('tests/' + gameId + '/players/' + playerId);
   } else {
-    return firebaseRef.child('tests/' + gameId);
+    childPath = firebaseRef.child('tests/' + gameId);
   }
+
+  return childPath;
 }
 
 function setChildValue(refPath, value) {

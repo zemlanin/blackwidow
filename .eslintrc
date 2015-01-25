@@ -7,7 +7,7 @@
     "module": true,
     "$": false
   },
-  rules: {
+  "rules": {
     "quotes": "single",
     "new-cap": 0,
     "no-comma-dangle": 0,
@@ -17,6 +17,21 @@
     "max-depth": [2, 4],
     "max-params": [2, 4],
     "complexity": [2, 15],
-    "max-nested-callbacks": [2, 3]
+    "max-nested-callbacks": [2, 3],
+    "no-debugger": 1,
+    "curly": 2,
+    "radix": 2,
+    "brace-style": [2, "1tbs", { "allowSingleLine": true }],
+    "func-style": [2, "declaration"],
+    "padded-blocks": [2, "never"],
+    "key-spacing": 2,
+    "no-constant-condition": 1,
+    "no-unreachable": 2,
+    "no-nested-ternary": 2,
+    "space-after-function-name": [2, "never"],
+    "space-before-blocks": [2, "always"],
+    "no-else-return": 2,
+    "no-console": 1,
+    "no-sparse-arrays": 2
   }
 }
