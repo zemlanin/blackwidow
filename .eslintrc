@@ -1,0 +1,14 @@
+{
+  "env": {
+    "browser": true
+  },
+  "globals": {
+    "require": true,
+    "module": true,
+    "$": false
+  },
+  rules: {
+    "quotes": "single",
+    "new-cap": 0
+  }
+}
