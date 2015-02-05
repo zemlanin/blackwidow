@@ -6,7 +6,7 @@ var React = require('react/addons');
 var firebacon = require('./firebacon');
 var components = require('./components');
 var routing = require('./routing');
-var u = require('./utils');
+var funcy = require('./funcy');
 var interpreter = require('./interpreter');
 
 var FullServerPage = React.createFactory(components.FullServerPage);
@@ -44,8 +44,8 @@ gameState
     firebacon.gameInputStream(gameId).filter('.exists'),
     function (state, input) { return [state, input]; }
   )
-  .doAction(u.apply(interpreter.interpretGameInput))
-  .doAction(u.apply(interpreter.removeGameInput))
+  .doAction(funcy.apply(interpreter.interpretGameInput))
+  .doAction(funcy.apply(interpreter.removeGameInput))
   .onValue();
 
 var playersStream = firebacon.gamePlayersStream(gameId);

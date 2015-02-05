@@ -7,7 +7,7 @@ var React = require('react/addons');
 var components = require('./components');
 var routing = require('./routing');
 var firebacon = require('./firebacon');
-var u = require('./utils');
+var funcy = require('./funcy');
 
 var FullClientPage = React.createFactory(components.FullClientPage);
 var MagicTitle = React.createFactory(components.MagicTitle);
@@ -39,7 +39,7 @@ if (gameId) {
 
   playerIdStream
     .flatMap(firebacon.connectAsPlayer.bind(null, gameId))
-    .onValue(u.apply(function playerIdStreamOnValue(playerId, playerObj) {
+    .onValue(funcy.apply(function playerIdStreamOnValue(playerId, playerObj) {
       clientPage.setProps({player: playerObj});
 
       firebacon.getClientStateBus()
