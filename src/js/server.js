@@ -64,5 +64,5 @@ playersStream
 
 playersStream
   .filter(_.size)
-  .map(funcy.fromKey.bind(null, 'players'))
+  .map(funcy.fromKey('players'))
   .onValue(serverPage.setProps.bind(serverPage));

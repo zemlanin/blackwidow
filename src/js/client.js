@@ -1,5 +1,6 @@
 "use strict";
 
+var _ = require('lodash');
 var React = require('react/addons');
 
 var components = require('./components');
@@ -20,21 +21,26 @@ if (gameId) {
     document.body
   );
 
-  firebacon.connectAsPlayer(gameId)
-    .onValue(funcy.apply(function playerIdStreamOnValue(playerId, playerObj) {
-      clientPage.setProps({player: playerObj});
+  var playerStream = firebacon.connectAsPlayer(gameId).toProperty();
+  playerStream
+    .map(_.values)
+    .map(_.head)
+    .map(funcy.fromKey('player'))
+    .onValue(clientPage.setProps.bind(clientPage));
 
-      firebacon.getClientStateBus()
-        .map(function (input) {
-          return {
-            // timestamp: _.now(), // TODO: move timestamp to the server
-            input: input,
-            playerId: playerId,
-          };
-        })
-        .flatMap(firebacon.pushNewPlayerInput.bind(null, gameId))
-        .onValue();
-    }));
+  firebacon
+    .getClientStateBus()
+    .map(funcy.fromKey('input'))
+    .combine(
+      playerStream
+        .map(_.keys)
+        .map(_.head)
+        .map(funcy.fromKey('playerId')),
+      _.assign.bind(null, {})
+    )
+    .flatMap(firebacon.pushNewPlayerInput.bind(null, gameId))
+    .onValue();
+
 } else {
   React.render(
     MagicTitle({title: 'game not found'}),

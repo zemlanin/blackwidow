@@ -130,9 +130,7 @@ function connectAsPlayer(gameId) {
     .filter('.exists')
     .take(1)
     .doAction(setPlayerStatusToOnline)
-    .map(_valuesMapper)
-    .map(_.pairs)
-    .map('.0');
+    .map(_valuesMapper);
 }
 
 function pushNewPlayerInput(gameId, value) {
@@ -140,14 +138,9 @@ function pushNewPlayerInput(gameId, value) {
 }
 
 function removePlayerInput(gameId, inputIdOrObj) {
-  var inputId;
-  if (_.isObject(inputIdOrObj)) {
-    inputId = _.keys(inputIdOrObj)[0];
-  } else {
-    inputId = inputIdOrObj;
-  }
+  var inputId = _.head(_.keys(inputIdOrObj));
 
-  if (_.isString(inputId)) {
+  if (inputId) {
     setChildValue(
       getChildPath(gameId).child('gameInput').child(inputId),
       null
@@ -187,14 +180,6 @@ function gamePlayersStream(gameId) {
   );
 }
 
-function gameSinglePlayerStream(gameId, playerId) {
-  return (
-    childOnValue(getChildPath(gameId, playerId))
-      .filter('.exists')
-      .map(_valuesMapper)
-  );
-}
-
 var clientStateBus = new Bacon.Bus();
 
 function getClientStateBus() {
@@ -203,7 +188,6 @@ function getClientStateBus() {
 
 module.exports = {
   connectAsPlayer: connectAsPlayer,
-  gameSinglePlayerStream: gameSinglePlayerStream,
   pushNewPlayerInput: pushNewPlayerInput,
   removePlayerInput: removePlayerInput,
   gameInputStream: gameInputStream,
