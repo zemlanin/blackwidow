@@ -45,11 +45,11 @@ gameState
   )
   .flatMap(funcy.apply(interpreter.inputsMachine))
   .doAction(_.flow(
-    funcy.ta([0, 1]),
+    _.bind(_.at, null, _, [0, 1]),
     funcy.apply(firebacon.setGameState)
   ))
   .doAction(_.flow(
-    funcy.ta([0, 2]),
+    _.bind(_.at, null, _, [0, 2]),
     funcy.apply(firebacon.removePlayerInput)
   ))
   .onValue();
