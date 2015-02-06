@@ -6,7 +6,7 @@
   "repository": "zemlanin/blackwidow",
   "readme": "TBA",
   "dependencies": {
-    "baconjs": "^0.7.41",
+    "baconjs": "^0.7.42",
     "firebase": "^2.1.0",
     "lodash": "^3.1.0",
     "qrcode.react": "^0.4.0",
