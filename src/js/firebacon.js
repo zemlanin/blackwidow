@@ -6,8 +6,14 @@ var Firebase = require('firebase');
 
 var firebaseRef = new Firebase("https://blistering-torch-7175.firebaseio.com/");
 
+function _valuesMapper(snapshot) {
+  var result = {};
+  result[snapshot.key()] = snapshot.val();
+  return result;
+}
+
 function sinkNext(sink, value) {
-  sink(new Bacon.Next(value));
+  sink(new Bacon.Next(_valuesMapper(value)));
 }
 
 function sinkError(sink, error) {
@@ -93,14 +99,10 @@ function pushNewPlayer(gameId, value) {
   return _pushChildValue(getChildPath(gameId).child('players'), value);
 }
 
-function _valuesMapper(snapshot) {
-  var result = {};
-  result[snapshot.key()] = snapshot.val();
-  return result;
-}
+function setPlayerStatusToOnline(gameId, player) {
+  var playerId = _.head(_.keys(player));
+  var playerOnlineRef = getChildPath(gameId, playerId).child('online');
 
-function setPlayerStatusToOnline(snapshot) {
-  var playerOnlineRef = snapshot.ref().child('online');
   setChildValue(playerOnlineRef, true)
     .map(playerOnlineRef)
     .map('.onDisconnect')
@@ -127,10 +129,9 @@ function connectAsPlayer(gameId) {
   return playerIdStream
     .map(getChildPath.bind(null, gameId))
     .flatMap(childOnValue)
-    .filter('.exists')
     .take(1)
-    .doAction(setPlayerStatusToOnline)
-    .map(_valuesMapper);
+    .filter(_.flow(_.values, _.any))
+    .doAction(setPlayerStatusToOnline.bind(null, gameId));
 }
 
 function pushNewPlayerInput(gameId, value) {
@@ -149,11 +150,7 @@ function removePlayerInput(gameId, inputIdOrObj) {
 }
 
 function gameInputStream(gameId) {
-  return (
-    childOnChildAdded(getChildPath(gameId).child('gameInput'))
-      .filter('.exists')
-      .map(_valuesMapper)
-  );
+  return childOnChildAdded(getChildPath(gameId).child('gameInput'));
 }
 
 function getGameStatePath(gameId) {
@@ -167,7 +164,6 @@ function setGameState(gameId, value) {
 function gameStateStream(gameId) {
   return (
     childOnValue(getGameStatePath(gameId))
-      .map(_valuesMapper)
       .map('.gameState')
   );
 }
@@ -175,7 +171,6 @@ function gameStateStream(gameId) {
 function gamePlayersStream(gameId) {
   return (
     childOnValue(getChildPath(gameId).child('players'))
-      .map(_valuesMapper)
       .map('.players')
   );
 }
