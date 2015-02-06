@@ -41,7 +41,7 @@ gameState
 gameState
   .sampledBy(
     firebacon.gameInputStream(gameId),
-    function (state, input) { return _.flatten([gameId, state, input]); }
+    function (state, input) { return [gameId, state, input]; }
   )
   .flatMap(funcy.apply(interpreter.inputsMachine))
   .doAction(_.flow(
