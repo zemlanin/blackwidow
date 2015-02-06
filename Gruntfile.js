@@ -52,7 +52,7 @@ module.exports = function(grunt) {
     watch: {
       js: {
         files: ['src/js/**/*.js'],
-        tasks: ['eslint', 'browserify:app'],
+        tasks: ['browserify:app'],
       },
       css: {
         files: ['src/css/**/*'],
@@ -72,11 +72,6 @@ module.exports = function(grunt) {
         },
       }
     },
-
-    eslint: {
-      target: ['src/js/**/*.js']
-    },
-
   });
 
   grunt.loadNpmTasks('grunt-browserify');
@@ -84,7 +79,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-eslint');
 
   grunt.registerTask('default', ['clean', 'copy', 'browserify:app']);
   grunt.registerTask('build', ['clean', 'copy', 'browserify']);
