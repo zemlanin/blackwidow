@@ -142,7 +142,7 @@ var FullServerPage = React.createClass({
       ) : null,
       this.props.gameField ? _(this.props.gameField).map(function (value, dim) {
         return React.DOM.span({key: dim}, dim, ': ', value, React.DOM.br());
-      }) : null,
+      }).value() : null,
       React.DOM.a({
           className: 'l-box',
           style: {
@@ -170,7 +170,7 @@ var FullServerPage = React.createClass({
         },
         _(this.props.players).map(function (player, i) {
           return React.DOM.li({key: i}, PlayerBadgeFactory(player));
-        })
+        }).value()
       )
     );
   }

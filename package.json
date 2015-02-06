@@ -8,7 +8,7 @@
   "dependencies": {
     "baconjs": "^0.7.41",
     "firebase": "^2.1.0",
-    "lodash": "^2.4.1",
+    "lodash": "^3.1.0",
     "qrcode.react": "^0.4.0",
     "react": "^0.12.2"
   },
