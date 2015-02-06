@@ -29,8 +29,7 @@ var serverPage = React.render(
 var gameState = firebacon.gameStateStream(gameId).toProperty();
 
 gameState
-  .filter('.exists')
-  .map('.val')
+  .filter(_.isObject)
   .map(function (state) {
     return {
       title: state.lastInput ? state.lastInput.input.toString() : '?',
@@ -41,11 +40,18 @@ gameState
 
 gameState
   .sampledBy(
-    firebacon.gameInputStream(gameId).filter('.exists'),
-    function (state, input) { return [state, input]; }
+    firebacon.gameInputStream(gameId),
+    function (state, input) { return _.flatten([gameId, state, input]); }
   )
-  .doAction(funcy.apply(interpreter.interpretGameInput))
-  .doAction(funcy.apply(interpreter.removeGameInput))
+  .flatMap(funcy.apply(interpreter.inputsMachine))
+  .doAction(_.flow(
+    funcy.ta([0, 1]),
+    funcy.apply(firebacon.setGameState)
+  ))
+  .doAction(_.flow(
+    funcy.ta([0, 2]),
+    funcy.apply(firebacon.removePlayerInput)
+  ))
   .onValue();
 
 var playersStream = firebacon.gamePlayersStream(gameId);

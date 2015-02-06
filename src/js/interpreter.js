@@ -1,15 +1,22 @@
 "use strict";
 
 var _ = require('lodash');
+var Bacon = require('baconjs');
 
 var inputs = require('./inputs');
-var firebacon = require('./firebacon');
 
-function inputsMachine(gameState, inputObj) {
-  var state = gameState.val() || {};
+function inputsMachine(gameId, gameState, gameInput) {
+  var state = gameState || {};
   if (!_.isObject(state.gameField)) {
     state.gameField = {x: 0, y: 0};
   }
+
+  var inputObj = _.values(gameInput)[0];
+
+  if (!inputObj) {
+    return Bacon.never();
+  }
+
   switch (inputObj.input) {
     case inputs.GAME.UP:
       state.gameField.x++;
@@ -28,24 +35,9 @@ function inputsMachine(gameState, inputObj) {
 
   state.lastInput = inputObj;
 
-  firebacon.setChildValue(
-    gameState.ref(),
-    state
-  ).onValue();
-}
-
-function interpretGameInput(gameState, gameInput) {
-  var inputObj = gameInput.val();
-  if (inputObj) {
-    inputsMachine(gameState, inputObj);
-  }
-}
-
-function removeGameInput(gameState, gameInput) {
-  firebacon.setChildValue(gameInput.ref(), null).onValue();
+  return [gameId, gameState, gameInput];
 }
 
 module.exports = {
-  interpretGameInput: interpretGameInput,
-  removeGameInput: removeGameInput,
+  inputsMachine: inputsMachine,
 };

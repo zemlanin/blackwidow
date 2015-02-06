@@ -1,7 +1,5 @@
 "use strict";
 
-var _ = require('lodash');
-var Bacon = require('baconjs');
 var React = require('react/addons');
 
 var components = require('./components');
@@ -22,23 +20,7 @@ if (gameId) {
     document.body
   );
 
-  var localPlayerId = localStorage.getItem(gameId);
-  var playerIdStream;
-
-  if (_.isNull(localPlayerId)) {
-    playerIdStream = firebacon.pushNewPlayer(
-      gameId,
-      {
-        name: Math.random().toString(16).substring(2),
-        online: true,
-      }
-    ).doAction(localStorage.setItem.bind(localStorage, gameId));
-  } else {
-    playerIdStream = Bacon.once(localPlayerId);
-  }
-
-  playerIdStream
-    .flatMap(firebacon.connectAsPlayer.bind(null, gameId))
+  firebacon.connectAsPlayer(gameId)
     .onValue(funcy.apply(function playerIdStreamOnValue(playerId, playerObj) {
       clientPage.setProps({player: playerObj});
 

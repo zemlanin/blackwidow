@@ -99,18 +99,37 @@ function _valuesMapper(snapshot) {
   return result;
 }
 
-function connectAsPlayer(gameId, playerId) {
-  return childOnValue(getChildPath(gameId, playerId))
+function setPlayerStatusToOnline(snapshot) {
+  var playerOnlineRef = snapshot.ref().child('online');
+  setChildValue(playerOnlineRef, true)
+    .map(playerOnlineRef)
+    .map('.onDisconnect')
+    .map('.set', false)
+    .onValue();
+}
+
+function connectAsPlayer(gameId) {
+  var localPlayerId = localStorage.getItem(gameId);
+  var playerIdStream;
+
+  if (_.isNull(localPlayerId)) {
+    playerIdStream = pushNewPlayer(
+      gameId,
+      {
+        name: Math.random().toString(16).substring(2),
+        online: true,
+      }
+    ).doAction(localStorage.setItem.bind(localStorage, gameId));
+  } else {
+    playerIdStream = Bacon.once(localPlayerId);
+  }
+
+  return playerIdStream
+    .map(getChildPath.bind(null, gameId))
+    .flatMap(childOnValue)
     .filter('.exists')
     .take(1)
-    .doAction(function setPlayerStatus(snapshot) {
-      var playerOnlineRef = snapshot.ref().child('online');
-      setChildValue(playerOnlineRef, true)
-        .map(playerOnlineRef)
-        .map('.onDisconnect')
-        .map('.set', false)
-        .onValue();
-    })
+    .doAction(setPlayerStatusToOnline)
     .map(_valuesMapper)
     .map(_.pairs)
     .map('.0');
@@ -120,12 +139,42 @@ function pushNewPlayerInput(gameId, value) {
   return _pushChildValue(getChildPath(gameId).child('gameInput'), value);
 }
 
+function removePlayerInput(gameId, inputIdOrObj) {
+  var inputId;
+  if (_.isObject(inputIdOrObj)) {
+    inputId = _.keys(inputIdOrObj)[0];
+  } else {
+    inputId = inputIdOrObj;
+  }
+
+  if (_.isString(inputId)) {
+    setChildValue(
+      getChildPath(gameId).child('gameInput').child(inputId),
+      null
+    ).onValue();
+  }
+}
+
 function gameInputStream(gameId) {
-  return childOnChildAdded(getChildPath(gameId).child('gameInput'));
+  return (
+    childOnChildAdded(getChildPath(gameId).child('gameInput'))
+      .filter('.exists')
+      .map(_valuesMapper)
+  );
+}
+
+function getGameStatePath(gameId) {
+  return getChildPath(gameId).child('gameState');
+}
+
+function setGameState(gameId, value) {
+  setChildValue(getGameStatePath(gameId), value).onValue();
 }
 
 function gameStateStream(gameId) {
-  return childOnValue(getChildPath(gameId).child('gameState'));
+  return (
+    childOnValue(getGameStatePath(gameId)).map('.val')
+  );
 }
 
 function gamePlayersStream(gameId) {
@@ -150,15 +199,13 @@ function getClientStateBus() {
 }
 
 module.exports = {
-  childOnValue: childOnValue,
-  setChildValue: setChildValue,
-  pushNewPlayer: pushNewPlayer,
   connectAsPlayer: connectAsPlayer,
   gameSinglePlayerStream: gameSinglePlayerStream,
   pushNewPlayerInput: pushNewPlayerInput,
+  removePlayerInput: removePlayerInput,
   gameInputStream: gameInputStream,
   gameStateStream: gameStateStream,
+  setGameState: setGameState,
   gamePlayersStream: gamePlayersStream,
-  getChildPath: getChildPath,
   getClientStateBus: getClientStateBus,
 };
