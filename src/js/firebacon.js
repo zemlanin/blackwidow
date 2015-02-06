@@ -173,7 +173,9 @@ function setGameState(gameId, value) {
 
 function gameStateStream(gameId) {
   return (
-    childOnValue(getGameStatePath(gameId)).map('.val')
+    childOnValue(getGameStatePath(gameId))
+      .map(_valuesMapper)
+      .map('.gameState')
   );
 }
 
@@ -181,6 +183,7 @@ function gamePlayersStream(gameId) {
   return (
     childOnValue(getChildPath(gameId).child('players'))
       .map(_valuesMapper)
+      .map('.players')
   );
 }
 

@@ -58,11 +58,11 @@ var playersStream = firebacon.gamePlayersStream(gameId);
 
 playersStream
   .take(1)
-  .map('.players')
   .filter(_.isNull)
   .map({title: 'waiting players'})
   .onValue(serverPage.setProps.bind(serverPage));
 
 playersStream
-  .filter(_.compose(_.size, _.values))
+  .filter(_.size)
+  .map(funcy.fromKey.bind(null, 'players'))
   .onValue(serverPage.setProps.bind(serverPage));
