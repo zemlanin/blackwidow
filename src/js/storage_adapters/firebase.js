@@ -12,22 +12,22 @@ function _valuesMapper(snapshot) {
   return result;
 }
 
-function sinkNext(sink, value) {
+function _sinkNext(sink, value) {
   sink(new Bacon.Next(_valuesMapper(value)));
 }
 
-function sinkError(sink, error) {
+function _sinkError(sink, error) {
   sink(new Bacon.Error(error));
 }
 
 function childOnValue(childPath) {
   return Bacon.fromBinder(function (sink) {
-    var onSuccess = sinkNext.bind(null, sink);
+    var onSuccess = _sinkNext.bind(null, sink);
 
     childPath.on(
       'value',
       onSuccess,
-      sinkError.bind(null, sink)
+      _sinkError.bind(null, sink)
     );
 
     return function () {
@@ -38,33 +38,18 @@ function childOnValue(childPath) {
 
 function childOnChildAdded(childPath) {
   return Bacon.fromBinder(function (sink) {
-    var onSuccess = sinkNext.bind(null, sink);
+    var onSuccess = _sinkNext.bind(null, sink);
 
     childPath.on(
       'child_added',
       onSuccess,
-      sinkError.bind(null, sink)
+      _sinkError.bind(null, sink)
     );
 
     return function () {
       childPath.off('child_added', onSuccess);
     };
   });
-}
-
-function getChildPath(gameId, playerId) {
-  var childPath;
-  if (!gameId) {
-    throw Error('gameId is required')
-  }
-
-  if (playerId) {
-    childPath = firebaseRef.child('tests/' + gameId + '/players/' + playerId);
-  } else {
-    childPath = firebaseRef.child('tests/' + gameId);
-  }
-
-  return childPath;
 }
 
 function setChildValue(refPath, value) {
@@ -95,9 +80,33 @@ function pushChildValue(refPath, value) {
   });
 }
 
+function _getGamePath(gameId) {
+  return firebaseRef.child('tests/' + gameId);
+}
+
+function getGameStatePath(gameId) {
+  return _getGamePath(gameId).child('gameState');
+}
+
+function getPlayerPath(gameId, playerId) {
+  if (playerId) {
+    return _getGamePath(gameId).child('players/' + playerId);
+  }
+
+  return _getGamePath(gameId).child('players');
+}
+
+function getInputsPath(gameId, inputId) {
+  if (inputId) {
+    return _getGamePath(gameId).child('gameInput/' + inputId);
+  }
+
+  return _getGamePath(gameId).child('gameInput');
+}
+
 function setPlayerStatusToOnline(gameId, player) {
   var playerId = _.head(_.keys(player));
-  var playerOnlineRef = getChildPath(gameId, playerId).child('online');
+  var playerOnlineRef = getPlayerPath(gameId, playerId).child('online');
 
   setChildValue(playerOnlineRef, true)
     .map(playerOnlineRef)
@@ -109,8 +118,12 @@ function setPlayerStatusToOnline(gameId, player) {
 module.exports = {
   childOnValue: childOnValue,
   childOnChildAdded: childOnChildAdded,
-  getChildPath: getChildPath,
   setChildValue: setChildValue,
   pushChildValue: pushChildValue,
+
+  getGameStatePath: getGameStatePath,
+  getPlayerPath: getPlayerPath,
+  getInputsPath: getInputsPath,
+
   setPlayerStatusToOnline: setPlayerStatusToOnline,
 };

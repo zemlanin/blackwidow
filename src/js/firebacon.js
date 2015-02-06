@@ -6,7 +6,7 @@ var Bacon = require('baconjs');
 var sa = require('./storage_adapters/firebase');
 
 function pushNewPlayer(gameId, value) {
-  return sa.pushChildValue(sa.getChildPath(gameId).child('players'), value);
+  return sa.pushChildValue(sa.getPlayerPath(gameId), value);
 }
 
 function connectAsPlayer(gameId) {
@@ -26,7 +26,7 @@ function connectAsPlayer(gameId) {
   }
 
   return playerIdStream
-    .map(sa.getChildPath.bind(null, gameId))
+    .map(sa.getPlayerPath.bind(null, gameId))
     .flatMap(sa.childOnValue)
     .take(1)
     .filter(_.flow(_.values, _.any))
@@ -34,7 +34,7 @@ function connectAsPlayer(gameId) {
 }
 
 function pushNewPlayerInput(gameId, value) {
-  return sa.pushChildValue(sa.getChildPath(gameId).child('gameInput'), value);
+  return sa.pushChildValue(sa.getInputsPath(gameId), value);
 }
 
 function removePlayerInput(gameId, inputIdOrObj) {
@@ -42,34 +42,30 @@ function removePlayerInput(gameId, inputIdOrObj) {
 
   if (inputId) {
     sa.setChildValue(
-      sa.getChildPath(gameId).child('gameInput').child(inputId),
+      sa.getInputsPath(gameId, inputId),
       null
     ).onValue();
   }
 }
 
 function gameInputStream(gameId) {
-  return sa.childOnChildAdded(sa.getChildPath(gameId).child('gameInput'));
-}
-
-function getGameStatePath(gameId) {
-  return sa.getChildPath(gameId).child('gameState');
+  return sa.childOnChildAdded(sa.getInputsPath(gameId));
 }
 
 function setGameState(gameId, value) {
-  sa.setChildValue(getGameStatePath(gameId), value).onValue();
+  sa.setChildValue(sa.getGameStatePath(gameId), value).onValue();
 }
 
 function gameStateStream(gameId) {
   return (
-    sa.childOnValue(getGameStatePath(gameId))
+    sa.childOnValue(sa.getGameStatePath(gameId))
       .map('.gameState')
   );
 }
 
 function gamePlayersStream(gameId) {
   return (
-    sa.childOnValue(sa.getChildPath(gameId).child('players'))
+    sa.childOnValue(sa.getPlayerPath(gameId))
       .map('.players')
   );
 }
