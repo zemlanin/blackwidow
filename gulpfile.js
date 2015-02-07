@@ -4,7 +4,9 @@ var _ = require('lodash');
 var gulp = require('gulp');
 var eslint = require('gulp-eslint');
 var browserify = require('browserify');
+var buffer = require('vinyl-buffer');
 var source = require('vinyl-source-stream');
+var sourcemaps = require('gulp-sourcemaps');
 
 var external = ['react/addons', 'baconjs', 'firebase', 'lodash', 'qrcode.react'];
 
@@ -27,12 +29,15 @@ gulp.task('jscore', function () {
 
 gulp.task('jsbundle', ['lint'], function () {
   _.each(['client.js', 'server.js'], function (src) {
-    var bundler = browserify(['./src/js/' + src]);
+    var bundler = browserify('./src/js/' + src, {debug: true});
 
     bundler
       .external(external)
       .bundle()
       .pipe(source(src))
+      .pipe(buffer())
+      .pipe(sourcemaps.init({loadMaps: true}))
+      .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest('./public/js/'));
   });
 });
@@ -42,7 +47,7 @@ gulp.task('default', ['jsbundle'], function () {
 
 gulp.task('watch', function () {
   gulp.watch(['src/js/**/*.js'], ['jsbundle']);
-  gulp.watch(['node_modules/', 'package.json'], ['jscore']);
+  gulp.watch(['package.json'], ['jscore']);
 });
 
 gulp.task('js', ['jscore', 'jsbundle'], function () {
