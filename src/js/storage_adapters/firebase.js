@@ -20,7 +20,7 @@ function _sinkError(sink, error) {
   sink(new Bacon.Error(error));
 }
 
-function childOnValue(childPath) {
+function _childOnValue(childPath) {
   return Bacon.fromBinder(function (sink) {
     var onSuccess = _sinkNext.bind(null, sink);
 
@@ -36,7 +36,7 @@ function childOnValue(childPath) {
   });
 }
 
-function childOnChildAdded(childPath) {
+function _childOnChildAdded(childPath) {
   return Bacon.fromBinder(function (sink) {
     var onSuccess = _sinkNext.bind(null, sink);
 
@@ -52,7 +52,7 @@ function childOnChildAdded(childPath) {
   });
 }
 
-function setChildValue(refPath, value) {
+function _setChildValue(refPath, value) {
   return Bacon.fromBinder(function _pushChildValueBinder(sink) {
     refPath.set(value, function (err) {
       if (_.isNull(err)) {
@@ -65,7 +65,7 @@ function setChildValue(refPath, value) {
   });
 }
 
-function pushChildValue(refPath, value) {
+function _pushChildValue(refPath, value) {
   return Bacon.fromBinder(function _pushChildValueBinder(sink) {
     var newValueRef = refPath.push();
 
@@ -84,46 +84,70 @@ function _getGamePath(gameId) {
   return firebaseRef.child('tests/' + gameId);
 }
 
-function getGameStatePath(gameId) {
-  return _getGamePath(gameId).child('gameState');
-}
+function pushNewPlayer(player) {
+  var gameId = player.gameId;
 
-function getPlayerPath(gameId, playerId) {
-  if (playerId) {
-    return _getGamePath(gameId).child('players/' + playerId);
+  if (!gameId) {
+    return Bacon.never();
   }
 
-  return _getGamePath(gameId).child('players');
-}
-
-function getInputsPath(gameId, inputId) {
-  if (inputId) {
-    return _getGamePath(gameId).child('gameInput/' + inputId);
-  }
-
-  return _getGamePath(gameId).child('gameInput');
+  return _pushChildValue(firebaseRef.child('players'), player);
 }
 
 function setPlayerStatusToOnline(gameId, player) {
   var playerId = _.head(_.keys(player));
-  var playerOnlineRef = getPlayerPath(gameId, playerId).child('online');
+  var playerOnlineRef = firebaseRef
+    .child('players')
+    .child(playerId)
+    .child('online');
 
-  setChildValue(playerOnlineRef, true)
+  _setChildValue(playerOnlineRef, true)
     .map(playerOnlineRef)
     .map('.onDisconnect')
     .map('.set', false)
     .onValue();
 }
 
+function getPlayer(playerId) {
+  return _childOnValue(firebaseRef.child('players').child(playerId));
+}
+
+function getGamePlayers(gameId) {
+  return _childOnValue(firebaseRef.child('players').orderByChild('gameId').equalTo(gameId));
+}
+
+function getGameState(gameId) {
+  return _childOnValue(_getGamePath(gameId).child('gameState'));
+}
+
+function sendGameState(gameId, value) {
+  return _setChildValue(_getGamePath(gameId).child('gameState'), value);
+}
+
+function waitNewGameInputs(gameId) {
+  return _childOnChildAdded(_getGamePath(gameId).child('gameInput'));
+}
+
+function sendGameInput(gameId, inputId, value) {
+  return _setChildValue(_getGamePath(gameId).child('gameInput').child(inputId), value);
+}
+
+function pushNewGameInput(gameId, value) {
+  return _pushChildValue(_getGamePath(gameId).child('gameInput'), value);
+}
+
 module.exports = {
-  childOnValue: childOnValue,
-  childOnChildAdded: childOnChildAdded,
-  setChildValue: setChildValue,
-  pushChildValue: pushChildValue,
+  getPlayer: getPlayer,
 
-  getGameStatePath: getGameStatePath,
-  getPlayerPath: getPlayerPath,
-  getInputsPath: getInputsPath,
+  getGamePlayers: getGamePlayers,
 
+  getGameState: getGameState,
+  sendGameState: sendGameState,
+
+  waitNewGameInputs: waitNewGameInputs,
+  sendGameInput: sendGameInput,
+  pushNewGameInput: pushNewGameInput,
+
+  pushNewPlayer: pushNewPlayer,
   setPlayerStatusToOnline: setPlayerStatusToOnline,
 };
