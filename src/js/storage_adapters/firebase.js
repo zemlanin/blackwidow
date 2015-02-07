@@ -94,7 +94,7 @@ function pushNewPlayer(player) {
   return _pushChildValue(firebaseRef.child('players'), player);
 }
 
-function setPlayerStatusToOnline(gameId, player) {
+function setPlayerStatusToOnline(player) {
   var playerId = _.head(_.keys(player));
   var playerOnlineRef = firebaseRef
     .child('players')

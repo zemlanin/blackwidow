@@ -23,7 +23,7 @@ function connectAsPlayer(gameId) {
     .flatMap(sa.getPlayer)
     .take(1)
     .filter(_.flow(_.values, _.any))
-    .doAction(sa.setPlayerStatusToOnline.bind(null, gameId));
+    .doAction(sa.setPlayerStatusToOnline);
 }
 
 function pushNewGameInput(gameId, value) {
