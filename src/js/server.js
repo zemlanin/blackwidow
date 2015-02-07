@@ -6,7 +6,7 @@ var React = require('react/addons');
 var firebacon = require('./firebacon');
 var components = require('./components');
 var routing = require('./routing');
-var funcy = require('./funcy');
+var ƒ = require('./funcy');
 var interpreter = require('./interpreter');
 
 var FullServerPage = React.createFactory(components.FullServerPage);
@@ -43,14 +43,14 @@ gameState
     firebacon.gameInputStream(gameId),
     function (state, input) { return [gameId, state, input]; }
   )
-  .flatMap(funcy.apply(interpreter.inputsMachine))
+  .flatMap(ƒ.ply(interpreter.inputsMachine))
   .doAction(_.flow(
     _.bind(_.at, null, _, [0, 1]),
-    funcy.apply(firebacon.setGameState)
+    ƒ.ply(firebacon.setGameState)
   ))
   .doAction(_.flow(
     _.bind(_.at, null, _, [0, 2]),
-    funcy.apply(firebacon.removePlayerInput)
+    ƒ.ply(firebacon.removePlayerInput)
   ))
   .onValue();
 
@@ -64,5 +64,5 @@ playersStream
 
 playersStream
   .filter(_.size)
-  .map(funcy.fromKey('players'))
+  .map(ƒ.fromKey('players'))
   .onValue(serverPage.setProps.bind(serverPage));

@@ -6,7 +6,7 @@ var React = require('react/addons');
 var components = require('./components');
 var routing = require('./routing');
 var firebacon = require('./firebacon');
-var funcy = require('./funcy');
+var ƒ = require('./funcy');
 
 var FullClientPage = React.createFactory(components.FullClientPage);
 var MagicTitle = React.createFactory(components.MagicTitle);
@@ -25,17 +25,17 @@ if (gameId) {
   playerStream
     .map(_.values)
     .map(_.head)
-    .map(funcy.fromKey('player'))
+    .map(ƒ.fromKey('player'))
     .onValue(clientPage.setProps.bind(clientPage));
 
   firebacon
     .getClientStateBus()
-    .map(funcy.fromKey('input'))
+    .map(ƒ.fromKey('input'))
     .combine(
       playerStream
         .map(_.keys)
         .map(_.head)
-        .map(funcy.fromKey('playerId')),
+        .map(ƒ.fromKey('playerId')),
       _.assign.bind(null, {})
     )
     .flatMap(firebacon.pushNewGameInput.bind(null, gameId))
