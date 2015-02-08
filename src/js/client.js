@@ -36,9 +36,9 @@ if (gameId) {
         .map(_.keys)
         .map(_.head)
         .map(ƒ.fromKey('playerId')),
-      _.assign.bind(null, {})
+      _.assign.bind(null, {gameId: gameId})
     )
-    .flatMap(firebacon.pushNewGameInput.bind(null, gameId))
+    .flatMap(firebacon.pushNewGameInput.bind(null))
     .onValue();
 
 } else {

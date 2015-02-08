@@ -80,10 +80,6 @@ function _pushChildValue(refPath, value) {
   });
 }
 
-function _getGamePath(gameId) {
-  return firebaseRef.child('tests/' + gameId);
-}
-
 function _filterRefBy(ref, field, value) {
   return ref.orderByChild(field).equalTo(value);
 }
@@ -126,7 +122,6 @@ function getGameState(gameId) {
   return _childOnValue(
     _filterRefBy(firebaseRef.child('gameState'), 'gameId', gameId).limitToFirst(1)
   );
-  // return _childOnValue(_getGamePath(gameId).child('gameState'));
 }
 
 function pushNewGameState(value) {
@@ -138,15 +133,17 @@ function sendGameState(stateId, value) {
 }
 
 function waitNewGameInputs(gameId) {
-  return _childOnChildAdded(_getGamePath(gameId).child('gameInput'));
+  return _childOnChildAdded(
+    _filterRefBy(firebaseRef.child('gameInput'), 'gameId', gameId)
+  );
 }
 
-function sendGameInput(gameId, inputId, value) {
-  return _setChildValue(_getGamePath(gameId).child('gameInput').child(inputId), value);
+function sendGameInput(inputId, value) {
+  return _setChildValue(firebaseRef.child('gameInput').child(inputId), value);
 }
 
-function pushNewGameInput(gameId, value) {
-  return _pushChildValue(_getGamePath(gameId).child('gameInput'), value);
+function pushNewGameInput(value) {
+  return _pushChildValue(firebaseRef.child('gameInput'), value);
 }
 
 module.exports = {

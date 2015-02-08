@@ -46,11 +46,15 @@ gameState
   .flatMap(ƒ.ply(interpreter.inputsMachine))
   .doAction(_.flow(
     _.bind(_.at, null, _, 1),
-    ƒ.ply(firebacon.setGameState)
+    _.head,
+    firebacon.setGameState
   ))
   .doAction(_.flow(
-    _.bind(_.at, null, _, [0, 2]),
-    ƒ.ply(firebacon.removePlayerInput)
+    _.bind(_.at, null, _, 2),
+    _.head,
+    _.keys,
+    _.head,
+    firebacon.removePlayerInput
   ))
   .onValue();
 

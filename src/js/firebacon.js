@@ -27,16 +27,12 @@ function connectAsPlayer(gameId) {
     .doAction(sa.setPlayerStatusToOnline);
 }
 
-function pushNewGameInput(gameId, value) {
-  return sa.pushNewGameInput(gameId, value);
+function pushNewGameInput(value) {
+  return sa.pushNewGameInput(value);
 }
 
-function removePlayerInput(gameId, inputIdOrObj) {
-  var inputId = _.head(_.keys(inputIdOrObj)) || inputIdOrObj;
-
-  if (inputId) {
-    sa.sendGameInput(gameId, inputId, null).onValue();
-  }
+function removePlayerInput(inputId) {
+  sa.sendGameInput(inputId, null).onValue();
 }
 
 function gameInputStream(gameId) {
