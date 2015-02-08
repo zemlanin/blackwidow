@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var Bacon = require('baconjs');
 
+var ƒ = require('./funcy');
 var sa = require('./storage_adapters/firebase');
 
 function connectAsPlayer(gameId) {
@@ -42,12 +43,27 @@ function gameInputStream(gameId) {
   return sa.waitNewGameInputs(gameId);
 }
 
-function setGameState(gameId, value) {
-  sa.sendGameState(gameId, value).onValue();
+function setGameState(value) {
+  var stateId = _.head(_.keys(value));
+  var stateObj = _.head(_.values(value));
+  sa.sendGameState(stateId, stateObj).onValue();
 }
 
 function gameStateStream(gameId) {
-  return sa.getGameState(gameId).map('.gameState');
+  return sa.getGameState(gameId)
+    .map('.gameState')
+    .flatMap(function (existing) {
+      if (existing) {
+        return existing;
+      }
+
+      var initState = {
+        gameId: gameId,
+        gameField: {x: 0, y: 0}
+      };
+      return sa.pushNewGameState(initState)
+        .map(_.bind(ƒ.fromKey, null, _, initState));
+    });
 }
 
 function gamePlayersStream(gameId) {

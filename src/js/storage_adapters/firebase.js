@@ -84,6 +84,10 @@ function _getGamePath(gameId) {
   return firebaseRef.child('tests/' + gameId);
 }
 
+function _filterRefBy(ref, field, value) {
+  return ref.orderByChild(field).equalTo(value);
+}
+
 function pushNewPlayer(player) {
   var gameId = player.gameId;
 
@@ -113,15 +117,24 @@ function getPlayer(playerId) {
 }
 
 function getGamePlayers(gameId) {
-  return _childOnValue(firebaseRef.child('players').orderByChild('gameId').equalTo(gameId));
+  return _childOnValue(
+    _filterRefBy(firebaseRef.child('players'), 'gameId', gameId)
+  );
 }
 
 function getGameState(gameId) {
-  return _childOnValue(_getGamePath(gameId).child('gameState'));
+  return _childOnValue(
+    _filterRefBy(firebaseRef.child('gameState'), 'gameId', gameId).limitToFirst(1)
+  );
+  // return _childOnValue(_getGamePath(gameId).child('gameState'));
 }
 
-function sendGameState(gameId, value) {
-  return _setChildValue(_getGamePath(gameId).child('gameState'), value);
+function pushNewGameState(value) {
+  return _pushChildValue(firebaseRef.child('gameState'), value);
+}
+
+function sendGameState(stateId, value) {
+  return _setChildValue(firebaseRef.child('gameState').child(stateId), value);
 }
 
 function waitNewGameInputs(gameId) {
@@ -142,6 +155,7 @@ module.exports = {
   getGamePlayers: getGamePlayers,
 
   getGameState: getGameState,
+  pushNewGameState: pushNewGameState,
   sendGameState: sendGameState,
 
   waitNewGameInputs: waitNewGameInputs,

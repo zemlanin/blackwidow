@@ -29,11 +29,11 @@ var serverPage = React.render(
 var gameState = firebacon.gameStateStream(gameId).toProperty();
 
 gameState
-  .filter(_.isObject)
   .map(function (state) {
+    var stateObj = _.head(_.values(state));
     return {
-      title: state.lastInput ? state.lastInput.input.toString() : '?',
-      gameField: state.gameField,
+      title: stateObj.lastInput ? stateObj.lastInput.input.toString() : '?',
+      gameField: stateObj.gameField,
     };
   })
   .onValue(serverPage.setProps.bind(serverPage));
@@ -45,7 +45,7 @@ gameState
   )
   .flatMap(ƒ.ply(interpreter.inputsMachine))
   .doAction(_.flow(
-    _.bind(_.at, null, _, [0, 1]),
+    _.bind(_.at, null, _, 1),
     ƒ.ply(firebacon.setGameState)
   ))
   .doAction(_.flow(

@@ -3,15 +3,13 @@
 var _ = require('lodash');
 var Bacon = require('baconjs');
 
+var ƒ = require('./funcy');
 var inputs = require('./inputs');
 
 function inputsMachine(gameId, gameState, gameInput) {
-  var state = gameState || {};
-  if (!_.isObject(state.gameField)) {
-    state.gameField = {x: 0, y: 0};
-  }
-
-  var inputObj = _.values(gameInput)[0];
+  var stateId = _.head(_.keys(gameState));
+  var stateObj = _.head(_.values(gameState));
+  var inputObj = _.head(_.values(gameInput));
 
   if (!inputObj) {
     return Bacon.never();
@@ -19,23 +17,23 @@ function inputsMachine(gameId, gameState, gameInput) {
 
   switch (inputObj.input) {
     case inputs.GAME.UP:
-      state.gameField.x++;
+      stateObj.gameField.x++;
       break;
     case inputs.GAME.DOWN:
-      state.gameField.x--;
+      stateObj.gameField.x--;
       break;
     case inputs.GAME.LEFT:
-      state.gameField.y--;
+      stateObj.gameField.y--;
       break;
     case inputs.GAME.RIGHT:
-      state.gameField.y++;
+      stateObj.gameField.y++;
       break;
     // default:
   }
 
-  state.lastInput = inputObj;
+  stateObj.lastInput = inputObj;
 
-  return [gameId, gameState, gameInput];
+  return [gameId, ƒ.fromKey(stateId, stateObj), gameInput];
 }
 
 module.exports = {
