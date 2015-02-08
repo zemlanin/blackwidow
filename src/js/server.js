@@ -34,7 +34,7 @@ gameState
   .map(function (state) {
     var stateObj = _.head(_.values(state));
     return {
-      title: stateObj.lastInput ? stateObj.lastInput.input.toString() : '?',
+      title: stateObj.lastInput ? stateObj.lastInput.value.toString() : '?',
       gameField: stateObj.gameField,
     };
   })

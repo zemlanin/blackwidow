@@ -30,7 +30,7 @@ if (gameId) {
 
   firebacon
     .getClientStateBus()
-    .map(ƒ.fromKey('input'))
+    .map(ƒ.fromKey('value'))
     .combine(
       playerStream
         .map(_.keys)

@@ -15,7 +15,7 @@ function inputsMachine(data) {
     return Bacon.never();
   }
 
-  switch (inputObj.input) {
+  switch (inputObj.value) {
     case inputs.GAME.UP:
       stateObj.gameField.x++;
       break;
