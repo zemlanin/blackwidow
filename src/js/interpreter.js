@@ -6,10 +6,10 @@ var Bacon = require('baconjs');
 var ƒ = require('./funcy');
 var inputs = require('./inputs');
 
-function inputsMachine(gameId, gameState, players, gameInput) {
-  var stateId = _.head(_.keys(gameState));
-  var stateObj = _.head(_.values(gameState));
-  var inputObj = _.head(_.values(gameInput));
+function inputsMachine(data) {
+  var stateId = _.head(_.keys(data.state));
+  var stateObj = _.head(_.values(data.state));
+  var inputObj = _.head(_.values(data.input));
 
   if (!inputObj) {
     return Bacon.never();
@@ -33,7 +33,7 @@ function inputsMachine(gameId, gameState, players, gameInput) {
 
   stateObj.lastInput = inputObj;
 
-  return [gameId, ƒ.fromKey(stateId, stateObj), players, gameInput];
+  return _.assign(data, {"state": ƒ.fromKey(stateId, stateObj)});
 }
 
 module.exports = {

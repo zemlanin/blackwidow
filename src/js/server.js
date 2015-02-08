@@ -40,24 +40,22 @@ gameState
   })
   .onValue(serverPage.setProps.bind(serverPage));
 
-Bacon.zipAsArray(
-  Bacon.constant(gameId),
-  gameState,
-  playersStream
+Bacon.zipWith(
+  _.assign,
+  gameState.map(ƒ.fromKey('state')),
+  playersStream.map(ƒ.fromKey('players'))
 )
   .sampledBy(
-    firebacon.gameInputStream(gameId),
-    '.concat'
+    firebacon.gameInputStream(gameId).map(ƒ.fromKey('input')),
+    _.assign
   )
-  .flatMap(ƒ.ply(interpreter.inputsMachine))
+  .flatMap(interpreter.inputsMachine)
   .doAction(_.flow(
-    _.bind(_.at, null, _, 1),
-    _.head,
+    _.partialRight(_.result, 'state'),
     firebacon.setGameState
   ))
   .doAction(_.flow(
-    _.bind(_.at, null, _, 3),
-    _.head,
+    _.partialRight(_.result, 'input'),
     _.keys,
     _.head,
     firebacon.removePlayerInput
