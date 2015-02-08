@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require('lodash');
+var Bacon = require('baconjs');
 var React = require('react/addons');
 
 var firebacon = require('./firebacon');
@@ -27,6 +28,7 @@ var serverPage = React.render(
 );
 
 var gameState = firebacon.gameStateStream(gameId).toProperty();
+var playersStream = firebacon.gamePlayersStream(gameId).toProperty();
 
 gameState
   .map(function (state) {
@@ -38,10 +40,14 @@ gameState
   })
   .onValue(serverPage.setProps.bind(serverPage));
 
-gameState
+Bacon.zipAsArray(
+  Bacon.constant(gameId),
+  gameState,
+  playersStream
+)
   .sampledBy(
     firebacon.gameInputStream(gameId),
-    function (state, input) { return [gameId, state, input]; }
+    '.concat'
   )
   .flatMap(ƒ.ply(interpreter.inputsMachine))
   .doAction(_.flow(
@@ -50,15 +56,13 @@ gameState
     firebacon.setGameState
   ))
   .doAction(_.flow(
-    _.bind(_.at, null, _, 2),
+    _.bind(_.at, null, _, 3),
     _.head,
     _.keys,
     _.head,
     firebacon.removePlayerInput
   ))
   .onValue();
-
-var playersStream = firebacon.gamePlayersStream(gameId);
 
 playersStream
   .take(1)
