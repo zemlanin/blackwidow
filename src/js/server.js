@@ -49,6 +49,15 @@ Bacon.zipWith(
     firebacon.gameInputStream(gameId).map(ƒ.fromKey('input')),
     _.assign
   )
+  // debug
+  .flatMap(function (value) {
+    return Bacon.once(value)
+      .sampledBy(
+        Bacon.fromEventTarget(document.getElementById('tick'), 'click')
+      )
+      .take(1);
+  })
+  // debug
   .flatMap(interpreter.inputsMachine)
   .doAction(_.flow(
     _.partialRight(_.result, 'state'),

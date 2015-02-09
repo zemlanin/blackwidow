@@ -154,6 +154,16 @@ var FullServerPage = React.createClass({
         this.props.gameId
       ),
       React.DOM.span({
+          id: 'tick',
+          className: 'l-box',
+          style: {
+            color: 'orange',
+            cursor: 'pointer',
+          },
+        },
+        'tick'
+      ),
+      React.DOM.span({
           onClick: this.toggleQR,
           className: 'l-box',
           style: {
