@@ -8,7 +8,7 @@ var buffer = require('vinyl-buffer');
 var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 
-var external = ['react/addons', 'baconjs', 'firebase', 'lodash', 'qrcode.react'];
+var external = ['react/addons', 'baconjs', 'firebase', 'lodash'];
 
 gulp.task('lint', function () {
   return gulp.src(['src/js/**/*.js'])
