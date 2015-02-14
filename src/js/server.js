@@ -22,22 +22,35 @@ var serverPage = React.render(
   FullServerPage({
     gameId: gameId,
     title: '…',
-    players: [],
   }),
   document.body
 );
 
 var gameState = firebacon.gameStateStream(gameId).toProperty();
 var playersStream = firebacon.gamePlayersStream(gameId).toProperty();
+var inputsStream = firebacon.gameInputStream(gameId);
 
-gameState
-  .map(function (state) {
-    var stateObj = _.head(_.values(state));
-    return {
-      title: stateObj.lastInput ? stateObj.lastInput.value.toString() : '?',
-      gameField: stateObj.gameField,
-    };
-  })
+function debugTicker(value) {
+  if (serverPage.state.ticker) {
+    return Bacon.once(value)
+      .sampledBy(
+        Bacon.fromEventTarget(document.getElementById('tick'), 'click')
+      )
+      .take(1);
+  }
+
+  return value;
+}
+
+inputsStream
+  .map(_.values)
+  .map(_.head)
+  .scan([], '.concat')
+  .flatMap(debugTicker)
+  .map(_.bind(_.sortBy, null, _, 'timeStamp'))
+  .map(_.bind(_.result, null, _, 'reverse'))
+  .map(_.bind(_.pluck, null, _, 'value'))
+  .map(ƒ.fromKey('inputs'))
   .onValue(serverPage.setProps.bind(serverPage));
 
 Bacon.zipWith(
@@ -46,22 +59,10 @@ Bacon.zipWith(
   playersStream.map(ƒ.fromKey('players'))
 )
   .sampledBy(
-    firebacon.gameInputStream(gameId).map(ƒ.fromKey('input')),
+    inputsStream.map(ƒ.fromKey('input')),
     _.assign
   )
-  // debug
-  .flatMap(function (value) {
-    if (serverPage.state.ticker) {
-      return Bacon.once(value)
-        .sampledBy(
-          Bacon.fromEventTarget(document.getElementById('tick'), 'click')
-        )
-        .take(1);
-    }
-
-    return value;
-  })
-  // debug
+  .flatMap(debugTicker)
   .flatMap(interpreter.inputsMachine)
   .doAction(_.flow(
     _.partialRight(_.result, 'state'),
@@ -74,14 +75,3 @@ Bacon.zipWith(
     firebacon.removePlayerInput
   ))
   .onValue();
-
-playersStream
-  .take(1)
-  .filter(_.isNull)
-  .map({title: 'waiting players'})
-  .onValue(serverPage.setProps.bind(serverPage));
-
-playersStream
-  .filter(_.size)
-  .map(ƒ.fromKey('players'))
-  .onValue(serverPage.setProps.bind(serverPage));

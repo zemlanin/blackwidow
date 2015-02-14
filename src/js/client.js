@@ -28,6 +28,20 @@ if (gameId) {
     .map(ƒ.fromKey('player'))
     .onValue(clientPage.setProps.bind(clientPage));
 
+  var playersStream = firebacon.gamePlayersStream(gameId).toProperty();
+  playersStream
+    .filter(_.size)
+    .map(ƒ.fromKey('players'))
+    .onValue(clientPage.setProps.bind(clientPage));
+
+  var gameState = firebacon.gameStateStream(gameId).toProperty();
+
+  gameState
+    .map(_.values)
+    .map(_.head)
+    .map(_.bind(_.pick, null, _, 'gameField'))
+    .onValue(clientPage.setProps.bind(clientPage));
+
   firebacon
     .getClientStateBus()
     .map(ƒ.fromKey('value'))
@@ -38,6 +52,10 @@ if (gameId) {
         .map(ƒ.fromKey('playerId')),
       _.assign.bind(null, {gameId: gameId})
     )
+    .map(function (value) {
+      value.timeStamp = parseInt(Date.now() / 1000, 10);
+      return value;
+    })
     .flatMap(firebacon.pushNewGameInput.bind(null))
     .onValue();
 
