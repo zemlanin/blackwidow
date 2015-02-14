@@ -51,11 +51,15 @@ Bacon.zipWith(
   )
   // debug
   .flatMap(function (value) {
-    return Bacon.once(value)
-      .sampledBy(
-        Bacon.fromEventTarget(document.getElementById('tick'), 'click')
-      )
-      .take(1);
+    if (serverPage.state.ticker) {
+      return Bacon.once(value)
+        .sampledBy(
+          Bacon.fromEventTarget(document.getElementById('tick'), 'click')
+        )
+        .take(1);
+    }
+
+    return value;
   })
   // debug
   .flatMap(interpreter.inputsMachine)

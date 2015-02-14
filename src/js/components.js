@@ -123,7 +123,12 @@ var FullServerPage = React.createClass({
 
   getInitialState: function () {
     return {
+      ticker: false,
     };
+  },
+
+  toggleTicker: function toggleTicker() {
+    this.setState({ticker: !this.state.ticker});
   },
 
   render: function () {
@@ -146,7 +151,14 @@ var FullServerPage = React.createClass({
         },
         this.props.gameId
       ),
-      React.DOM.span({
+      React.DOM.input({
+          type: 'checkbox',
+          className: 'l-box',
+          checked: this.state.ticker,
+          onChange: this.toggleTicker,
+        }
+      ),
+      this.state.ticker ? React.DOM.span({
           id: 'tick',
           className: 'l-box',
           style: {
@@ -155,7 +167,7 @@ var FullServerPage = React.createClass({
           },
         },
         'tick'
-      ),
+      ) : null,
       React.DOM.ul({
           style: {
             listStyleType: 'none',
