@@ -8,7 +8,7 @@ var inputs = require('./inputs');
 
 function inputsMachine(data) {
   var stateId = _.head(_.keys(data.state));
-  var stateObj = _.head(_.values(data.state));
+  var stateObj = _.cloneDeep(_.head(_.values(data.state)));
   var inputObj = _.head(_.values(data.input));
 
   if (!inputObj) {

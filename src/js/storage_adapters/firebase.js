@@ -6,9 +6,23 @@ var Firebase = require('firebase');
 
 var firebaseRef = new Firebase("https://blistering-torch-7175.firebaseio.com/");
 
+function deepFreeze(o) {
+  var prop, propKey;
+  Object.freeze(o);
+  for (propKey in o) {
+    prop = o[propKey];
+    if (!o.hasOwnProperty(propKey) || !(typeof prop === 'object') || Object.isFrozen(prop)) {
+      continue;
+    }
+
+    deepFreeze(prop);
+  }
+}
+
 function _valuesMapper(snapshot) {
   var result = {};
   result[snapshot.key()] = snapshot.val();
+  deepFreeze(result);
   return result;
 }
 
