@@ -4,7 +4,7 @@ var _ = require('lodash');
 var Bacon = require('baconjs');
 
 var ƒ = require('./funcy');
-var sa = require('./storage_adapters/firebase');
+var sa = require('./storage_adapters/jo');
 
 function connectAsPlayer(gameId) {
   var localPlayerId = localStorage.getItem(gameId);
@@ -24,7 +24,7 @@ function connectAsPlayer(gameId) {
     .flatMap(sa.getPlayer)
     .take(1)
     .filter(_.flow(_.values, _.any))
-    .doAction(sa.setPlayerStatusToOnline);
+    .doAction(sa.signConnection);
 }
 
 function pushNewGameInput(value) {

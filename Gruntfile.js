@@ -44,6 +44,7 @@ module.exports = function(grunt) {
         options: {
           base: 'public',
           open: true,
+          port: 8001,
         },
       }
     },

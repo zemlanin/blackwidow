@@ -108,7 +108,7 @@ function pushNewPlayer(player) {
   return _pushChildValue(firebaseRef.child('players'), player);
 }
 
-function setPlayerStatusToOnline(player) {
+function signConnection(player) {
   var playerId = _.head(_.keys(player));
   var playerOnlineRef = firebaseRef
     .child('players')
@@ -174,5 +174,5 @@ module.exports = {
   pushNewGameInput: pushNewGameInput,
 
   pushNewPlayer: pushNewPlayer,
-  setPlayerStatusToOnline: setPlayerStatusToOnline,
+  signConnection: signConnection,
 };

@@ -37,8 +37,6 @@ if (gameId) {
   var gameState = firebacon.gameStateStream(gameId).toProperty();
 
   gameState
-    .map(_.values)
-    .map(_.head)
     .map(_.bind(_.pick, null, _, 'gameField'))
     .onValue(clientPage.setProps.bind(clientPage));
 
