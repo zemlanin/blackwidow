@@ -1,4 +1,3 @@
-// https://github.com/zemlanin/jo
 "use strict";
 
 var _ = require('lodash');
@@ -36,12 +35,12 @@ function _reconnect(retry) {
   );
 }
 
-function wsOpenHandler(prev, ws) {
+function _wsOpenHandler(prev, ws) {
   ws.onclose = wsClose.push.bind(wsClose, null);
   return ws;
 }
 
-function wsCloseHandler(prev, retry) {
+function _wsCloseHandler(prev, retry) {
   if (prev) {
     prev.removeEventListener('message', _valuesMapper);
   }
@@ -60,11 +59,11 @@ function wsCloseHandler(prev, retry) {
 
 var wsProperty = Bacon.update(
   null,
-  [wsOpen], wsOpenHandler,
-  [wsClose], wsCloseHandler
+  [wsOpen], _wsOpenHandler,
+  [wsClose], _wsCloseHandler
 );
 
-(function initWsStream() {
+(function _initWsStream() {
   wsProperty.onValue(_.noop);
   wsClose.push(null);
 }());
