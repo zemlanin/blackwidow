@@ -2,7 +2,7 @@
 engine for multiplayer game
 
 aka playground for:
-- Firebase
+- -Firebase-
 - WebSockets
 - Bacon.js
 - React.js
