@@ -1,9 +1,9 @@
 "use strict";
 
 var _ = require('lodash');
+var r = require('ramda');
 var Bacon = require('baconjs');
 
-var ƒ = require('./funcy');
 var inputs = require('./inputs');
 
 function inputsMachine(data) {
@@ -33,7 +33,7 @@ function inputsMachine(data) {
 
   stateObj.lastInput = inputObj;
 
-  return _.assign(data, {"state": ƒ.fromKey(stateId, stateObj)});
+  return _.assign(data, {"state": r.createMapEntry(stateId, stateObj)});
 }
 
 module.exports = {

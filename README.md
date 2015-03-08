@@ -3,10 +3,11 @@ engine for multiplayer game
 
 aka playground for:
 - Firebase
+- WebSockets
 - Bacon.js
 - React.js
 - Grunt/Gulp
-- functional-ish style
+- functional-ish style (lo-dash and ramda)
 
 # demo
 http://blackwidow.bitballoon.com  

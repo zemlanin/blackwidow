@@ -3,7 +3,6 @@
 var _ = require('lodash');
 var Bacon = require('baconjs');
 
-var ƒ = require('./funcy');
 var sa = require('./storage_adapters/jo');
 
 function connectAsPlayer(gameId) {
@@ -47,19 +46,7 @@ function setGameState(value) {
 
 function gameStateStream(gameId) {
   return sa.getGameState(gameId)
-    .map('.gameState')
-    .flatMap(function (existing) {
-      if (existing) {
-        return existing;
-      }
-
-      var initState = {
-        gameId: gameId,
-        gameField: {x: 0, y: 0}
-      };
-      return sa.pushNewGameState(initState)
-        .map(_.bind(ƒ.fromKey, null, _, initState));
-    });
+    .map('.gameState');
 }
 
 function gamePlayersStream(gameId) {

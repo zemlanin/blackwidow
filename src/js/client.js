@@ -1,12 +1,12 @@
 "use strict";
 
 var _ = require('lodash');
+var r = require('ramda');
 var React = require('react/addons');
 
 var components = require('./components');
 var routing = require('./routing');
 var firebacon = require('./firebacon');
-var ƒ = require('./funcy');
 
 var FullClientPage = React.createFactory(components.FullClientPage);
 var MagicTitle = React.createFactory(components.MagicTitle);
@@ -23,19 +23,17 @@ if (gameId) {
 
   var playerStream = firebacon.connectAsPlayer(gameId).toProperty();
   playerStream
-    .map(_.values)
-    .map(_.head)
-    .map(ƒ.fromKey('player'))
+    .map(r.pick(['player']))
     .onValue(clientPage.setProps.bind(clientPage));
 
   firebacon.connectedProperty
-    .map(ƒ.fromKey('connected'))
+    .map(r.createMapEntry('connected'))
     .onValue(clientPage.setProps.bind(clientPage));
 
   var playersStream = firebacon.gamePlayersStream(gameId).toProperty();
   playersStream
     .filter(_.size)
-    .map(ƒ.fromKey('players'))
+    .map(r.createMapEntry('players'))
     .onValue(clientPage.setProps.bind(clientPage));
 
   var gameState = firebacon.gameStateStream(gameId).toProperty();
@@ -46,12 +44,12 @@ if (gameId) {
 
   firebacon
     .getClientStateBus()
-    .map(ƒ.fromKey('value'))
+    .map(r.createMapEntry('value'))
     .combine(
       playerStream
         .map(_.keys)
         .map(_.head)
-        .map(ƒ.fromKey('playerId')),
+        .map(r.createMapEntry('playerId')),
       _.assign.bind(null, {gameId: gameId})
     )
     .map(function (value) {
