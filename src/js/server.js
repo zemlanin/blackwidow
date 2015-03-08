@@ -1,7 +1,7 @@
 "use strict";
 
 var _ = require('lodash');
-var r = require('ramda');
+var R = require('ramda');
 var Bacon = require('baconjs');
 var React = require('react/addons');
 
@@ -50,16 +50,16 @@ inputsStream
   .map(_.bind(_.sortBy, null, _, 'timeStamp'))
   .map(_.bind(_.result, null, _, 'reverse'))
   .map(_.bind(_.pluck, null, _, 'value'))
-  .map(r.createMapEntry('inputs'))
+  .map(R.createMapEntry('inputs'))
   .onValue(serverPage.setProps.bind(serverPage));
 
 Bacon.zipWith(
   _.assign,
-  gameState.map(r.createMapEntry('state')),
-  playersStream.map(r.createMapEntry('players'))
+  gameState.map(R.createMapEntry('state')),
+  playersStream.map(R.createMapEntry('players'))
 )
   .sampledBy(
-    inputsStream.map(r.createMapEntry('input')),
+    inputsStream.map(R.createMapEntry('input')),
     _.assign
   )
   .flatMap(debugTicker)

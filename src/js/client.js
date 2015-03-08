@@ -1,7 +1,7 @@
 "use strict";
 
 var _ = require('lodash');
-var r = require('ramda');
+var R = require('ramda');
 var React = require('react/addons');
 
 var components = require('./components');
@@ -23,17 +23,17 @@ if (gameId) {
 
   var playerStream = firebacon.connectAsPlayer(gameId).toProperty();
   playerStream
-    .map(r.pick(['player']))
+    .map(R.pick(['player']))
     .onValue(clientPage.setProps.bind(clientPage));
 
   firebacon.connectedProperty
-    .map(r.createMapEntry('connected'))
+    .map(R.createMapEntry('connected'))
     .onValue(clientPage.setProps.bind(clientPage));
 
   var playersStream = firebacon.gamePlayersStream(gameId).toProperty();
   playersStream
     .filter(_.size)
-    .map(r.createMapEntry('players'))
+    .map(R.createMapEntry('players'))
     .onValue(clientPage.setProps.bind(clientPage));
 
   var gameState = firebacon.gameStateStream(gameId).toProperty();
@@ -44,12 +44,12 @@ if (gameId) {
 
   firebacon
     .getClientStateBus()
-    .map(r.createMapEntry('value'))
+    .map(R.createMapEntry('value'))
     .combine(
       playerStream
         .map(_.keys)
         .map(_.head)
-        .map(r.createMapEntry('playerId')),
+        .map(R.createMapEntry('playerId')),
       _.assign.bind(null, {gameId: gameId})
     )
     .map(function (value) {

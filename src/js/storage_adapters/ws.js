@@ -1,7 +1,7 @@
 "use strict";
 
 var _ = require('lodash');
-var r = require('ramda');
+var R = require('ramda');
 var Bacon = require('baconjs');
 
 // TODO: move url in config file
@@ -71,13 +71,13 @@ var wsProperty = Bacon.update(
 
 var connectedProperty = wsProperty
   .map('.readyState')
-  .map(r.eq(1));
+  .map(R.eq(1));
 
 var outgoingStream = new Bacon.Bus();
 wsProperty
   .sampledBy(
     outgoingStream.holdWhen(connectedProperty.not()).flatMap(JSON.stringify),
-    r.func('send')
+    R.func('send')
   ).onValue(_.noop);
 
 var incomingStream = wsProperty
