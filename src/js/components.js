@@ -31,12 +31,8 @@ var PlayerBadge = React.createClass({
 
 var PlayerBadgeFactory = React.createFactory(PlayerBadge);
 
-var FullClientPage = React.createClass({
-  displayName: 'FullClientPage',
-
-  getInitialState: function () {
-    return {};
-  },
+var ClosedInfo = React.createClass({
+  displayName: 'ClosedInfo',
 
   _changeText: function (input) {
     firebacon.getClientStateBus().push(input);
@@ -44,84 +40,113 @@ var FullClientPage = React.createClass({
 
   render: function () {
     var changeText = _.curry(this._changeText, 2);
-    return React.DOM.div(null,
-      React.DOM.div({
-          className: 'pure-g',
-          style: {
-            margin: '30px 0',
-            width: '100%',
-          },
+    return React.DOM.div(
+      {
+        className: 'pure-g',
+        style: {
+          margin: '30px 0',
+          width: '100%',
         },
-        React.DOM.div({className: 'pure-u-1-5 l-box'}),
-        React.DOM.div({
-            className: 'pure-u-2-5 l-box',
-            style: {position: 'relative'},
-          },
-          React.DOM.a({
-              className: 'button-error pure-button button-xlarge',
-              style: {
-                position: 'absolute',
-                top: '1em',
-                left: '1em',
-              },
-              onClick: changeText(inputs.GAME.LEFT),
-            },
-            '<'
-          ),
-          React.DOM.a({
-              className: 'pure-button button-xlarge',
-              style: {
-                position: 'absolute',
-                top: '1em',
-                left: '50%',
-                transform: 'translateX(-50%)'
-              },
-              onClick: changeText(inputs.GAME.UP),
-            },
-            '^'
-          ),
-          React.DOM.a({
-              className: 'button-success pure-button button-xlarge',
-              style: {
-                position: 'absolute',
-                top: '1em',
-                right: '1em',
-              },
-              onClick: changeText(inputs.GAME.RIGHT),
-            },
-            '>'
-          )
-        ),
-        React.DOM.div({
-            className: 'pure-u-1-5 l-box',
+      },
+      React.DOM.div({className: 'pure-u-1-5 l-box'}),
+      React.DOM.div({
+          className: 'pure-u-2-5 l-box',
+          style: {position: 'relative'},
+        },
+        React.DOM.a({
+            className: 'button-error pure-button button-xlarge',
             style: {
-              fontSize: 11,
-              color: 'gray',
-            }
+              position: 'absolute',
+              top: '1em',
+              left: '1em',
+            },
+            onClick: changeText(inputs.GAME.LEFT),
           },
-          React.DOM.p(null,
-            '#' + this.props.gameId,
-            React.DOM.br(),
-            React.DOM.span({
-                style: {color: this.props.connected ? 'green' : 'red'},
-              },
-              this.props.player ? '@' + this.props.player.name : ''
-            )
-          )
+          '<'
+        ),
+        React.DOM.a({
+            className: 'pure-button button-xlarge',
+            style: {
+              position: 'absolute',
+              top: '1em',
+              left: '50%',
+              transform: 'translateX(-50%)'
+            },
+            onClick: changeText(inputs.GAME.UP),
+          },
+          '^'
+        ),
+        React.DOM.a({
+            className: 'button-success pure-button button-xlarge',
+            style: {
+              position: 'absolute',
+              top: '1em',
+              right: '1em',
+            },
+            onClick: changeText(inputs.GAME.RIGHT),
+          },
+          '>'
         )
       ),
-      this.props.gameField ? _(this.props.gameField).map(function (value, dim) {
-        return React.DOM.span({key: dim}, dim, ': ', value, React.DOM.br());
-      }).value() : null,
+      React.DOM.div({
+          className: 'pure-u-1-5 l-box',
+          style: {
+            fontSize: 11,
+            color: 'gray',
+          }
+        },
+        React.DOM.p(null,
+          '#' + this.props.gameId,
+          React.DOM.br(),
+          React.DOM.span({
+              style: {color: this.props.connected ? 'green' : 'red'},
+            },
+            this.props.player ? '@' + this.props.player.name : ''
+          )
+        )
+      )
+    );
+  }
+});
+
+var ClosedInfoFactory = React.createFactory(ClosedInfo);
+
+var OpenedInfo = React.createClass({
+  displayName: 'OpenedInfo',
+
+  _gameFieldRow: function(value, dim) {
+    return React.DOM.span({key: dim}, dim, ': ', value, React.DOM.br());
+  },
+
+  _playerBadgeRow: function (player, i) {
+    return React.DOM.li({key: i}, PlayerBadgeFactory(player));
+  },
+
+  render: function () {
+    return React.DOM.div(
+      null,
+      _(this.props.gameField).map(this._gameFieldRow).value(),
       React.DOM.ul({
           style: {
             listStyleType: 'none',
           },
         },
-        _(this.props.players).map(function (player, i) {
-          return React.DOM.li({key: i}, PlayerBadgeFactory(player));
-        }).value()
+        _(this.props.players).map(this._playerBadgeRow).value()
       )
+    );
+  }
+});
+
+var OpenedInfoFactory = React.createFactory(OpenedInfo);
+
+var FullClientPage = React.createClass({
+  displayName: 'FullClientPage',
+
+  render: function () {
+    return React.DOM.div(
+      null,
+      ClosedInfoFactory(_.merge(this.props, {ref: 'closed'})),
+      OpenedInfoFactory(_.merge(this.props, {ref: 'opened'}))
     );
   }
 });
