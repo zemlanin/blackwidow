@@ -81,4 +81,5 @@ module.exports = {
   setGameState: setGameState,
   gamePlayersStream: gamePlayersStream,
   getClientStateBus: getClientStateBus,
+  connectedProperty: sa.connectedProperty,
 };

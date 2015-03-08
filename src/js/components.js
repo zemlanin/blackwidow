@@ -102,7 +102,11 @@ var FullClientPage = React.createClass({
           React.DOM.p(null,
             '#' + this.props.gameId,
             React.DOM.br(),
-            this.props.player ? '@' + this.props.player.name : ''
+            React.DOM.span({
+                style: {color: this.props.connected ? 'green' : 'red'},
+              },
+              this.props.player ? '@' + this.props.player.name : ''
+            )
           )
         )
       ),

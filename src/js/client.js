@@ -28,6 +28,10 @@ if (gameId) {
     .map(ƒ.fromKey('player'))
     .onValue(clientPage.setProps.bind(clientPage));
 
+  firebacon.connectedProperty
+    .map(ƒ.fromKey('connected'))
+    .onValue(clientPage.setProps.bind(clientPage));
+
   var playersStream = firebacon.gamePlayersStream(gameId).toProperty();
   playersStream
     .filter(_.size)
