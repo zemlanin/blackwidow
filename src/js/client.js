@@ -51,7 +51,7 @@ if (gameId) {
     .map(R.pick('value'))
     .combine(
       playerStream
-        .map(R.prop('player'))
+        .map('.player')
         .map(R.pick(['playerId'])),
       _.assign.bind(null, {gameId: gameId})
     )
