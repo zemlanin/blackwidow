@@ -1,3 +1,4 @@
+/*eslint-env node*/
 "use strict";
 
 var _ = require('lodash');
@@ -7,8 +8,11 @@ var browserify = require('browserify');
 var buffer = require('vinyl-buffer');
 var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
+var uglify = require('gulp-uglify');
 
-var external = ['react/addons', 'baconjs', 'lodash', 'ramba'];
+var external = ['react/addons', 'baconjs', 'lodash', 'ramda'];
+
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 gulp.task('lint', function () {
   return gulp.src(['src/js/**/*.js'])
@@ -24,6 +28,10 @@ gulp.task('jscore', function () {
     .require(external)
     .bundle()
     .pipe(source('core.js'))
+    .pipe(buffer())
+    .pipe(uglify({
+      mangle: process.env.NODE_ENV === 'production',
+    }))
     .pipe(gulp.dest('./public/js/'));
 });
 
