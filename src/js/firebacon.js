@@ -53,12 +53,6 @@ function gamePlayersStream(gameId) {
   return sa.getGamePlayers(gameId).map('.players');
 }
 
-var clientStateBus = new Bacon.Bus();
-
-function getClientStateBus() {
-  return clientStateBus;
-}
-
 module.exports = {
   connectAsPlayer: connectAsPlayer,
   pushNewGameInput: pushNewGameInput,
@@ -67,6 +61,5 @@ module.exports = {
   gameStateStream: gameStateStream,
   setGameState: setGameState,
   gamePlayersStream: gamePlayersStream,
-  getClientStateBus: getClientStateBus,
   connectedProperty: sa.connectedProperty,
 };

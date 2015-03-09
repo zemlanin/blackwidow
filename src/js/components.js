@@ -1,9 +1,9 @@
 "use strict";
 
 var _ = require('lodash');
+var R = require('ramda');
 var React = require('react/addons');
 
-var firebacon = require('./firebacon');
 var inputs = require('./inputs');
 
 var PlayerBadge = React.createClass({
@@ -13,14 +13,12 @@ var PlayerBadge = React.createClass({
     return React.DOM.div(
       null,
       React.DOM.span({
-          style: {
-            padding: '5px 2px',
-            backgroundColor: this.props.online ? 'green' : 'red',
-            marginRight: 5,
-          },
+        style: {
+          padding: '5px 2px',
+          backgroundColor: this.props.online ? 'green' : 'red',
+          marginRight: 5,
         },
-        ''
-      ),
+      }),
       React.DOM.span(
         null,
         this.props.name
@@ -29,17 +27,18 @@ var PlayerBadge = React.createClass({
   }
 });
 
-var PlayerBadgeFactory = React.createFactory(PlayerBadge);
-
 var ClosedInfo = React.createClass({
   displayName: 'ClosedInfo',
 
-  _changeText: function (input) {
-    firebacon.getClientStateBus().push(input);
-  },
+  inputClickHandler: R.curry(function (value, event) {
+    this.props.eventStream.push({
+      tell: 'inputClicked',
+      event: event,
+      value: value,
+    });
+  }),
 
   render: function () {
-    var changeText = _.curry(this._changeText, 2);
     return React.DOM.div(
       {
         className: 'pure-g',
@@ -60,7 +59,7 @@ var ClosedInfo = React.createClass({
               top: '1em',
               left: '1em',
             },
-            onClick: changeText(inputs.GAME.LEFT),
+            onClick: this.inputClickHandler(inputs.GAME.LEFT).bind(this),
           },
           '<'
         ),
@@ -72,7 +71,7 @@ var ClosedInfo = React.createClass({
               left: '50%',
               transform: 'translateX(-50%)'
             },
-            onClick: changeText(inputs.GAME.UP),
+            onClick: this.inputClickHandler(inputs.GAME.UP).bind(this),
           },
           '^'
         ),
@@ -83,7 +82,7 @@ var ClosedInfo = React.createClass({
               top: '1em',
               right: '1em',
             },
-            onClick: changeText(inputs.GAME.RIGHT),
+            onClick: this.inputClickHandler(inputs.GAME.RIGHT).bind(this),
           },
           '>'
         )
@@ -109,8 +108,6 @@ var ClosedInfo = React.createClass({
   }
 });
 
-var ClosedInfoFactory = React.createFactory(ClosedInfo);
-
 var OpenedInfo = React.createClass({
   displayName: 'OpenedInfo',
 
@@ -119,7 +116,7 @@ var OpenedInfo = React.createClass({
   },
 
   _playerBadgeRow: function (player, i) {
-    return React.DOM.li({key: i}, PlayerBadgeFactory(player));
+    return React.DOM.li({key: i}, React.createElement(PlayerBadge, player));
   },
 
   render: function () {
@@ -137,16 +134,24 @@ var OpenedInfo = React.createClass({
   }
 });
 
-var OpenedInfoFactory = React.createFactory(OpenedInfo);
-
 var FullClientPage = React.createClass({
   displayName: 'FullClientPage',
 
   render: function () {
+    var closedInfoProps = _.pick(
+      this.props,
+      ['gameId', 'eventStream', 'player', 'connected']
+    );
+
+    var openedInfoProps = _.pick(
+      this.props,
+      ['gameId', 'gameField', 'players']
+    );
+
     return React.DOM.div(
       null,
-      ClosedInfoFactory(_.merge(this.props, {ref: 'closed'})),
-      OpenedInfoFactory(_.merge(this.props, {ref: 'opened'}))
+      React.createElement(ClosedInfo, closedInfoProps),
+      React.createElement(OpenedInfo, openedInfoProps)
     );
   }
 });

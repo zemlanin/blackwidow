@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var R = require('ramda');
+var Bacon = require('baconjs');
 var React = require('react/addons');
 
 var components = require('./components');
@@ -13,10 +14,13 @@ var MagicTitle = React.createFactory(components.MagicTitle);
 
 var gameId = routing.getGameId();
 if (gameId) {
+  var eventStream = new Bacon.Bus();
+  // eventStream.log();
+
   var clientPage = React.render(
     FullClientPage({
-      suffix: 'blackwidow',
       gameId: gameId,
+      eventStream: eventStream,
     }),
     document.body
   );
@@ -42,14 +46,13 @@ if (gameId) {
     .map(_.bind(_.pick, null, _, 'gameField'))
     .onValue(clientPage.setProps.bind(clientPage));
 
-  firebacon
-    .getClientStateBus()
-    .map(R.createMapEntry('value'))
+  eventStream
+    .filter(R.propEq('tell', 'inputClicked'))
+    .map(R.pick('value'))
     .combine(
       playerStream
-        .map(_.keys)
-        .map(_.head)
-        .map(R.createMapEntry('playerId')),
+        .map(R.prop('player'))
+        .map(R.pick(['playerId'])),
       _.assign.bind(null, {gameId: gameId})
     )
     .map(function (value) {
