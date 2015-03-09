@@ -10,7 +10,7 @@ var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
 
-var external = ['react/addons', 'baconjs', 'lodash', 'ramda'];
+var external = ['react', 'baconjs', 'lodash', 'ramda'];
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 

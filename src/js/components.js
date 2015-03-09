@@ -1,8 +1,7 @@
 "use strict";
 
 var _ = require('lodash');
-var R = require('ramda');
-var React = require('react/addons');
+var React = require('react');
 
 var inputs = require('./inputs');
 
@@ -30,13 +29,13 @@ var PlayerBadge = React.createClass({
 var ClosedInfo = React.createClass({
   displayName: 'ClosedInfo',
 
-  inputClickHandler: R.curry(function (value, event) {
+  inputClickHandler: function (value, event) {
     this.props.eventStream.push({
       tell: 'inputClicked',
       event: event,
       value: value,
     });
-  }),
+  },
 
   render: function () {
     return React.DOM.div(
@@ -59,7 +58,7 @@ var ClosedInfo = React.createClass({
               top: '1em',
               left: '1em',
             },
-            onClick: this.inputClickHandler(inputs.GAME.LEFT).bind(this),
+            onClick: this.inputClickHandler.bind(this, inputs.GAME.LEFT),
           },
           '<'
         ),
@@ -71,7 +70,7 @@ var ClosedInfo = React.createClass({
               left: '50%',
               transform: 'translateX(-50%)'
             },
-            onClick: this.inputClickHandler(inputs.GAME.UP).bind(this),
+            onClick: this.inputClickHandler.bind(this, inputs.GAME.UP),
           },
           '^'
         ),
@@ -82,7 +81,7 @@ var ClosedInfo = React.createClass({
               top: '1em',
               right: '1em',
             },
-            onClick: this.inputClickHandler(inputs.GAME.RIGHT).bind(this),
+            onClick: this.inputClickHandler.bind(this, inputs.GAME.RIGHT),
           },
           '>'
         )

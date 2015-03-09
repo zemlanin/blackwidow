@@ -3,7 +3,7 @@
 var _ = require('lodash');
 var R = require('ramda');
 var Bacon = require('baconjs');
-var React = require('react/addons');
+var React = require('react');
 
 var components = require('./components');
 var routing = require('./routing');
