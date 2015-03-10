@@ -43,12 +43,12 @@ if (gameId) {
   var gameState = firebacon.gameStateStream(gameId).toProperty();
 
   gameState
-    .map(_.bind(_.pick, null, _, 'gameField'))
+    .map(R.pick(['gameField']))
     .onValue(clientPage.setProps.bind(clientPage));
 
   eventStream
     .filter(R.propEq('tell', 'inputClicked'))
-    .map(R.pick('value'))
+    .map(R.pick(['value']))
     .combine(
       playerStream
         .map('.player')
@@ -59,6 +59,7 @@ if (gameId) {
       value.timeStamp = parseInt(Date.now() / 1000, 10);
       return value;
     })
+    .log()
     .flatMap(firebacon.pushNewGameInput.bind(null))
     .onValue();
 
