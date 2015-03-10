@@ -1,47 +1,15 @@
 // https://github.com/zemlanin/jo
 "use strict";
 
-var _ = require('lodash');
 var Bacon = require('baconjs');
 var ws = require('./ws');
 
 var _send = ws.outgoingStream.push.bind(ws.outgoingStream);
 
-function pushNewPlayer(player) {
-  var gameId = player.gameId;
-
-  if (!gameId) {
-    return Bacon.never();
-  }
-
-  _send({
-    player: player,
-    type: 'NEW_PLAYER',
-  });
-
-  return ws.incomingStream
-    .filter(function (data) { return data.type === 'NEW_PLAYER'; })
-    .take(1)
-    .map('.playerId');
-}
-
-function signConnection(player) {
-  var playerId = _.head(_.keys(player));
-
+function connectAsPlayer(playerId) {
   _send({
     playerId: playerId,
-    type: 'SIGN_CONNECTION',
-  });
-
-  return ws.incomingStream
-    .filter(function (data) { return data.type === 'SIGN_CONNECTION'; })
-    .take(1);
-}
-
-function getPlayer(playerId) {
-  _send({
-    playerId: playerId,
-    type: 'GET_PLAYER',
+    type: 'CONNECT_PLAYER',
   });
 
   return ws.incomingStream
@@ -73,13 +41,10 @@ function getGameState(gameId) {
 module.exports = {
   connectedProperty: ws.connectedProperty,
 
-  getPlayer: getPlayer,
-  pushNewPlayer: pushNewPlayer,
-  signConnection: signConnection,
-
+  connectAsPlayer: connectAsPlayer,
   getGamePlayers: getGamePlayers,
-
   getGameState: getGameState,
+
   pushNewGameState: Bacon.never,
   sendGameState: Bacon.never,
 

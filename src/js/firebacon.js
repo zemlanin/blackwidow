@@ -1,29 +1,13 @@
 "use strict";
 
 var _ = require('lodash');
-var Bacon = require('baconjs');
 
 var sa = require('./storage_adapters/jo');
 
 function connectAsPlayer(gameId) {
   var localPlayerId = localStorage.getItem(gameId);
-  var playerIdStream;
 
-  if (_.isNull(localPlayerId)) {
-    playerIdStream = sa.pushNewPlayer({
-      name: Math.random().toString(16).substring(2),
-      online: true,
-      gameId: gameId
-    }).doAction(localStorage.setItem.bind(localStorage, gameId));
-  } else {
-    playerIdStream = Bacon.once(localPlayerId);
-  }
-
-  return playerIdStream
-    .flatMap(sa.getPlayer)
-    .take(1)
-    .filter(_.flow(_.values, _.any))
-    .doAction(sa.signConnection);
+  return sa.connectAsPlayer(localPlayerId);
 }
 
 function pushNewGameInput(value) {
