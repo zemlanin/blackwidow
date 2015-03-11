@@ -33,3 +33,6 @@ watch:
 
 unwatch:
 	watchman trigger-del $(src) remake
+
+deploy:
+	bitballoon deploy $(dist)
