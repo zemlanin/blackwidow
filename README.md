@@ -1,12 +1,13 @@
 # blackwidow
-engine for multiplayer game
+frontend for [jo](http://github.com/zemlanin/jo) server
 
 aka playground for:
 - -Firebase-
 - WebSockets
 - Bacon.js
 - React.js
-- Grunt/Gulp
+- -Grunt-/Gulp
+- make
 - functional-ish style (lo-dash and ramda)
 
 # demo
@@ -15,8 +16,6 @@ http://blackwidow.bitballoon.com/server
 
 # setup
 ```bash
-npm install -g grunt-cli
 npm install
-gulp jscore jsbundle
-grunt serve # also 'grunt', 'grunt build' and 'grunt watch'
+make
 ```

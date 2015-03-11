@@ -6,6 +6,8 @@ src = $(shell pwd)/src
 dist = $(shell pwd)/dist
 node_modules = $(shell pwd)/node_modules
 
+build: static js
+
 clean:
 	rm -rf $(node_modules) $(dist)
 
