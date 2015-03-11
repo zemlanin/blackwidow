@@ -2,11 +2,11 @@
 frontend for [jo](http://github.com/zemlanin/jo) server
 
 aka playground for:
-- -Firebase-
+- ~~Firebase~~
 - WebSockets
 - Bacon.js
 - React.js
-- -Grunt-/Gulp
+- ~~Grunt~~/Gulp
 - make
 - functional-ish style (lo-dash and ramda)
 
@@ -17,5 +17,4 @@ http://blackwidow.bitballoon.com/server
 # setup
 ```bash
 npm install
-make
 ```
