@@ -32,7 +32,7 @@ gulp.task('jscore', function () {
     .pipe(uglify({
       mangle: process.env.NODE_ENV === 'production',
     }))
-    .pipe(gulp.dest('./public/js/'));
+    .pipe(gulp.dest('./dist/js/'));
 });
 
 gulp.task('jsbundle', ['lint'], function () {
@@ -46,7 +46,7 @@ gulp.task('jsbundle', ['lint'], function () {
       .pipe(buffer())
       .pipe(sourcemaps.init({loadMaps: true}))
       .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest('./public/js/'));
+      .pipe(gulp.dest('./dist/js/'));
   });
 });
 
