@@ -6,6 +6,11 @@ src = $(shell pwd)/src
 dist = $(shell pwd)/dist
 node_modules = $(shell pwd)/node_modules
 
+# OS X: https://github.com/tonsky/AnyBar
+anybar_red = 		(echo "red\c" 		| nc -4u -w0 localhost 1738)
+anybar_green = 		(echo "green\c" 	| nc -4u -w0 localhost 1738)
+anybar_question = 	(echo "question\c" 	| nc -4u -w0 localhost 1738)
+
 build: static js
 
 clean:
@@ -18,14 +23,16 @@ static:
 	cp    $(shell pwd)/_redirects $(dist)/_redirects
 
 jscore:
-	# OS X: https://github.com/tonsky/AnyBar
-	echo "white\c" | nc -4u -w0 localhost 1738
-	@$(gulp) jscore || (echo "red\c" | nc -4u -w0 localhost 1738)
+	$(anybar_question)
+	$(gulp) jscore\
+		&& $(anybar_green)\
+		|| $(anybar_red)
 
 jsbundle:
-	# OS X: https://github.com/tonsky/AnyBar
-	echo "white\c" | nc -4u -w0 localhost 1738
-	$(gulp) jsbundle || (echo "red\c" | nc -4u -w0 localhost 1738)
+	$(anybar_question)
+	$(gulp) jsbundle\
+		&& $(anybar_green)\
+		|| $(anybar_red)
 
 js: jscore jsbundle
 
