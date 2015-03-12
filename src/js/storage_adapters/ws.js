@@ -12,7 +12,7 @@ function _deepFreeze(o) {
   Object.freeze(o);
   for (propKey in o) {
     prop = o[propKey];
-    if (!o.hasOwnProperty(propKey) || !(typeof prop === 'object') || Object.isFrozen(prop)) {
+    if (!o.hasOwnProperty(propKey) || !_.isObject(prop) || Object.isFrozen(prop)) {
       continue;
     }
 
