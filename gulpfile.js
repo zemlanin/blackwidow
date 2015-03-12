@@ -53,10 +53,5 @@ gulp.task('jsbundle', ['lint'], function () {
 gulp.task('default', ['jsbundle'], function () {
 });
 
-gulp.task('watch', function () {
-  gulp.watch(['src/js/**/*.js'], ['jsbundle']);
-  gulp.watch(['package.json'], ['jscore']);
-});
-
 gulp.task('js', ['jscore', 'jsbundle'], function () {
 });

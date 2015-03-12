@@ -17,22 +17,31 @@ static:
 	cp -R $(src)/views/ $(dist)
 	cp    $(shell pwd)/_redirects $(dist)/_redirects
 
-js:
-	$(gulp) jscore jsbundle
+jscore:
+	# OS X: https://github.com/tonsky/AnyBar
+	echo "white\c" | nc -4u -w0 localhost 1738
+	@$(gulp) jscore || (echo "red\c" | nc -4u -w0 localhost 1738)
 
-js_watch: js
-	$(gulp) watch
+jsbundle:
+	# OS X: https://github.com/tonsky/AnyBar
+	echo "white\c" | nc -4u -w0 localhost 1738
+	$(gulp) jsbundle || (echo "red\c" | nc -4u -w0 localhost 1738)
+
+js: jscore jsbundle
 
 serve:
 	@echo serving at http://127.0.0.1:8000
 	@$(node_static) $(dist) -p 8000 -z > /dev/null
 
 watch:
-	watchman watch $(src)
-	watchman -- trigger $(src) remake '*.html' '*.css' -- make static
+	# OS X 10.10: https://github.com/facebook/watchman/issues/68
+	watchman watch $(shell pwd)
+	watchman -- trigger $(shell pwd) rejs 'src/*.js' -- make jsbundle
+	watchman -- trigger $(shell pwd) restatic 'src/*.html' -- make static
 
 unwatch:
-	watchman trigger-del $(src) remake
+	watchman trigger-del $(shell pwd) rejs
+	watchman trigger-del $(shell pwd) restatic
 
 deploy:
 	bitballoon deploy $(dist)
