@@ -63,3 +63,13 @@ unwatch:
 
 deploy:
 	bitballoon deploy $(dist)
+
+me a:
+    @true
+sandwich:
+ifeq ($(shell if touch / 2> /dev/null; then id -u; fi),0)
+    @echo "Okay."
+else
+    @echo "What? Make it yourself."
+endif
+.PHONY: me a sandwich
