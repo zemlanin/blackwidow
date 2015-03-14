@@ -1,26 +1,20 @@
+SHELL := /bin/bash
+UNAME := $(shell uname)
+
 bin = $(shell npm bin)
 gulp = $(bin)/gulp
 node_static = $(bin)/static
+json = $(bin)/json
+browserify = $(bin)/browserify
+uglifyjs = $(bin)/uglifyjs
+
+DEPENDENCIES := $(shell set -o pipefail && cat package.json | $(json) dependencies | $(json) -ka)
 
 src = $(shell pwd)/src
 dist = $(shell pwd)/dist
 node_modules = $(shell pwd)/node_modules
 
-UNAME := $(shell uname)
-nofify_error =		@':'
-nofify_success =	@':'
-nofify_inprogress = @':'
-
-ifeq ($(UNAME), Linux)
-	nofify_error =		(notify-send 'make (blackwidow): error')
-	nofify_success =	(notify-send 'make (blackwidow): success')
-endif
-ifeq ($(UNAME), Darwin)
-	# OS X: https://github.com/tonsky/AnyBar
-	nofify_error =		(echo "red\c"		| nc -4u -w0 localhost 1738)
-	nofify_success =	(echo "green\c"		| nc -4u -w0 localhost 1738)
-	nofify_inprogress = (echo "question\c"	| nc -4u -w0 localhost 1738)
-endif
+prepend-r = sed 's/\([^ ]*\)/-r \1/g' # prepending '-r' to each dependency
 
 build: static js
 
@@ -33,17 +27,33 @@ static:
 	cp -R $(src)/views/ $(dist)
 	cp    $(shell pwd)/_redirects $(dist)/_redirects
 
-jscore:
-	$(nofify_inprogress)
-	@$(gulp) jscore\
-		&& $(nofify_success)\
-		|| $(nofify_error)
+nofify_inprogress:
+ifeq ($(UNAME), Darwin)  # https://github.com/tonsky/AnyBar
+	@echo "question\c" | nc -4u -w0 localhost 1738
+endif
 
-jsbundle:
-	$(nofify_inprogress)
-	@$(gulp) jsbundle\
-		&& $(nofify_success)\
-		|| $(nofify_error)
+nofify_result:
+ifeq ($(UNAME), Linux)
+	@read code; ([ $$code -eq 0 ] \
+		&& echo 'make (blackwidow): success' \
+		|| echo 'make (blackwidow): error' \
+	) | notify-send
+endif
+ifeq ($(UNAME), Darwin) # https://github.com/tonsky/AnyBar
+	@read code; ([ $$code -eq 0 ] \
+		&& echo -n "green" \
+		|| echo -n "red" \
+	) | nc -4u -w0 localhost 1738
+endif
+
+jscore: nofify_inprogress
+	set -o pipefail && echo $(DEPENDENCIES) \
+		| $(prepend-r) \
+		| xargs $(browserify) \
+		| $(uglifyjs) --mangle > $(dist)/js/core.js; echo $$? | make nofify_result
+
+jsbundle: nofify_inprogress
+	@$(gulp) jsbundle; echo $$? | make nofify_result
 
 js: jscore jsbundle
 
