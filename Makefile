@@ -65,11 +65,14 @@ deploy:
 	bitballoon deploy $(dist)
 
 me a:
-    @true
+	@true
+
 sandwich:
 ifeq ($(shell if touch / 2> /dev/null; then id -u; fi),0)
-    @echo "Okay."
+	@echo "Okay."
+	@wget -q -O - http://imgs.xkcd.com/comics/sandwich.png > sandwich.png
 else
-    @echo "What? Make it yourself."
+	@echo "What? Make it yourself."
 endif
+
 .PHONY: me a sandwich
