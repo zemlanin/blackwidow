@@ -7,7 +7,7 @@ aka playground for:
 - Bacon.js
 - React.js
 - ~~Grunt~~/Gulp
-- make
+- make/watchman
 - functional-ish style (lo-dash and ramda)
 
 # demo
