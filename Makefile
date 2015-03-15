@@ -9,7 +9,7 @@ exorcist = $(bin)/exorcist
 uglifyjs = $(bin)/uglifyjs
 eslint = $(bin)/eslint
 
-DEPENDENCIES := $(shell set -o pipefail && cat package.json | $(json) dependencies | $(json) -ka)
+dependencies = $(shell set -o pipefail && cat package.json | $(json) dependencies | $(json) -ka)
 
 src = $(shell pwd)/src
 dist = $(shell pwd)/dist
@@ -49,7 +49,7 @@ ifeq ($(UNAME), Darwin) # https://github.com/tonsky/AnyBar
 endif
 
 jscore: notify_inprogress
-	set -o pipefail && echo $(DEPENDENCIES) \
+	set -o pipefail && echo $(dependencies) \
 		| $(prepend-r) \
 		| xargs $(browserify) \
 		| $(uglifyjs) --mangle \
@@ -59,7 +59,7 @@ lint:
 	$(eslint) $(src)/js
 
 jsbundle: notify_inprogress
-	set -o pipefail && make lint && echo $(DEPENDENCIES) \
+	set -o pipefail && make lint && echo $(dependencies) \
 		| $(prepend-x) \
 		| xargs $(browserify) $(src)/js/client.js -d \
 		| $(exorcist) $(dist)/js/client.js.map \
