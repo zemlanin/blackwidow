@@ -1,7 +1,6 @@
 /*eslint-env node*/
 "use strict";
 
-var _ = require('lodash');
 var gulp = require('gulp');
 var eslint = require('gulp-eslint');
 var browserify = require('browserify');
@@ -21,18 +20,16 @@ gulp.task('lint', function () {
 });
 
 gulp.task('jsbundle', ['lint'], function () {
-  _.each(['client.js', 'server.js'], function (src) {
-    var bundler = browserify('./src/js/' + src, {debug: true});
+  var bundler = browserify('./src/js/client.js', {debug: true});
 
-    bundler
-      .external(external)
-      .bundle()
-      .pipe(source(src))
-      .pipe(buffer())
-      .pipe(sourcemaps.init({loadMaps: true}))
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest('./dist/js/'));
-  });
+  bundler
+    .external(external)
+    .bundle()
+    .pipe(source('client.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest('./dist/js/'));
 });
 
 gulp.task('default', ['jsbundle'], function () {
