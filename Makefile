@@ -29,41 +29,41 @@ static:
 	cp -R $(src)/views/ $(dist)
 	cp    $(shell pwd)/_redirects $(dist)/_redirects
 
-nofify_inprogress:
+notify_inprogress:
 ifeq ($(UNAME), Darwin)  # https://github.com/tonsky/AnyBar
 	@echo "question\c" | nc -4u -w0 localhost 1738
 endif
 
-nofify_result:
+notify_result(%):
 ifeq ($(UNAME), Linux)
-	@read code; ([ $$code -eq 0 ] \
+	([ $% -eq 0 ] \
 		&& echo 'make (blackwidow): success' \
 		|| echo 'make (blackwidow): error' \
 	) | notify-send
 endif
 ifeq ($(UNAME), Darwin) # https://github.com/tonsky/AnyBar
-	@read code; ([ $$code -eq 0 ] \
+	([ $% -eq 0 ] \
 		&& echo -n "green" \
 		|| echo -n "red" \
 	) | nc -4u -w0 localhost 1738
 endif
 
-jscore: nofify_inprogress
+jscore: notify_inprogress
 	set -o pipefail && echo $(DEPENDENCIES) \
 		| $(prepend-r) \
 		| xargs $(browserify) \
 		| $(uglifyjs) --mangle \
-		> $(dist)/js/core.js; echo $$? | make nofify_result
+		> $(dist)/js/core.js; make 'notify_result($$?)'
 
 lint:
 	$(eslint) $(src)/js
 
-jsbundle: nofify_inprogress
+jsbundle: notify_inprogress
 	set -o pipefail && make lint && echo $(DEPENDENCIES) \
 		| $(prepend-x) \
 		| xargs $(browserify) $(src)/js/client.js -d \
 		| $(exorcist) $(dist)/js/client.js.map \
-		> $(dist)/js/client.js; echo $$? | make nofify_result
+		> $(dist)/js/client.js; make 'notify_result($$?)'
 
 js: jscore jsbundle
 
