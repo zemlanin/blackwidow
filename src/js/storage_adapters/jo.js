@@ -13,9 +13,10 @@ function _send(type, payload) {
 
 var _typeEq = R.propEq('type');
 
-function connectAsPlayer(playerId) {
+function connectAsPlayer(gameId, playerId) {
   _send('CONNECT_PLAYER', {
     playerId: playerId,
+    gameId: gameId,
   });
 
   return ws.incomingStream

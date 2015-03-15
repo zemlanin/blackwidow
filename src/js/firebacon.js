@@ -5,7 +5,7 @@ var sa = require('./storage_adapters/jo');
 function connectAsPlayer(gameId) {
   var localPlayerId = localStorage.getItem(gameId);
 
-  return sa.connectAsPlayer(localPlayerId);
+  return sa.connectAsPlayer(gameId, localPlayerId);
 }
 
 function pushNewPlayersInput(value) {

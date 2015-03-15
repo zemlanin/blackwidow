@@ -56,7 +56,7 @@ if (gameId) {
       _.assign.bind(null, {gameId: gameId})
     )
     .map(function (value) {
-      value.timeStamp = parseInt(Date.now() / 1000, 10);
+      value.timestamp = parseInt(Date.now() / 1000, 10);
       return value;
     })
     .onValue(firebacon.pushNewPlayersInput.bind(null));
