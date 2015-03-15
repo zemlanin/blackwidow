@@ -4,8 +4,7 @@ var _ = require('lodash');
 var R = require('ramda');
 var Bacon = require('baconjs');
 
-// TODO: move url in config file
-var wsUrl = "ws://localhost:8080/";
+var wsUrl = require('config').wsEndpoint;
 
 function _deepFreeze(o) {
   var prop, propKey;

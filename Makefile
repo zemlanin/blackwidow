@@ -14,6 +14,11 @@ dependencies = $(shell set -o pipefail && cat package.json | $(json) dependencie
 src = $(shell pwd)/src
 dist = $(shell pwd)/dist
 node_modules = $(shell pwd)/node_modules
+ifdef config
+	config_json = $(shell pwd)/config.$(config).json
+else
+	config_json = $(shell pwd)/config.json
+endif
 
 prepend-r = sed 's/\([^ ]*\)/-r \1/g' # prepending '-r' to each dependency
 prepend-x = sed 's/\([^ ]*\)/-x \1/g' # prepending '-x' to each dependency
@@ -61,7 +66,7 @@ lint:
 jsbundle: notify_inprogress
 	set -o pipefail && make lint && echo $(dependencies) \
 		| $(prepend-x) \
-		| xargs $(browserify) $(src)/js/client.js -d \
+		| xargs $(browserify) $(src)/js/client.js -r $(config_json):config -d \
 		| $(exorcist) $(dist)/js/client.js.map \
 		> $(dist)/js/client.js; echo $$? | make notify_result
 
@@ -82,6 +87,7 @@ unwatch:
 	watchman trigger-del $(shell pwd) restatic
 
 deploy:
+	make config=prod
 	bitballoon deploy $(dist)
 
 me a:
