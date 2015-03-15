@@ -27,7 +27,7 @@ if (gameId) {
 
   var playerStream = firebacon.connectAsPlayer(gameId).toProperty();
   playerStream
-    .map(R.pick(['player']))
+    .map(R.createMapEntry('player'))
     .onValue(clientPage.setProps.bind(clientPage));
 
   firebacon.connectedProperty
@@ -59,9 +59,7 @@ if (gameId) {
       value.timeStamp = parseInt(Date.now() / 1000, 10);
       return value;
     })
-    .log()
-    .flatMap(firebacon.pushNewGameInput.bind(null))
-    .onValue();
+    .onValue(firebacon.pushNewPlayersInput.bind(null));
 
 } else {
   React.render(

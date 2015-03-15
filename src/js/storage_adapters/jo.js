@@ -1,41 +1,52 @@
 // https://github.com/zemlanin/jo
 "use strict";
 
-var Bacon = require('baconjs');
+var R = require('ramda');
 var ws = require('./ws');
 
-var _send = ws.outgoingStream.push.bind(ws.outgoingStream);
+function _send(type, payload) {
+  ws.outgoingStream.push({
+    type: type,
+    payload: payload,
+  });
+}
+
+var _typeEq = R.propEq('type');
 
 function connectAsPlayer(playerId) {
-  _send({
+  _send('CONNECT_PLAYER', {
     playerId: playerId,
-    type: 'CONNECT_PLAYER',
   });
 
   return ws.incomingStream
-    .filter(function (data) { return data.type === 'PLAYER'; })
+    .filter(_typeEq('PLAYER'))
+    .map('.payload')
     .take(1);
 }
 
 function getGamePlayers(gameId) {
-  _send({
+  _send('GET_PLAYERS', {
     gameId: gameId,
-    type: 'GET_PLAYERS',
   });
 
   return ws.incomingStream
-    .filter(function (data) { return data.type === 'PLAYERS'; })
+    .filter(_typeEq('PLAYERS'))
+    .map('.payload')
     .take(1);
 }
 
 function getGameState(gameId) {
-  _send({
+  _send('GET_GAME_STATE', {
     gameId: gameId,
-    type: 'GET_GAME_STATE',
   });
 
   return ws.incomingStream
-    .filter(function (data) { return data.type === 'GAME_STATE'; });
+    .filter(_typeEq('GAME_STATE'))
+    .map('.payload');
+}
+
+function pushNewPlayersInput(value) {
+  _send('NEW_PLAYERS_INPUT', value);
 }
 
 module.exports = {
@@ -45,10 +56,5 @@ module.exports = {
   getGamePlayers: getGamePlayers,
   getGameState: getGameState,
 
-  pushNewGameState: Bacon.never,
-  sendGameState: Bacon.never,
-
-  waitNewGameInputs: Bacon.never,
-  sendGameInput: Bacon.never,
-  pushNewGameInput: Bacon.never,
+  pushNewPlayersInput: pushNewPlayersInput,
 };
