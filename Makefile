@@ -2,11 +2,12 @@ SHELL := /bin/bash
 UNAME := $(shell uname)
 
 bin = $(shell npm bin)
-gulp = $(bin)/gulp
 node_static = $(bin)/static
 json = $(bin)/json
 browserify = $(bin)/browserify
+exorcist = $(bin)/exorcist
 uglifyjs = $(bin)/uglifyjs
+eslint = $(bin)/eslint
 
 DEPENDENCIES := $(shell set -o pipefail && cat package.json | $(json) dependencies | $(json) -ka)
 
@@ -15,6 +16,7 @@ dist = $(shell pwd)/dist
 node_modules = $(shell pwd)/node_modules
 
 prepend-r = sed 's/\([^ ]*\)/-r \1/g' # prepending '-r' to each dependency
+prepend-x = sed 's/\([^ ]*\)/-x \1/g' # prepending '-x' to each dependency
 
 build: static js
 
@@ -50,10 +52,18 @@ jscore: nofify_inprogress
 	set -o pipefail && echo $(DEPENDENCIES) \
 		| $(prepend-r) \
 		| xargs $(browserify) \
-		| $(uglifyjs) --mangle > $(dist)/js/core.js; echo $$? | make nofify_result
+		| $(uglifyjs) --mangle \
+		> $(dist)/js/core.js; echo $$? | make nofify_result
+
+lint:
+	$(eslint) $(src)/js
 
 jsbundle: nofify_inprogress
-	@$(gulp) jsbundle; echo $$? | make nofify_result
+	set -o pipefail && make lint && echo $(DEPENDENCIES) \
+		| $(prepend-x) \
+		| xargs $(browserify) $(src)/js/client.js -d \
+		| $(exorcist) $(dist)/js/client.js.map \
+		> $(dist)/js/client.js; echo $$? | make nofify_result
 
 js: jscore jsbundle
 
