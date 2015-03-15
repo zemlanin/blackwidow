@@ -34,15 +34,15 @@ ifeq ($(UNAME), Darwin)  # https://github.com/tonsky/AnyBar
 	@echo "question\c" | nc -4u -w0 localhost 1738
 endif
 
-notify_result(%):
+notify_result:
 ifeq ($(UNAME), Linux)
-	([ $% -eq 0 ] \
+	read code; ([ $$code -eq 0 ] \
 		&& echo 'make (blackwidow): success' \
 		|| echo 'make (blackwidow): error' \
 	) | notify-send
 endif
 ifeq ($(UNAME), Darwin) # https://github.com/tonsky/AnyBar
-	([ $% -eq 0 ] \
+	read code; ([ $$code -eq 0 ] \
 		&& echo -n "green" \
 		|| echo -n "red" \
 	) | nc -4u -w0 localhost 1738
@@ -53,7 +53,7 @@ jscore: notify_inprogress
 		| $(prepend-r) \
 		| xargs $(browserify) \
 		| $(uglifyjs) --mangle \
-		> $(dist)/js/core.js; make 'notify_result($$?)'
+		> $(dist)/js/core.js; echo $$? | make notify_result
 
 lint:
 	$(eslint) $(src)/js
@@ -63,7 +63,7 @@ jsbundle: notify_inprogress
 		| $(prepend-x) \
 		| xargs $(browserify) $(src)/js/client.js -d \
 		| $(exorcist) $(dist)/js/client.js.map \
-		> $(dist)/js/client.js; make 'notify_result($$?)'
+		> $(dist)/js/client.js; echo $$? | make notify_result
 
 js: jscore jsbundle
 
