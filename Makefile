@@ -41,16 +41,16 @@ endif
 
 notify_result:
 ifeq ($(UNAME), Linux)
-	read code; ([ $$code -eq 0 ] \
+	@read code; ([ $$code -eq 0 ] \
 		&& echo 'make (blackwidow): success' \
 		|| echo 'make (blackwidow): error' \
-	) | notify-send
+	) | notify-send; exit $$code
 endif
 ifeq ($(UNAME), Darwin) # https://github.com/tonsky/AnyBar
-	read code; ([ $$code -eq 0 ] \
+	@read code; ([ $$code -eq 0 ] \
 		&& echo -n "green" \
 		|| echo -n "red" \
-	) | nc -4u -w0 localhost 1738
+	) | nc -4u -w0 localhost 1738; exit $$code
 endif
 
 jscore: notify_inprogress
@@ -87,7 +87,7 @@ unwatch:
 	watchman trigger-del $(shell pwd) restatic
 
 deploy:
-	make config=prod
+	$(MAKE) config=prod
 	bitballoon deploy $(dist)
 
 me a:
@@ -101,4 +101,4 @@ else
 	@echo "What? Make it yourself."
 endif
 
-.PHONY: me a sandwich
+.PHONY: me a sandwich deploy build watch unwatch js jsbundle jscore serve lint static
