@@ -6,7 +6,7 @@ aka playground for:
 - WebSockets
 - Bacon.js
 - React.js
-- ~~Grunt~~/Gulp
+- ~~Grunt/Gulp~~
 - make/watchman
 - functional-ish style (lo-dash and ramda)
 
