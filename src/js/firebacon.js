@@ -1,11 +1,17 @@
 "use strict";
 
+var R = require('ramda');
+
 var sa = require('./storage_adapters/jo');
 
 function connectAsPlayer(gameId) {
   var localPlayerId = localStorage.getItem(gameId);
 
-  return sa.connectAsPlayer(gameId, localPlayerId);
+  return sa.connectAsPlayer(gameId, localPlayerId)
+    .doAction(R.pipe(
+      R.prop('id'),
+      localStorage.setItem.bind(localStorage, gameId)
+    ));
 }
 
 function pushNewPlayersInput(value) {

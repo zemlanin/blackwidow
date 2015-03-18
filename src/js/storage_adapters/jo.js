@@ -32,8 +32,7 @@ function getGamePlayers(gameId) {
 
   return ws.incomingStream
     .filter(_typeEq('PLAYERS'))
-    .map('.payload')
-    .take(1);
+    .map('.payload');
 }
 
 function getGameState(gameId) {
