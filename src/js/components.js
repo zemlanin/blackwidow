@@ -149,8 +149,8 @@ var FullClientPage = React.createClass({
 
     return React.DOM.div(
       null,
-      React.createElement(ClosedInfo, closedInfoProps),
-      React.createElement(OpenedInfo, openedInfoProps)
+      React.createElement(OpenedInfo, openedInfoProps),
+      React.createElement(ClosedInfo, closedInfoProps)
     );
   }
 });
