@@ -31,7 +31,7 @@ clean:
 static:
 	mkdir -p $(dist)
 	cp -R $(src)/css $(dist)/css
-	cp -R $(src)/views/ $(dist)
+	cp -R $(src)/views/* $(dist)
 	cp    $(shell pwd)/_redirects $(dist)/_redirects
 
 notify_inprogress:
@@ -54,6 +54,7 @@ ifeq ($(UNAME), Darwin) # https://github.com/tonsky/AnyBar
 endif
 
 jscore: notify_inprogress
+	mkdir -p $(dist)/js
 	set -o pipefail && echo $(dependencies) \
 		| $(prepend-r) \
 		| xargs $(browserify) \
@@ -64,6 +65,7 @@ lint:
 	$(eslint) $(src)/js
 
 jsbundle: notify_inprogress
+	mkdir -p $(dist)/js
 	set -o pipefail && make lint && echo $(dependencies) \
 		| $(prepend-x) \
 		| xargs $(browserify) $(src)/js/client.js -r $(config_json):config -d \
