@@ -37,7 +37,7 @@ if (gameId) {
   var playersStream = firebacon.gamePlayersStream(gameId).toProperty();
   playersStream
     .filter(_.size)
-    .map(R.createMapEntry('players'))
+    .map(R.pick(['players']))
     .onValue(clientPage.setProps.bind(clientPage));
 
   var gameState = firebacon.gameStateStream(gameId).toProperty();

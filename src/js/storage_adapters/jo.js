@@ -12,6 +12,7 @@ function _send(type, payload) {
 }
 
 var _typeEq = R.propEq('type');
+var _gameIdEq = R.propEq('gameId');
 
 function connectAsPlayer(gameId, playerId) {
   _send('CONNECT_PLAYER', {
@@ -22,6 +23,7 @@ function connectAsPlayer(gameId, playerId) {
   return ws.incomingStream
     .filter(_typeEq('PLAYER'))
     .map('.payload')
+    .filter(_gameIdEq(gameId))
     .take(1);
 }
 
@@ -32,7 +34,8 @@ function getGamePlayers(gameId) {
 
   return ws.incomingStream
     .filter(_typeEq('PLAYERS'))
-    .map('.payload');
+    .map('.payload')
+    .filter(_gameIdEq(gameId));
 }
 
 function getGameState(gameId) {
@@ -42,7 +45,8 @@ function getGameState(gameId) {
 
   return ws.incomingStream
     .filter(_typeEq('GAME_STATE'))
-    .map('.payload');
+    .map('.payload')
+    .filter(_gameIdEq(gameId));
 }
 
 function pushNewPlayersInput(value) {
