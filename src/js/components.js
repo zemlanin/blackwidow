@@ -20,7 +20,7 @@ var PlayerBadge = React.createClass({
       }),
       React.DOM.span(
         null,
-        this.props.name
+        this.props.id
       )
     );
   }
@@ -99,7 +99,7 @@ var ClosedInfo = React.createClass({
           React.DOM.span({
               style: {color: this.props.connected ? 'green' : 'red'},
             },
-            this.props.player ? '@' + this.props.player.name : ''
+            this.props.player ? '@' + this.props.player.id : ''
           )
         )
       )
