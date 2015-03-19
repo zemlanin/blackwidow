@@ -69,8 +69,7 @@ var wsProperty = Bacon.update(
 }());
 
 var connectedProperty = wsProperty
-  .map('.readyState')
-  .map(R.eq(1));
+  .map(R.propEq('readyState', 1));
 
 var outgoingStream = new Bacon.Bus();
 wsProperty

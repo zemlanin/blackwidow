@@ -55,17 +55,22 @@ if (gameId) {
     .map(R.pick(['gameField']))
     .onValue(clientPage.setProps.bind(clientPage));
 
-  eventStream
-    .filter(R.propEq('tell', 'inputClicked'))
-    .map(R.pick(['value']))
+  Bacon.constant({gameId: gameId})
     .combine(
       playerStream
-        .map('.player')
-        .map(R.pick(['playerId'])),
-      _.assign.bind(null, {gameId: gameId})
+        .map('.id')
+        .map(R.createMapEntry('playerId')),
+      R.merge
+    )
+    .sampledBy(
+      eventStream
+        .filter(R.propEq('tell', 'inputClicked'))
+        .map(R.pick(['value'])),
+      R.merge
     )
     .map(function (value) {
       value.timestamp = parseInt(Date.now() / 1000, 10);
+      value.random = Math.random();
       return value;
     })
     .onValue(firebacon.pushNewPlayersInput.bind(null));

@@ -6,8 +6,8 @@
   "repository": "zemlanin/blackwidow",
   "readme": "TBA",
   "dependencies": {
-    "baconjs": "^0.7.42",
-    "lodash": "^3.1.0",
+    "baconjs": "^0.7.53",
+    "lodash": "^3.5.0",
     "ramda": "^0.11.0",
     "react": "^0.12.2"
   },

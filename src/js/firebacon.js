@@ -38,5 +38,4 @@ module.exports = {
   pushNewPlayersInput: pushNewPlayersInput,
   gameStateStream: gameStateStream,
   gamePlayersStream: gamePlayersStream,
-  connectedProperty: jo.connectedProperty,
 };
