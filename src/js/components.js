@@ -97,7 +97,7 @@ var ClosedInfo = React.createClass({
           '#' + this.props.gameId,
           React.DOM.br(),
           React.DOM.span({
-              style: {color: this.props.connected ? 'green' : 'red'},
+              style: {color: this.props.player && this.props.player.online ? 'green' : 'red'},
             },
             this.props.player ? '@' + this.props.player.id : ''
           )

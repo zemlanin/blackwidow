@@ -14,17 +14,20 @@ function _send(type, payload) {
 var _typeEq = R.propEq('type');
 var _gameIdEq = R.propEq('gameId');
 
-function connectAsPlayer(gameId, playerId) {
+function sendCredentials(gameId, playerId) {
   _send('CONNECT_PLAYER', {
     playerId: playerId,
     gameId: gameId,
   });
+}
+
+function connectAsPlayer(gameId, playerId) {
+  sendCredentials(gameId, playerId);
 
   return ws.incomingStream
     .filter(_typeEq('PLAYER'))
     .map('.payload')
-    .filter(_gameIdEq(gameId))
-    .take(1);
+    .filter(_gameIdEq(gameId));
 }
 
 function getGamePlayers(gameId) {
@@ -56,6 +59,7 @@ function pushNewPlayersInput(value) {
 module.exports = {
   connectedProperty: ws.connectedProperty,
 
+  sendCredentials: sendCredentials,
   connectAsPlayer: connectAsPlayer,
   getGamePlayers: getGamePlayers,
   getGameState: getGameState,

@@ -30,9 +30,18 @@ if (gameId) {
     .map(R.createMapEntry('player'))
     .onValue(clientPage.setProps.bind(clientPage));
 
-  firebacon.connectedProperty
-    .map(R.createMapEntry('connected'))
-    .onValue(clientPage.setProps.bind(clientPage));
+  playerStream
+    .slidingWindow(2, 2)
+    .filter(function (beforeAfter) {
+      var before = beforeAfter[0].online;
+      var after = beforeAfter[1].online;
+
+      return (!before && after);
+    })
+    .map('.1')
+    .map(R.props(['gameId', 'id']))
+    .doAction(R.apply(firebacon.sendCredentials))
+    .onValue();
 
   var playersStream = firebacon.gamePlayersStream(gameId).toProperty();
   playersStream
