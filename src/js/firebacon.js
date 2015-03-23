@@ -24,6 +24,10 @@ function pushNewPlayersInput(value) {
   return jo.pushNewPlayersInput(value);
 }
 
+function switchController(value) {
+  return jo.switchController(value);
+}
+
 function gameStateStream(gameId) {
   return jo.getGameState(gameId);
 }
@@ -38,4 +42,5 @@ module.exports = {
   pushNewPlayersInput: pushNewPlayersInput,
   gameStateStream: gameStateStream,
   gamePlayersStream: gamePlayersStream,
+  switchController: switchController,
 };

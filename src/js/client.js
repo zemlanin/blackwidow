@@ -56,6 +56,15 @@ if (gameId) {
     .onValue(clientPage.setProps.bind(clientPage));
 
   Bacon.constant({gameId: gameId})
+    .sampledBy(
+      eventStream
+        .filter(R.propEq('tell', 'switchController'))
+        .map(R.pick(['playerId', 'controllers'])),
+      R.merge
+    )
+    .onValue(firebacon.switchController.bind(null));
+
+  Bacon.constant({gameId: gameId})
     .combine(
       playerStream
         .map('.id')

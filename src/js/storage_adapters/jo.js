@@ -56,6 +56,10 @@ function pushNewPlayersInput(value) {
   _send('NEW_PLAYERS_INPUT', value);
 }
 
+function switchController(value) {
+  _send('CHANGE_PLAYER_CONTROLLERS', value);
+}
+
 module.exports = {
   connectedProperty: ws.connectedProperty,
 
@@ -65,4 +69,5 @@ module.exports = {
   getGameState: getGameState,
 
   pushNewPlayersInput: pushNewPlayersInput,
+  switchController: switchController,
 };

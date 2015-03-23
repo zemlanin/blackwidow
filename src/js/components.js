@@ -8,19 +8,38 @@ var inputs = require('./inputs');
 var PlayerBadge = React.createClass({
   displayName: 'PlayerBadge',
 
+  switchController: function (event) {
+    this.props.eventStream.push({
+      tell: 'switchController',
+      event: event,
+      playerId: this.props.player.id,
+      controllers: !this.props.player.controllers
+    });
+  },
+
   render: function () {
     return React.DOM.div(
       null,
       React.DOM.span({
         style: {
           padding: '5px 2px',
-          backgroundColor: this.props.online ? 'green' : 'red',
+          backgroundColor: this.props.player.online ? 'green' : 'red',
           marginRight: 5,
         },
       }),
       React.DOM.span(
         null,
-        this.props.id
+        this.props.player.id
+      ),
+      React.DOM.span({
+          onClick: this.switchController,
+          style: {
+            padding: '0 5px',
+            color: 'blue',
+            cursor: 'pointer'
+          },
+        },
+        this.props.player.controllers ? '[ ^ ]' : '[+ =]'
       )
     );
   }
@@ -47,7 +66,7 @@ var ClosedInfo = React.createClass({
         },
       },
       React.DOM.div({className: 'pure-u-1-5 l-box'}),
-      React.DOM.div({
+      this.props.player && this.props.player.controllers ? React.DOM.div({
           className: 'pure-u-2-5 l-box',
           style: {position: 'relative'},
         },
@@ -85,7 +104,7 @@ var ClosedInfo = React.createClass({
           },
           '>'
         )
-      ),
+      ) : React.DOM.div({className: 'pure-u-2-5 l-box'}),
       React.DOM.div({
           className: 'pure-u-1-5 l-box',
           style: {
@@ -115,7 +134,13 @@ var OpenedInfo = React.createClass({
   },
 
   _playerBadgeRow: function (player, i) {
-    return React.DOM.li({key: i}, React.createElement(PlayerBadge, player));
+    return React.DOM.li(
+      {key: i},
+      React.createElement(
+        PlayerBadge,
+        {player: player, eventStream: this.props.eventStream}
+      )
+    );
   },
 
   render: function () {
@@ -144,7 +169,7 @@ var FullClientPage = React.createClass({
 
     var openedInfoProps = _.pick(
       this.props,
-      ['gameId', 'gameField', 'players']
+      ['gameId', 'eventStream', 'gameField', 'players']
     );
 
     return React.DOM.div(
