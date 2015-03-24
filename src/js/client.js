@@ -26,15 +26,16 @@ if (gameId) {
   );
 
   var playerStream = firebacon.connectAsPlayer(gameId).toProperty();
-  var playersStream = firebacon.gamePlayersStream(gameId).toProperty();
+  var playersStream = firebacon.gamePlayersStream(gameId);
 
   playerStream
-    .map(R.prop('id'))
     .flatMap(function (value) {
-      return playersStream
+      return Bacon.once(value).concat(
+        playersStream
         .map(R.prop('players'))
-        .map(R.filter(R.propEq('id', value)))
-        .map('.0');
+        .map(R.filter(R.propEq('id', value.id)))
+        .map('.0')
+      );
     })
     .map(R.createMapEntry('player'))
     .onValue(clientPage.setProps.bind(clientPage));
