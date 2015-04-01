@@ -8,6 +8,7 @@ var React = require('react');
 var components = require('./components');
 var routing = require('./routing');
 var firebacon = require('./firebacon');
+var store = require('./store');
 
 var FullClientPage = React.createFactory(components.FullClientPage);
 var MagicTitle = React.createFactory(components.MagicTitle);
@@ -25,6 +26,9 @@ if (gameId) {
     document.body
   );
 
+  var clientPageStore = store.getStream('clientPage');
+  clientPageStore.pull(clientPage.setProps.bind(clientPage));
+
   var playerStream = firebacon.connectAsPlayer(gameId).toProperty();
   var playersStream = firebacon.gamePlayersStream(gameId);
 
@@ -38,7 +42,7 @@ if (gameId) {
       );
     })
     .map(R.createMapEntry('player'))
-    .onValue(clientPage.setProps.bind(clientPage));
+    .onValue(clientPageStore.push);
 
   playerStream
     .slidingWindow(2, 2)
@@ -56,13 +60,13 @@ if (gameId) {
   playersStream
     .filter(_.size)
     .map(R.pick(['players']))
-    .onValue(clientPage.setProps.bind(clientPage));
+    .onValue(clientPageStore.push);
 
   var gameState = firebacon.gameStateStream(gameId).toProperty();
 
   gameState
     .map(R.pick(['gameField']))
-    .onValue(clientPage.setProps.bind(clientPage));
+    .onValue(clientPageStore.push);
 
   Bacon.constant({gameId: gameId})
     .sampledBy(
