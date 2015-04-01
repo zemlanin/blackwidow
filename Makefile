@@ -65,7 +65,7 @@ lint:
 	$(eslint) $(src)/js
 
 jsbundle: notify_inprogress
-	mkdir -p $(dist)/js
+	@mkdir -p $(dist)/js
 	set -o pipefail && make lint && echo $(dependencies) \
 		| $(prepend-x) \
 		| xargs $(browserify) $(src)/js/client.js -r $(config_json):config -d \
