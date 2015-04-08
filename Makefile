@@ -1,5 +1,4 @@
 SHELL := /bin/bash
-UNAME := $(shell uname)
 
 bin = $(shell npm bin)
 node_static = $(bin)/static
@@ -35,23 +34,15 @@ static:
 	cp    $(shell pwd)/_redirects $(dist)/_redirects
 
 notify_inprogress:
-ifeq ($(UNAME), Darwin)  # https://github.com/tonsky/AnyBar
+	# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar
 	@echo "question\c" | nc -4u -w0 localhost 1738
-endif
 
 notify_result:
-ifeq ($(UNAME), Linux)
-	@read code; ([ $$code -eq 0 ] \
-		&& echo 'make (blackwidow): success' \
-		|| echo 'make (blackwidow): error' \
-	) | notify-send; exit $$code
-endif
-ifeq ($(UNAME), Darwin) # https://github.com/tonsky/AnyBar
+	# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar
 	@read code; ([ $$code -eq 0 ] \
 		&& echo -n "green" \
 		|| echo -n "red" \
 	) | nc -4u -w0 localhost 1738; exit $$code
-endif
 
 jscore: notify_inprogress
 	mkdir -p $(dist)/js
