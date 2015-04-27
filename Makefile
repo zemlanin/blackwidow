@@ -63,6 +63,12 @@ jsbundle: notify_inprogress
 		| $(exorcist) $(dist)/js/client.js.map \
 		> $(dist)/js/client.js; echo $$? | make notify_result
 
+	set -o pipefail && make lint && echo $(dependencies) \
+		| $(prepend-x) \
+		| xargs $(browserify) $(src)/js/cast.js -r $(config_json):config -d \
+		| $(exorcist) $(dist)/js/cast.js.map \
+		> $(dist)/js/cast.js; echo $$? | make notify_result
+
 js: jscore jsbundle
 
 serve:
