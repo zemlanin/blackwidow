@@ -5,12 +5,12 @@
 			"path": "/Users/zem/blackwidow"
 		}
 	],
-    "build_systems":
-    [
-        {
-            "name": "Make - jsbundle",
-            "shell_cmd": "make jsbundle",
-            "working_dir": "${project_path:${folder}}"
-        }
-    ]
+	"build_systems":
+	[
+		{
+			"name": "Make - jsbundle",
+			"shell_cmd": "make jsbundle",
+			"working_dir": "${project_path:${folder}}"
+		}
+	]
 }
