@@ -34,11 +34,11 @@ static:
 	cp    $(shell pwd)/_redirects $(dist)/_redirects
 
 notify_inprogress:
-	# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar
+	@# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar
 	@echo "question\c" | nc -4u -w0 localhost 1738
 
 notify_result:
-	# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar
+	@# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar
 	@read code; ([ $$code -eq 0 ] \
 		&& echo -n "green" \
 		|| echo -n "red" \

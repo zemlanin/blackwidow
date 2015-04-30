@@ -3,8 +3,6 @@
 var _ = require('lodash');
 var React = require('react');
 
-var inputs = require('./inputs');
-
 var PlayerBadge = React.createClass({
   displayName: 'PlayerBadge',
 
@@ -77,7 +75,7 @@ var ClosedInfo = React.createClass({
               top: '1em',
               left: '1em',
             },
-            onClick: this.inputClickHandler.bind(this, inputs.GAME.LEFT),
+            onClick: this.inputClickHandler.bind(this, 2),
           },
           '<'
         ),
@@ -89,7 +87,7 @@ var ClosedInfo = React.createClass({
               left: '50%',
               transform: 'translateX(-50%)'
             },
-            onClick: this.inputClickHandler.bind(this, inputs.GAME.UP),
+            onClick: this.inputClickHandler.bind(this, 0),
           },
           '^'
         ),
@@ -100,7 +98,7 @@ var ClosedInfo = React.createClass({
               top: '1em',
               right: '1em',
             },
-            onClick: this.inputClickHandler.bind(this, inputs.GAME.RIGHT),
+            onClick: this.inputClickHandler.bind(this, 3),
           },
           '>'
         )
@@ -190,61 +188,7 @@ var MagicTitle = React.createClass({
   }
 });
 
-var FullServerPage = React.createClass({
-  displayName: 'FullServerPage',
-
-  getInitialState: function () {
-    return {
-      ticker: false,
-    };
-  },
-
-  toggleTicker: function toggleTicker() {
-    this.setState({ticker: !this.state.ticker});
-  },
-
-  render: function () {
-    return React.DOM.div(
-      null,
-      React.DOM.a({
-          className: 'l-box',
-          style: {
-            color: 'gray',
-          },
-          target: '_blank',
-          href: '/#' + this.props.gameId,
-        },
-        this.props.gameId
-      ),
-      React.DOM.input({
-          type: 'checkbox',
-          className: 'l-box',
-          checked: this.state.ticker,
-          onChange: this.toggleTicker,
-        }
-      ),
-      this.state.ticker ? React.DOM.span({
-          id: 'tick',
-          className: 'l-box',
-          style: {
-            color: 'orange',
-            cursor: 'pointer',
-          },
-        },
-        'tick'
-      ) : null,
-      React.DOM.ul(
-        null,
-        _.map(this.props.inputs, function (input, i) {
-          return React.DOM.li({key: i}, input);
-        })
-      )
-    );
-  }
-});
-
 module.exports = {
   FullClientPage: FullClientPage,
-  FullServerPage: FullServerPage,
   MagicTitle: MagicTitle,
 };

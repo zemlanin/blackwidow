@@ -1,3 +1,4 @@
 {
-  "wsEndpoint": "ws://localhost:5000/"
+  "wsEndpoint": "ws://localhost:5000/",
+  "castEnabled": true
 }
