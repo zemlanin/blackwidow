@@ -1,101 +1,66 @@
-/*globals cast*/
 "use strict";
 
+var R = require('ramda');
 var _ = require('lodash');
 var config = require('config');
+var rxcast = require('./rxcast');
 
 function setHudMessage(elementId, message) {
   document.getElementById(elementId).innerHTML = '' + JSON.stringify(message);
 }
 
-if (config.castEnabled) {
+if (config.cast.enabled) {
   window.castReceiverManager = null;
   window.messageBus = null;
-  window.connectedCastSenders = []; // {senderId:'', channel:obj}
 
-  cast.receiver.logger.setLevelValue(cast.receiver.LoggerLevel.DEBUG);
+  cast.receiver.logger.setLevelValue(cast.receiver.LoggerLevel[config.cast.logLevel]);
 
   window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
 
-  /**
-   * Called to process 'ready' event. Only called after calling castReceiverManager.start(config) and the
-   * system becomes ready to start receiving messages.
-   *
-   * @param {cast.receiver.CastReceiverManager.Event} event - can be null
-   *
-   * There is no default handler
-   */
-  window.castReceiverManager.onReady = function(event) {
-    console.log(event);
-  };
+  var receiverManagerStream = rxcast.streamForReceiverManager(window.castReceiverManager);
 
-  /**
-   * If provided, it processes the 'senderconnected' event.
-   * Called to process the 'senderconnected' event.
-   * @param {cast.receiver.CastReceiverManager.Event} event - can be null
-   *
-   * There is no default handler
-   */
-  window.castReceiverManager.onSenderConnected = function(event) {
-    // TODO - add sender and grab CastChannel from CastMessageBus.getCastChannel(senderId)
-    var senders = window.castReceiverManager.getSenders();
-    console.log(event, senders);
-  };
+  receiverManagerStream
+    .filter(R.propEq('type', 'ready'))
+    .subscribe(console.log.bind(console, 'ready'));
 
-  /**
-   * If provided, it processes the 'senderdisconnected' event.
-   * Called to process the 'senderdisconnected' event.
-   * @param {cast.receiver.CastReceiverManager.Event} event - can be null
-   *
-   * There is no default handler
-   */
-  window.castReceiverManager.onSenderDisconnected = function(event) {
-    var senders = window.castReceiverManager.getSenders();
+  receiverManagerStream
+    .filter(R.propEq('type', 'senderconnected'))
+    .subscribe(function(event) {
+      // TODO - add sender and grab CastChannel from CastMessageBus.getCastChannel(senderId)
+      var senders = window.castReceiverManager.getSenders();
+      console.log('senderconnected', event, senders);
+    });
 
-    //If last sender explicity disconnects, turn off
-    if (senders.length === 0 && event.reason === cast.receiver.system.DisconnectReason.REQUESTED_BY_SENDER) {
-      window.close();
-    }
-  };
+  receiverManagerStream
+    .filter(R.propEq('type', 'senderdisconnected'))
+    .subscribe(function(event) {
+      var senders = window.castReceiverManager.getSenders();
 
-  /**
-   * Called to process the 'visibilitychanged' event.
-   *
-   * Fired when the visibility of the application has changed (for example
-   * after a HDMI Input change or when the TV is turned off/on and the cast
-   * device is externally powered). Note that this API has the same effect as
-   * the webkitvisibilitychange event raised by your document, we provided it
-   * as CastReceiverManager API for convenience and to avoid a dependency on a
-   * webkit-prefixed event.
-   *
-   * @param {cast.receiver.CastReceiverManager.Event} event - can be null
-   *
-   * There is no default handler for this event type.
-   */
-  window.castReceiverManager.onVisibilityChanged = function(event) {
-    /** check if visible and pause media if not - add a timer to tear down after a period of time
-       if visibilty does not change back **/
-    if (event.isVisible) {
-      window.clearTimeout(window.timeout);
-      window.timeout = null;
-    } else {
-      window.timeout = window.setTimeout(function () { window.close(); }, 600000); // 10 Minute timeout
-    }
-  };
+      if (senders.length === 0 && event.reason === cast.receiver.system.DisconnectReason.REQUESTED_BY_SENDER) {
+        window.close();
+      }
+    });
 
-  /**
-   * Use the messageBus to listen for incoming messages on a virtual channel using a namespace string.
-   * Also use messageBus to send messages back to a sender or broadcast a message to all senders.
-   * You can check the cast.receiver.CastMessageBus.MessageType that a message bus processes though a call
-   * to getMessageType. As well, you get the namespace of a message bus by calling getNamespace()
-   */
+  receiverManagerStream
+    .filter(R.propEq('type', 'visibilitychanged'))
+    .subscribe(function(event) {
+      if (event.isVisible) {
+        clearTimeout(window.timeout);
+        window.timeoutCC = null;
+      } else {
+        window.timeoutCC = setTimeout(function () { window.close(); }, 600000); // 10 Minute timeout
+      }
+    });
+
   window.messageBus = window.castReceiverManager.getCastMessageBus('urn:x-cast:blackwidow');
+  var messageBusStream = rxcast.streamForMessageBus(window.messageBus);
 
-  window.messageBus.onMessage = function(event) {
-    setHudMessage('redText', event);
+  messageBusStream
+    .subscribe(function(event) {
+      setHudMessage('redText', event.data);
 
-    document.getElementById('redText').style.color = _.sample(['white', 'orange', 'yellow', 'green', 'blue']);
-  };
+      document.getElementById('redText').style.color = _.sample(['white', 'orange', 'yellow', 'green', 'blue']);
+    });
 
   var appConfig = new cast.receiver.CastReceiverManager.Config();
   appConfig.statusText = 'Ready to play';

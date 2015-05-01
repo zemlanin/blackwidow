@@ -73,7 +73,11 @@ js: jscore jsbundle
 
 serve:
 	@echo serving at http://127.0.0.1:8000
-	@$(node_static) $(dist) -p 8000 -z > /dev/null
+	@$(node_static) $(dist) -p 8000 -z -c 0 > /dev/null
+
+serve_lan:
+	@echo serving at http://helicarrier.local:8000
+	@$(node_static) $(dist) -p 8000 -a helicarrier.local -z -c 0 > /dev/null
 
 watch:
 	# OS X 10.10: https://github.com/facebook/watchman/issues/68
