@@ -1,39 +1,39 @@
-"use strict";
+"use strict"
 
-var R = require('ramda');
+var R = require('ramda')
 
-var jo = require('./storage_adapters/jo');
+var jo = require('./storage_adapters/jo')
 
 function connectAsPlayer(gameId) {
-  var localPlayerId = localStorage.getItem(gameId);
+  var localPlayerId = localStorage.getItem(gameId)
 
   return jo.connectAsPlayer(gameId, localPlayerId)
     .combine(
       jo.connectedProperty,
       function (player, connected) {
-        return R.merge(player, {online: connected});
+        return R.merge(player, {online: connected})
       }
     )
     .doAction(R.pipe(
       R.prop('id'),
       localStorage.setItem.bind(localStorage, gameId)
-    ));
+    ))
 }
 
 function pushNewPlayersInput(value) {
-  return jo.pushNewPlayersInput(value);
+  return jo.pushNewPlayersInput(value)
 }
 
 function switchController(value) {
-  return jo.switchController(value);
+  return jo.switchController(value)
 }
 
 function gameStateStream(gameId) {
-  return jo.getGameState(gameId);
+  return jo.getGameState(gameId)
 }
 
 function gamePlayersStream(gameId) {
-  return jo.getGamePlayers(gameId);
+  return jo.getGamePlayers(gameId)
 }
 
 module.exports = {
@@ -43,4 +43,4 @@ module.exports = {
   gameStateStream: gameStateStream,
   gamePlayersStream: gamePlayersStream,
   switchController: switchController,
-};
+}

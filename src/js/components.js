@@ -1,7 +1,7 @@
-"use strict";
+"use strict"
 
-var _ = require('lodash');
-var React = require('react');
+var _ = require('lodash')
+var React = require('react')
 
 var PlayerBadge = React.createClass({
   displayName: 'PlayerBadge',
@@ -12,7 +12,7 @@ var PlayerBadge = React.createClass({
       event: event,
       playerId: this.props.player.id,
       controllers: !this.props.player.controllers
-    });
+    })
   },
 
   render: function () {
@@ -39,9 +39,9 @@ var PlayerBadge = React.createClass({
         },
         this.props.player.controllers ? '[ ^ ]' : '[+ =]'
       )
-    );
+    )
   }
-});
+})
 
 var ClosedInfo = React.createClass({
   displayName: 'ClosedInfo',
@@ -51,7 +51,7 @@ var ClosedInfo = React.createClass({
       tell: 'inputClicked',
       event: event,
       value: value,
-    });
+    })
   },
 
   render: function () {
@@ -120,15 +120,15 @@ var ClosedInfo = React.createClass({
           )
         )
       )
-    );
+    )
   }
-});
+})
 
 var OpenedInfo = React.createClass({
   displayName: 'OpenedInfo',
 
   _gameFieldRow: function(value, dim) {
-    return React.DOM.span({key: dim}, dim, ': ', value, React.DOM.br());
+    return React.DOM.span({key: dim}, dim, ': ', value, React.DOM.br())
   },
 
   _playerBadgeRow: function (player, i) {
@@ -138,7 +138,7 @@ var OpenedInfo = React.createClass({
         PlayerBadge,
         {player: player, eventStream: this.props.eventStream}
       )
-    );
+    )
   },
 
   render: function () {
@@ -152,9 +152,9 @@ var OpenedInfo = React.createClass({
         },
         _(this.props.players).map(this._playerBadgeRow).value()
       )
-    );
+    )
   }
-});
+})
 
 var FullClientPage = React.createClass({
   displayName: 'FullClientPage',
@@ -163,20 +163,20 @@ var FullClientPage = React.createClass({
     var closedInfoProps = _.pick(
       this.props,
       ['gameId', 'eventStream', 'player', 'connected']
-    );
+    )
 
     var openedInfoProps = _.pick(
       this.props,
       ['gameId', 'eventStream', 'gameField', 'players']
-    );
+    )
 
     return React.DOM.div(
       null,
       React.createElement(OpenedInfo, openedInfoProps),
       React.createElement(ClosedInfo, closedInfoProps)
-    );
+    )
   }
-});
+})
 
 var MagicTitle = React.createClass({
   displayName: 'MagicTitle',
@@ -184,11 +184,11 @@ var MagicTitle = React.createClass({
     return React.DOM.h1(
       null,
       this.props.title
-    );
+    )
   }
-});
+})
 
 module.exports = {
   FullClientPage: FullClientPage,
   MagicTitle: MagicTitle,
-};
+}

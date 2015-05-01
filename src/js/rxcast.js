@@ -1,5 +1,3 @@
-/*eslint semi: [2, "never"] */
-
 'use strict'
 
 var Rx = require('rx')
