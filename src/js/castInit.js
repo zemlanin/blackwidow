@@ -12,7 +12,9 @@ function streamForReceiverManager(castReceiverManager) {
   )
 }
 
-if (config.cast.enabled) {
+var launchedOnCrKey = !!window.navigator.userAgent.match('CrKey')
+
+if (launchedOnCrKey) {
   cast.receiver.logger.setLevelValue(cast.receiver.LoggerLevel[config.cast.logLevel])
 
   window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance()

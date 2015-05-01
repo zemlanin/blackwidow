@@ -1,7 +1,6 @@
 {
   "wsEndpoint": "ws://localhost:5000/",
   "cast": {
-    "enabled": true,
     "logLevel": "DEBUG" 
   }
 }
