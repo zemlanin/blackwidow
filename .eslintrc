@@ -35,6 +35,7 @@
     "no-console": 1,
     "no-sparse-arrays": 2,
     "no-mixed-spaces-and-tabs": 2,
-    "semi": [2, "never"]
+    "semi": [2, "never"],
+    "no-unused-vars": [2, {"vars": "all", "args": "none"}]
   }
 }

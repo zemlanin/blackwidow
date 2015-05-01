@@ -1,7 +1,7 @@
 'use strict'
 
-var Bacon = require('baconjs')
-var R = require('ramda')
+import Bacon from 'baconjs'
+import R from 'ramda'
 
 function StoreStream(name) {
   var pushStream = new Bacon.Bus()
@@ -13,14 +13,10 @@ function StoreStream(name) {
   this.push = pushStream.push.bind(pushStream)
 }
 
-var streamsMap = {}
+window.__streamsMap = window.__streamsMap || {}
 
-function getStream(name) {
-  streamsMap[name] = streamsMap[name] || new StoreStream(name)
+export function getStream(name) {
+  window.__streamsMap[name] = window.__streamsMap[name] || new StoreStream(name)
 
-  return streamsMap[name]
-}
-
-module.exports = {
-  getStream: getStream,
+  return window.__streamsMap[name]
 }
