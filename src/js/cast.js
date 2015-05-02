@@ -1,6 +1,8 @@
 'use strict'
 
 import R from 'ramda'
+import React from 'react'
+import Dash from './components/dash'
 var {receiverManagerStream, messageBusStream} = window
 
 receiverManagerStream
@@ -37,4 +39,19 @@ messageBusStream
   // .doAction(msg => console.log(msg.data))
   .filter(R.propEq('data', 'ping'))
   .map(Math.random)
-  .subscribe(rnd => document.getElementById('redText').innerHTML = '' + rnd)
+  .subscribe(rnd => document.getElementById('redText').childNodes[0].innerHTML = '' + rnd)
+
+React.render(
+  React.createFactory(Dash)({
+    widgets: [
+      {position: [0, 0], size: [1, 1], type: 'text', data: {background: 'red'}},
+      {position: [1, 0], size: [2, 1], type: 'text', data: {background: 'green'}},
+      {position: [0, 1], size: [1, 1], type: 'text', data: {background: 'grey'}},
+      {position: [1, 1], size: [1, 2], type: 'text', data: {background: 'blue', text: 'sup'}},
+      {position: [2, 1], size: [1, 1], type: 'text', data: {background: 'orange'}},
+      {position: [0, 2], size: [1, 1], type: 'text', data: {background: 'magenta'}},
+      {position: [2, 2], size: [1, 1], type: 'text', data: {background: 'black', id: 'redText'}},
+    ],
+  }),
+  document.getElementById('dash')
+)

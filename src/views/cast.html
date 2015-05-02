@@ -17,20 +17,12 @@
     }
     #redText {
       color: red;
+    }
+    #dash {
+      width: 100%;
+      height: 85vh;
+      position: relative;
       text-align: center;
-    }
-    .pure-g > div {
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      box-sizing: border-box;
-    }
-    table#dash {width: 100%; height: 85vh; table-layout:fixed;}
-    table#dash td {
-      min-width: 33%;
-      overflow: hidden;
-      white-space:nowrap;
-      height: 33%;
-      padding: 0.5em;
     }
   </style>
   <script type="text/javascript" src="/js/core.js"></script>
@@ -39,48 +31,7 @@
 </head>
 <body>
   <div style="position: absolute; top: 5%; left: 5%; width: 90%;">
-    <table id="dash">
-      <tbody>
-        <tr>
-          <td colspan="2" style="background-color: red">
-            hello
-            hello
-            hello
-            hello
-            <br/>
-            hello
-            hello
-            hello
-            hello
-            hello
-            hello
-          </td>
-          <td style="background-color: magenta"></td>
-        </tr>
-        <tr>
-          <td style="background-color: grey"></td>
-          <td rowspan="2" style="background-color: green">
-            hello
-            hello
-            hello
-            <br/>
-            hello
-            hello
-            hello
-            hello
-            <br/>
-            hello
-            hello
-            hello
-          </td>
-          <td style="background-color: orange"></td>
-        </tr>
-        <tr>
-          <td style="background-color: blue"></td>
-          <td id="redText" style="background-color: black">hello</td>
-        </tr>
-      </tbody>
-    </table>
+    <div id="dash"></div>
     <div id="debug" style="height: 10vh;"></div>
   </div>
   <script type="text/javascript" src="/js/cast.js"></script>
