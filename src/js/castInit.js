@@ -1,5 +1,6 @@
 "use strict"
 
+import {assoc} from 'ramda'
 import config from 'config'
 import {Observable} from 'rx'
 
@@ -21,6 +22,7 @@ if (launchedOnCrKey) {
   window.receiverManagerStream = streamForReceiverManager(window.castReceiverManager)
   window.messageBus = window.castReceiverManager.getCastMessageBus('urn:x-cast:blackwidow')
   window.messageBusStream = Observable.fromEvent(window.messageBus, 'message')
+    .map(msg => assoc('data', JSON.parse(msg.data), msg))
 
   var appConfig = new cast.receiver.CastReceiverManager.Config()
   appConfig.statusText = 'Ready to play'
@@ -30,7 +32,8 @@ if (launchedOnCrKey) {
   var pingButton = document.createElement('button')
   pingButton.textContent = 'ping'
 
-  window.messageBusStream = Observable.fromEvent(pingButton, 'click').map({"data": "ping"})
+  window.messageBusStream = Observable.fromEvent(pingButton, 'click')
+    .map({"data": "ping"})
   window.receiverManagerStream = Observable.create(obs => {
     obs.onNext({"type": "ready"})
     obs.onCompleted()

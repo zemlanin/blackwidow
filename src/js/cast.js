@@ -17,13 +17,9 @@ receiverManagerStream
 
 receiverManagerStream
   .filter(R.propEq('type', 'senderdisconnected'))
-  .subscribe(function(event) {
-    var senders = window.castReceiverManager.getSenders()
-
-    if (senders.length === 0 && event.reason === cast.receiver.system.DisconnectReason.REQUESTED_BY_SENDER) {
-      window.close()
-    }
-  })
+  .filter(R.propEq('reason', cast.receiver.system.DisconnectReason.REQUESTED_BY_SENDER))
+  .filter(() => window.castReceiverManager.getSenders().length === 0)
+  .subscribe(() => window.close())
 
 receiverManagerStream
   .filter(R.propEq('type', 'visibilitychanged'))
@@ -38,6 +34,7 @@ receiverManagerStream
   })
 
 messageBusStream
-  .subscribe(function(event) {
-    document.getElementById('redText').innerHTML = '' + Math.random()
-  })
+  // .doAction(msg => console.log(msg.data))
+  .filter(R.propEq('data', 'ping'))
+  .map(Math.random)
+  .subscribe(rnd => document.getElementById('redText').innerHTML = '' + rnd)
