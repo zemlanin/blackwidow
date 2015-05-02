@@ -44,7 +44,7 @@ if (launchedOnCrKey) {
       document.getElementById('debug').appendChild(pingButton)
       document.getElementById('debug').style.display = 'block'
 
-      document.getElementById('dash').style.height = '75vh'
+      document.getElementById('dash').style.height = '78vh'
     })
   }
 }
