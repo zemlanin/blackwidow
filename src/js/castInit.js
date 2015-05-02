@@ -40,7 +40,9 @@ if (launchedOnCrKey) {
   })
 
   document.addEventListener("DOMContentLoaded", () => {
-    var widgets = document.getElementsByClassName('widget')
-    widgets[widgets.length - 1].appendChild(pingButton)
+    document.getElementById('debug').appendChild(pingButton)
+    document.getElementById('debug').style.display = 'block'
+
+    document.getElementById('dash').style.height = '75vh'
   })
 }
