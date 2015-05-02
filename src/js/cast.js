@@ -43,6 +43,8 @@ messageBusStream
 
 React.render(
   React.createFactory(Dash)({
+    sizeX: 4,
+    sizeY: 4,
     widgets: [
       {position: [0, 0], size: [1, 1], type: 'text', data: {background: 'red'}},
       {position: [1, 0], size: [2, 1], type: 'text', data: {background: 'green'}},
@@ -51,6 +53,8 @@ React.render(
       {position: [2, 1], size: [1, 1], type: 'text', data: {background: 'orange'}},
       {position: [0, 2], size: [1, 1], type: 'text', data: {background: 'magenta'}},
       {position: [2, 2], size: [1, 1], type: 'text', data: {background: 'black', id: 'redText'}},
+      {position: [3, 0], size: [1, 4], type: 'text', data: {background: 'maroon'}},
+      {position: [0, 3], size: [3, 1], type: 'text', data: {background: 'purple'}},
     ],
   }),
   document.getElementById('dash')
