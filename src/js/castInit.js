@@ -32,8 +32,15 @@ if (launchedOnCrKey) {
   var pingButton = document.createElement('button')
   pingButton.textContent = 'ping'
 
-  window.messageBusStream = Observable.fromEvent(pingButton, 'click')
-    .map({"data": "ping"})
+  var updateDashButton = document.createElement('button')
+  updateDashButton.textContent = 'update'
+
+  window.messageBusStream = Observable.merge(
+    Observable.fromEvent(pingButton, 'click')
+      .map({"data": "ping"}),
+    Observable.fromEvent(updateDashButton, 'click')
+      .map((ev, index) => ({"data": {"type": "update", "id": (index+1) % 3}}))
+  )
   window.receiverManagerStream = Observable.create(obs => {
     obs.onNext({"type": "ready"})
     obs.onCompleted()
@@ -42,6 +49,7 @@ if (launchedOnCrKey) {
   if (config.debug) {
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById('debug').appendChild(pingButton)
+      document.getElementById('debug').appendChild(updateDashButton)
       document.getElementById('debug').style.display = 'block'
 
       document.getElementById('dash').style.height = '78vh'
