@@ -3,7 +3,7 @@
 import React, {DOM} from 'react'
 
 export default React.createClass({
-  displayName: 'Dash',
+  displayName: 'widgets/Text',
 
   render: function() {
     var {data} = this.props

@@ -3,7 +3,9 @@
 import React, {DOM} from 'react'
 import _ from 'lodash'
 
+import {debug} from 'config'
 import Text from './widgets/text'
+import wImage from './widgets/image'
 
 export default React.createClass({
   displayName: 'Dash',
@@ -46,6 +48,9 @@ export default React.createClass({
           case 'text':
             component = Text
             break
+          case 'image':
+            component = wImage
+            break
         }
 
         return DOM.div({
@@ -54,16 +59,16 @@ export default React.createClass({
               position: 'absolute',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
-              display: 'table-cell',
-              verticalAlign: 'middle',
 
               left: cellSizeX * widget.container.position[0] + '%',
               top: cellSizeY * widget.container.position[1] + '%',
               width: cellSizeX * widget.container.size[0] + '%',
               height: cellSizeY * widget.container.size[1] + '%',
-              backgroundColor: widget.container.background,
+              outline: debug ? '1px solid ' + widget.container.background : '',
             }
-          }, React.createElement(component, {data: widget.data}))
+          },
+          React.createElement(component, {data: widget.data})
+        )
       })
     )
   }

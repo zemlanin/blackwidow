@@ -18,18 +18,18 @@ export default {
         },
       },
       {
-        type: 'text',
+        type: 'image',
         container: {
           position: [0, 1], size: [1, 1], background: 'grey',
         },
       },
       {
-        type: 'text',
+        type: 'image',
         container: {
           position: [1, 1], size: [1, 2], background: 'blue',
         },
         data: {
-          text: 'sup',
+          src: 'https://dl.dropboxusercontent.com/s/xjg4w2am6et4881/bam.adam_scott.gif?dl=0',
         },
       },
       {
@@ -157,6 +157,66 @@ export default {
         container: {
           position: [3, 1], size: [1, 3], background: 'magenta',
         },
+      },
+    ]
+  },
+  3: {
+    sizeX: 3,
+    sizeY: 3,
+    widgets: [
+      {
+        type: 'image',
+        container: {
+          position: [0, 0], size: [2, 2],
+        },
+        data: {
+          src: 'https://dl.dropboxusercontent.com/s/xjg4w2am6et4881/bam.adam_scott.gif?dl=0',
+        }
+      },
+      {
+        type: 'image',
+        container: {
+          position: [0, 2], size: [1, 1],
+        },
+        data: {
+          src: 'https://dl.dropboxusercontent.com/s/xjg4w2am6et4881/bam.adam_scott.gif?dl=0',
+        }
+      },
+      {
+        type: 'image',
+        container: {
+          position: [1, 2], size: [1, 1],
+        },
+        data: {
+          src: 'https://dl.dropboxusercontent.com/s/xjg4w2am6et4881/bam.adam_scott.gif?dl=0',
+        }
+      },
+      {
+        type: 'image',
+        container: {
+          position: [2, 0], size: [1, 1],
+        },
+        data: {
+          src: 'https://dl.dropboxusercontent.com/s/xjg4w2am6et4881/bam.adam_scott.gif?dl=0',
+        }
+      },
+      {
+        type: 'image',
+        container: {
+          position: [2, 1], size: [1, 1],
+        },
+        data: {
+          src: 'https://dl.dropboxusercontent.com/s/xjg4w2am6et4881/bam.adam_scott.gif?dl=0',
+        }
+      },
+      {
+        type: 'image',
+        container: {
+          position: [2, 2], size: [1, 1],
+        },
+        data: {
+          src: 'https://dl.dropboxusercontent.com/s/xjg4w2am6et4881/bam.adam_scott.gif?dl=0',
+        }
       },
     ]
   },
