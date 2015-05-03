@@ -1,8 +1,9 @@
 "use strict"
 
-import {assoc} from 'ramda'
+import {assoc, keys} from 'ramda'
 import config from 'config'
 import {Observable} from 'rx'
+import mockDashes from './storage_adapters/mockDashes'
 
 function streamForReceiverManager(castReceiverManager) {
   return Observable.merge(
@@ -39,7 +40,7 @@ if (launchedOnCrKey) {
     Observable.fromEvent(pingButton, 'click')
       .map({"data": "ping"}),
     Observable.fromEvent(updateDashButton, 'click')
-      .map((ev, index) => ({"data": {"type": "update", "id": (index+1) % 3}}))
+      .map((ev, index) => ({"data": {"type": "update", "id": (index+1) % keys(mockDashes).length}}))
   )
   window.receiverManagerStream = Observable.create(obs => {
     obs.onNext({"type": "ready"})
