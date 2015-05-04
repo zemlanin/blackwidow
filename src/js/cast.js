@@ -1,17 +1,21 @@
 'use strict'
 
-import R from 'ramda'
 import React from 'react'
+import {propEq} from 'ramda'
+
+import {getStream} from './store'
 import Dash from './components/dash'
 import {getDash, getDashUpdates} from './storage_adapters/jo'
+
+import {redTextUuid} from './storage_adapters/mockDashes'
 var {receiverManagerStream, messageBusStream} = window
 
 receiverManagerStream
-  .filter(R.propEq('type', 'ready'))
+  .filter(propEq('type', 'ready'))
   .subscribe(console.log.bind(console, 'ready'))
 
 receiverManagerStream
-  .filter(R.propEq('type', 'senderconnected'))
+  .filter(propEq('type', 'senderconnected'))
   .subscribe(function(event) {
     // TODO - add sender and grab CastChannel from CastMessageBus.getCastChannel(senderId)
     var senders = window.castReceiverManager.getSenders()
@@ -19,36 +23,45 @@ receiverManagerStream
   })
 
 receiverManagerStream
-  .filter(R.propEq('type', 'senderdisconnected'))
-  .filter(R.propEq('reason', cast.receiver.system.DisconnectReason.REQUESTED_BY_SENDER))
+  .filter(propEq('type', 'senderdisconnected'))
+  .filter(propEq('reason', cast.receiver.system.DisconnectReason.REQUESTED_BY_SENDER))
   .filter(() => window.castReceiverManager.getSenders().length === 0)
   .subscribe(() => window.close())
 
 receiverManagerStream
-  .filter(R.propEq('type', 'visibilitychanged'))
+  .filter(propEq('type', 'visibilitychanged'))
   .subscribe(function(event) {
     // TODO: more frp-ish
     if (event.isVisible) {
-      clearTimeout(window.timeout)
+      clearTimeout(window.timeoutCC)
       window.timeoutCC = null
     } else {
       window.timeoutCC = setTimeout(function () { window.close() }, 600000) // 10 Minute timeout
     }
   })
 
+var dashStore = getStream('dashStore')
+
 messageBusStream
-  // .doAction(msg => console.log(msg.data))
-  .filter(R.propEq('data', 'ping'))
+  .filter(propEq('data', 'ping'))
   .map(Math.random)
-  .subscribe(rnd => document.getElementById('redText').innerHTML = '' + rnd)
+  .subscribe(rnd => dashStore.push(['widgets', redTextUuid, 'data', 'text'], '' + rnd))
 
 getDash()
+  .merge(getDashUpdates())
+  .subscribe(dashStore.push)
+
+// dashStore.pull.subscribe(console.log.bind(console, 'dS'))
+
+var componentStream = dashStore.pull
   .map(dashData => React.render(
     React.createFactory(Dash)(dashData),
     document.getElementById('dash')
   ))
+
+dashStore.pull
   .combineLatest(
-    getDashUpdates(),
-    (component, dashData) => component.setProps(dashData)
+    componentStream,
+    (dashData, component) => component.setProps(dashData)
   )
   .subscribe()

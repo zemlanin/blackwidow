@@ -1,16 +1,31 @@
 'use strict'
 
-import Bacon from 'baconjs'
 import R from 'ramda'
+import _ from 'lodash'
+import {Subject, BehaviorSubject} from 'rx'
 
 function StoreStream(name) {
-  var pushStream = new Bacon.Bus()
+  var pushStream = new Subject()
+  var dataStream = new BehaviorSubject()
 
-  var store = pushStream.scan({}, R.merge)
+  var dataSubscription = pushStream
+    .filter(v => v && v.length === 2)
+    .scan({}, (acc, [path, value]) => R.assocPath(path, value, acc))
+    .subscribe(dataStream)
 
   this.name = name
-  this.pull = store.onValue.bind(store)
-  this.push = pushStream.push.bind(pushStream)
+  this.pull = dataStream
+  this.push = (path, value) => {
+    if (value === undefined) {
+      _.forEach(
+        path,
+        (v, key) => pushStream.onNext([[key], v])
+      )
+    } else {
+      pushStream.onNext([path, value])
+    }
+  }
+  this.dispose = dataSubscription.dispose.bind(dataSubscription)
 }
 
 window.__streamsMap = window.__streamsMap || {}

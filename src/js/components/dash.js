@@ -41,8 +41,12 @@ export default React.createClass({
 
     return DOM.div(
       null,
-      _.map(this.props.widgets, (widget, index) => {
+      _.map(this.props.widgets, (widget, widgetId) => {
         var component
+
+        if (widget.container === void 0) {
+          return ''
+        }
 
         switch (widget.type) {
           case 'text':
@@ -54,7 +58,7 @@ export default React.createClass({
         }
 
         return DOM.div({
-            key: index,
+            key: widgetId,
             style: {
               position: 'absolute',
               overflow: 'hidden',

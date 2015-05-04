@@ -2,8 +2,10 @@
 
 import {assoc, keys} from 'ramda'
 import config from 'config'
-import {Observable} from 'rx'
-import mockDashes from './storage_adapters/mockDashes'
+import {Observable, config as RxConfig} from 'rx'
+import {mockDashes} from './storage_adapters/mockDashes'
+
+RxConfig.longStackSupport = true
 
 function streamForReceiverManager(castReceiverManager) {
   return Observable.merge(

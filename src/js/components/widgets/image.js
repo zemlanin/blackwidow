@@ -15,9 +15,9 @@ export default React.createClass({
       style: {
         width: '100%',
         height: '100%',
+        backgroundPosition: '50%',
         backgroundSize: data.src ? 'cover' : '10%',
         backgroundImage: data.src ? `url(${data.src})` : noImage,
-        backgroundPosition: '50%',
       }
     })
   }
