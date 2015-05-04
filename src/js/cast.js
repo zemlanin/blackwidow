@@ -1,7 +1,9 @@
 'use strict'
 
+import R from 'ramda'
+import _ from 'lodash'
+import {DOM as RxDOM} from 'rx-dom'
 import React from 'react'
-import {propEq} from 'ramda'
 
 import {getStream} from './store'
 import Dash from './components/dash'
@@ -11,11 +13,11 @@ import {redTextUuid} from './storage_adapters/mockDashes'
 var {receiverManagerStream, messageBusStream} = window
 
 receiverManagerStream
-  .filter(propEq('type', 'ready'))
+  .filter(R.propEq('type', 'ready'))
   .subscribe(console.log.bind(console, 'ready'))
 
 receiverManagerStream
-  .filter(propEq('type', 'senderconnected'))
+  .filter(R.propEq('type', 'senderconnected'))
   .subscribe(function(event) {
     // TODO - add sender and grab CastChannel from CastMessageBus.getCastChannel(senderId)
     var senders = window.castReceiverManager.getSenders()
@@ -23,13 +25,13 @@ receiverManagerStream
   })
 
 receiverManagerStream
-  .filter(propEq('type', 'senderdisconnected'))
-  .filter(propEq('reason', cast.receiver.system.DisconnectReason.REQUESTED_BY_SENDER))
+  .filter(R.propEq('type', 'senderdisconnected'))
+  .filter(R.propEq('reason', cast.receiver.system.DisconnectReason.REQUESTED_BY_SENDER))
   .filter(() => window.castReceiverManager.getSenders().length === 0)
   .subscribe(() => window.close())
 
 receiverManagerStream
-  .filter(propEq('type', 'visibilitychanged'))
+  .filter(R.propEq('type', 'visibilitychanged'))
   .subscribe(function(event) {
     // TODO: more frp-ish
     if (event.isVisible) {
@@ -43,7 +45,7 @@ receiverManagerStream
 var dashStore = getStream('dashStore')
 
 messageBusStream
-  .filter(propEq('data', 'ping'))
+  .filter(R.propEq('data', 'ping'))
   .map(Math.random)
   .subscribe(rnd => dashStore.push(['widgets', redTextUuid, 'data', 'text'], '' + rnd))
 
@@ -54,14 +56,52 @@ getDash()
 // dashStore.pull.subscribe(console.log.bind(console, 'dS'))
 
 var componentStream = dashStore.pull
+  .take(1)
   .map(dashData => React.render(
     React.createFactory(Dash)(dashData),
     document.getElementById('dash')
   ))
 
 dashStore.pull
+  .skip(1)
   .combineLatest(
     componentStream,
     (dashData, component) => component.setProps(dashData)
   )
   .subscribe()
+
+dashStore.pull
+  .map(({widgets}) => widgets || {})
+  .startWith({})
+  .distinctUntilChanged()
+  .map(R.pickBy(R.has('endpoint')))
+  .bufferWithCount(2, 1)
+  .map(([prev, cur]) => ({
+    added: R.pick(R.difference(R.keys(cur), R.keys(prev)), cur),
+    removed: R.pick(R.difference(R.keys(prev), R.keys(cur)), prev),
+  }))
+  .doAction(({removed}) => {/* removed scheduled requests */})
+  .map(({added}) => added)
+  .flatMap(R.toPairs)
+  .flatMap(([widgetId, widget]) => RxDOM.ajax({url: widget.endpoint, responseType: 'text/plain', crossDomain: true})
+    .map(data => JSON.parse(data.response))
+    .map(response => widget.endpointPath ? R.path(widget.endpointPath.split('.'), response) : response)
+    .map(data => {
+      if (widget.endpointMap) {
+        return _.reduce(
+          widget.endpointMap,
+          (result, v, key) => {
+            result[v] = data[key]
+            return result
+          },
+          {}
+        )
+      }
+      return data
+    })
+    .map(data => ({widgetId, data}))
+  )
+  .doAction(console.log.bind(console, 'dS'))
+  .subscribe(
+    ({widgetId, data}) => dashStore.push(['widgets', widgetId, 'data'], data)
+  )

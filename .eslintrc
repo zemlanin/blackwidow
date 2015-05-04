@@ -19,7 +19,7 @@
     "max-depth": [2, 4],
     "max-params": [2, 4],
     "complexity": [2, 15],
-    "max-nested-callbacks": [2, 2],
+    "max-nested-callbacks": [1, 3],
     "no-debugger": 1,
     "curly": [2, "multi-line"],
     "radix": 2,

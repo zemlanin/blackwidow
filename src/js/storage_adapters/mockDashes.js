@@ -12,6 +12,8 @@ export var mockDashes = {
         container: {
           position: [0, 0], size: [1, 1], background: 'red',
         },
+        endpoint: "http://httpbin.org/get?text=http",
+        endpointPath: "args",
       },
       "2020a34a-87d2-45f9-8157-524ec2ddb143": {
         type: 'text',
@@ -56,10 +58,13 @@ export var mockDashes = {
         },
       },
       "a49953a1-2c7e-4ae6-b1b8-2d6767c0fd47": {
-        type: 'text',
+        type: 'image',
         container: {
           position: [3, 0], size: [1, 4], background: 'maroon',
         },
+        endpoint: "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=1",
+        endpointPath: "data.0.images.original",
+        endpointMap: {"url": "src"},
       },
       "0cee2d04-6465-4a0f-b654-c67567ae91ec": {
         type: 'text',
