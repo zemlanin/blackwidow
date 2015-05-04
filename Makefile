@@ -57,28 +57,25 @@ lint:
 
 jsbundle: notify_inprogress
 	@mkdir -p $(dist)/js
-	# set -o pipefail && make lint && echo $(dependencies) \
-	# 	| $(prepend-x) \
-	# 	| xargs $(browserify) $(src)/js/client.js -r $(config_json):config -d \
-	# 	| $(exorcist) $(dist)/js/client.js.map \
-	# 	> $(dist)/js/client.js; echo $$? | make notify_result
 
-	set -o pipefail && make lint && echo $(dependencies) \
+	set -o pipefail \
+	&& make lint \
+	&& echo $(dependencies) \
 		| $(prepend-x) \
 		| xargs $(browserify) $(src)/js/castInit.js \
 			-t babelify \
 			-r $(config_json):config \
 		| $(uglifyjs) --mangle \
-		> $(dist)/js/castInit.js; echo $$? | make notify_result
-
-	set -o pipefail && make lint && echo $(dependencies) \
+		> $(dist)/js/castInit.js \
+	&& echo $(dependencies) \
 		| $(prepend-x) \
 		| xargs $(browserify) $(src)/js/cast.js \
 			-t babelify \
 			-r $(config_json):config \
 			-d \
 		| $(exorcist) $(dist)/js/cast.js.map \
-		> $(dist)/js/cast.js; echo $$? | make notify_result
+		> $(dist)/js/cast.js \
+	; echo $$? | make notify_result
 
 js: jscore jsbundle
 
