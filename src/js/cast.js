@@ -1,12 +1,14 @@
 'use strict'
 
 import R from 'ramda'
+import Rx from 'rx'
 import _ from 'lodash'
 import {DOM as RxDOM} from 'rx-dom'
 import React from 'react'
 
 import {getStream} from './store'
 import Dash from './components/dash'
+import {getGoogleApiStream} from './googleApi'
 import {getDash, getDashUpdates} from './storage_adapters/jo'
 
 import {redTextUuid} from './storage_adapters/mockDashes'
@@ -105,3 +107,14 @@ dashStore.pull
   .subscribe(
     ({widgetId, data}) => dashStore.push(['widgets', widgetId, 'data'], data)
   )
+
+getGoogleApiStream()
+  .doAction((gapi) => gapi.client.setApiKey("AIzaSyCuDlL8Dn33UI7DTR7l1R58tAKfN1Jzbf4"))
+  .flatMap((gapi) => {
+    return Rx.Observable.fromCallback(gapi.auth.authorize)({
+      'client_id': '6306872097-9d9idvoi2gus40tvmg2tp04lhf3g51hp.apps.googleusercontent.com',
+      scope: "https://www.googleapis.com/auth/analytics.readonly",
+      immediate: true,
+    }).doAction(console.log.bind(console)).map(gapi)
+  })
+  .subscribe()
