@@ -111,10 +111,10 @@ dashStore.pull
 getGoogleApiStream()
   .doAction((gapi) => gapi.client.setApiKey("AIzaSyCuDlL8Dn33UI7DTR7l1R58tAKfN1Jzbf4"))
   .flatMap((gapi) => {
-    return Rx.Observable.fromCallback(gapi.auth.authorize)({
+    return Rx.Observable.fromPromise(gapi.auth.authorize({
       'client_id': '6306872097-9d9idvoi2gus40tvmg2tp04lhf3g51hp.apps.googleusercontent.com',
       scope: "https://www.googleapis.com/auth/analytics.readonly",
       immediate: true,
-    }).doAction(console.log.bind(console)).map(gapi)
+    })).doAction(console.log.bind(console)).map(gapi)
   })
   .subscribe()
