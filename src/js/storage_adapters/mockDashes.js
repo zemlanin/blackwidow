@@ -4,8 +4,6 @@ export var redTextUuid = "a84dc27d-2ffc-44bf-b8fb-f576c2e6161c"
 
 export var mockDashes = {
   0: {
-    sizeX: 4,
-    sizeY: 4,
     widgets: {
       "c8ff8eef-aae4-4acc-8152-5a98fbd00d7c": {
         type: 'text',
@@ -18,40 +16,40 @@ export var mockDashes = {
       "2020a34a-87d2-45f9-8157-524ec2ddb143": {
         type: 'text',
         container: {
-          position: [1, 0], size: [2, 1], background: 'green',
+          position: [1, 0], size: [5, 1], background: 'green',
         },
       },
       "0019b29f-3665-4b6a-846d-da4ecc9fcf03": {
         type: 'image',
         container: {
-          position: [0, 1], size: [1, 1], background: 'grey',
+          position: [0, 1], size: [2, 3], background: 'grey',
         },
       },
       "7f6002f8-5408-4c68-b24b-3ed093f31aa7": {
         type: 'image',
         container: {
-          position: [1, 1], size: [1, 2], background: 'blue',
+          position: [2, 1], size: [3, 5], background: 'blue',
         },
-        data: {
-          src: 'https://dl.dropboxusercontent.com/s/xjg4w2am6et4881/bam.adam_scott.gif?dl=0',
-        },
+        // data: {
+        //   src: 'https://dl.dropboxusercontent.com/s/xjg4w2am6et4881/bam.adam_scott.gif?dl=0',
+        // },
       },
       "30e46823-3175-43a6-9a89-203eb763ae63": {
         type: 'text',
         container: {
-          position: [2, 1], size: [1, 1], background: 'orange',
+          position: [5, 1], size: [1, 2], background: 'orange',
         },
       },
       "9c7231d7-1d08-4e0b-9993-d375f22c7a13": {
         type: 'text',
         container: {
-          position: [0, 2], size: [1, 1], background: 'magenta',
+          position: [0, 4], size: [2, 2], background: 'magenta',
         },
       },
       [redTextUuid]: {
         type: 'text',
         container: {
-          position: [2, 2], size: [1, 1], background: 'black',
+          position: [5, 3], size: [1, 3], background: 'black',
         },
         data: {
           id: 'redText',
@@ -60,23 +58,21 @@ export var mockDashes = {
       "a49953a1-2c7e-4ae6-b1b8-2d6767c0fd47": {
         type: 'image',
         container: {
-          position: [3, 0], size: [1, 4], background: 'maroon',
+          position: [6, 0], size: [4, 10], background: 'maroon',
         },
-        endpoint: "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=1",
-        endpointPath: "data.0.images.original",
-        endpointMap: {"url": "src"},
+        // endpoint: "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=1",
+        // endpointPath: "data.0.images.original",
+        // endpointMap: {"url": "src"},
       },
       "0cee2d04-6465-4a0f-b654-c67567ae91ec": {
         type: 'text',
         container: {
-          position: [0, 3], size: [3, 1], background: 'purple',
+          position: [0, 6], size: [6, 4], background: 'purple',
         },
       },
     },
   },
   1: {
-    sizeX: 4,
-    sizeY: 3,
     widgets: {
       "107cbe9d-4358-46f7-af38-121e86b3c043": {
         type: 'text',
@@ -129,8 +125,6 @@ export var mockDashes = {
     },
   },
   2: {
-    sizeX: 5,
-    sizeY: 4,
     widgets: {
       "f506cdc8-2226-4065-b253-42f1a3d6d260": {
         type: 'text',
