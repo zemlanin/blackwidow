@@ -124,13 +124,18 @@ getGoogleApiStream()
       'ids': 'ga:74896544',
       'start-date': '30daysAgo',
       'end-date': 'today',
-      'metrics': 'ga:pageviews',
       'dimensions': 'ga:date',
+      'metrics': 'ga:pageviews',
     })
   ))
   .map(({body}) => body)
   .map(JSON.parse)
-  .map(({rows, columnHeaders}) => ({rows: R.reverse(rows), columns: _.pluck(columnHeaders, ['name'])}))
+  .map(({rows, columnHeaders}) => ({
+    columns: _.pluck(columnHeaders, ['name']),
+    rows: _.map(rows.reverse(), ([date, pageviews]) =>
+      [`${date.slice(4, 6)}/${date.slice(6, 8)}`, pageviews]
+    ),
+  }))
   // .doAction(console.log.bind(console, 'ga'))
   .subscribe(
     data => dashStore.push(['widgets', gaTableUuid, 'data'], data)
