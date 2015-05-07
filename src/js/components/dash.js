@@ -6,6 +6,7 @@ import _ from 'lodash'
 import {debug} from 'config'
 import Text from './widgets/text'
 import wImage from './widgets/image'
+import wTable from './widgets/table'
 
 export default React.createClass({
   displayName: 'Dash',
@@ -26,6 +27,9 @@ export default React.createClass({
             break
           case 'image':
             component = wImage
+            break
+          case 'table':
+            component = wTable
             break
         }
 

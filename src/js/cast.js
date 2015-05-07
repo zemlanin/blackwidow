@@ -11,7 +11,7 @@ import Dash from './components/dash'
 import {getGoogleApiStream} from './googleApi'
 import {getDash, getDashUpdates} from './storage_adapters/jo'
 
-import {redTextUuid} from './storage_adapters/mockDashes'
+import {redTextUuid, gaTableUuid} from './storage_adapters/mockDashes'
 var {receiverManagerStream, messageBusStream} = window
 
 receiverManagerStream
@@ -103,7 +103,7 @@ dashStore.pull
     })
     .map(data => ({widgetId, data}))
   )
-  .doAction(console.log.bind(console, 'dS'))
+  // .doAction(console.log.bind(console, 'dS'))
   .subscribe(
     ({widgetId, data}) => dashStore.push(['widgets', widgetId, 'data'], data)
   )
@@ -130,6 +130,8 @@ getGoogleApiStream()
   ))
   .map(({body}) => body)
   .map(JSON.parse)
-  .map(({rows}) => rows)
-  .doAction(console.log.bind(console))
-  .subscribe()
+  .map(({rows, columnHeaders}) => ({rows: R.reverse(rows), columns: _.pluck(columnHeaders, ['name'])}))
+  // .doAction(console.log.bind(console, 'ga'))
+  .subscribe(
+    data => dashStore.push(['widgets', gaTableUuid, 'data'], data)
+  )

@@ -1,6 +1,7 @@
 'use strict'
 
 export var redTextUuid = "a84dc27d-2ffc-44bf-b8fb-f576c2e6161c"
+export var gaTableUuid = "0cee2d04-6465-4a0f-b654-c67567ae91ec"
 
 export var mockDashes = {
   0: {
@@ -43,7 +44,7 @@ export var mockDashes = {
       "9c7231d7-1d08-4e0b-9993-d375f22c7a13": {
         type: 'text',
         container: {
-          position: [0, 4], size: [2, 2], background: 'magenta',
+          position: [2, 6], size: [4, 4], background: 'magenta',
         },
       },
       [redTextUuid]: {
@@ -64,10 +65,10 @@ export var mockDashes = {
         // endpointPath: "data.0.images.original",
         // endpointMap: {"url": "src"},
       },
-      "0cee2d04-6465-4a0f-b654-c67567ae91ec": {
-        type: 'text',
+      [gaTableUuid]: {
+        type: 'table',
         container: {
-          position: [0, 6], size: [6, 4], background: 'purple',
+          position: [0, 4], size: [2, 6], background: 'purple',
         },
       },
     },
