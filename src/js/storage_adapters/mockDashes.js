@@ -1,7 +1,6 @@
 'use strict'
 
 export var redTextUuid = "a84dc27d-2ffc-44bf-b8fb-f576c2e6161c"
-export var gaTableUuid = "0cee2d04-6465-4a0f-b654-c67567ae91ec"
 
 export var mockDashes = {
   0: {
@@ -64,12 +63,6 @@ export var mockDashes = {
         // endpoint: "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=1",
         // endpointPath: "data.0.images.original",
         // endpointMap: {"url": "src"},
-      },
-      [gaTableUuid]: {
-        type: 'table',
-        container: {
-          position: [0, 4], size: [2, 6], background: 'purple',
-        },
       },
     },
   },
