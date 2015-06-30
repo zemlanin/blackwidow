@@ -31,7 +31,6 @@ static:
 	mkdir -p $(dist)
 	cp -R $(src)/css $(dist)/css
 	cp -R $(src)/views/* $(dist)
-	cp    $(shell pwd)/_redirects $(dist)/_redirects
 
 notify_inprogress:
 	@# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar

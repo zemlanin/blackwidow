@@ -1,9 +1,51 @@
 'use strict'
+import {getParseUrl, CLOUD_CODE} from './parse.js'
 
 export var redTextUuid = "a84dc27d-2ffc-44bf-b8fb-f576c2e6161c"
 
 export var mockDashes = {
   0: {
+    widgets: {
+      "2020a34a-87d2-45f9-8157-524ec2ddb143": {
+        type: 'text',
+        container: {
+          position: [0, 2], size: [6, 3], background: 'green',
+        },
+        endpoint: getParseUrl(CLOUD_CODE, {
+          name: 'duty',
+        }),
+        endpointPath: "result.0.person",
+        endpointMap: {"name": "text"},
+        endpointMethod: 'POST',
+        endpointHeaders: {
+          "X-Parse-Application-Id": "JehoJqxLNxVzTR3f50XEPo214bxPaqFgt1XR5SAz",
+          "X-Parse-REST-API-Key": "YQ7Hom8R2BOcNzN2y0f0NVbUltMpxlZIkYRtt1Sl",
+        },
+      },
+      "30e46823-3175-43a6-9a89-203eb763ae63": {
+        type: 'text',
+        container: {
+          position: [0, 5], size: [6, 3], background: 'orange',
+        },
+        endpoint: 'https://api.parse.com/1/classes/Message/bHT4slQ8Vy',
+        endpointMethod: 'GET',
+        endpointHeaders: {
+          "X-Parse-Application-Id": "JehoJqxLNxVzTR3f50XEPo214bxPaqFgt1XR5SAz",
+          "X-Parse-REST-API-Key": "YQ7Hom8R2BOcNzN2y0f0NVbUltMpxlZIkYRtt1Sl",
+        },
+      },
+      "a49953a1-2c7e-4ae6-b1b8-2d6767c0fd47": {
+        type: 'image',
+        container: {
+          position: [6, 0], size: [4, 10], background: 'maroon',
+        },
+        endpoint: "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=1",
+        endpointPath: "data.0.images.original",
+        endpointMap: {"url": "src"},
+      },
+    },
+  },
+  10: {
     widgets: {
       "c8ff8eef-aae4-4acc-8152-5a98fbd00d7c": {
         type: 'text',
@@ -18,6 +60,16 @@ export var mockDashes = {
         container: {
           position: [1, 0], size: [5, 1], background: 'green',
         },
+        endpoint: getParseUrl(CLOUD_CODE, {
+          name: 'duty',
+        }),
+        endpointPath: "result.0.person",
+        endpointMap: {"name": "text"},
+        endpointMethod: 'POST',
+        endpointHeaders: {
+          "X-Parse-Application-Id": "JehoJqxLNxVzTR3f50XEPo214bxPaqFgt1XR5SAz",
+          "X-Parse-REST-API-Key": "YQ7Hom8R2BOcNzN2y0f0NVbUltMpxlZIkYRtt1Sl",
+        },
       },
       "0019b29f-3665-4b6a-846d-da4ecc9fcf03": {
         type: 'image',
@@ -30,14 +82,20 @@ export var mockDashes = {
         container: {
           position: [2, 1], size: [3, 5], background: 'blue',
         },
-        // data: {
-        //   src: 'https://dl.dropboxusercontent.com/s/xjg4w2am6et4881/bam.adam_scott.gif?dl=0',
-        // },
+        data: {
+          src: 'https://dl.dropboxusercontent.com/s/xjg4w2am6et4881/bam.adam_scott.gif?dl=0',
+        },
       },
       "30e46823-3175-43a6-9a89-203eb763ae63": {
         type: 'text',
         container: {
           position: [5, 1], size: [1, 2], background: 'orange',
+        },
+        endpoint: 'https://api.parse.com/1/classes/Message/bHT4slQ8Vy',
+        endpointMethod: 'GET',
+        endpointHeaders: {
+          "X-Parse-Application-Id": "JehoJqxLNxVzTR3f50XEPo214bxPaqFgt1XR5SAz",
+          "X-Parse-REST-API-Key": "YQ7Hom8R2BOcNzN2y0f0NVbUltMpxlZIkYRtt1Sl",
         },
       },
       "9c7231d7-1d08-4e0b-9993-d375f22c7a13": {
@@ -60,9 +118,9 @@ export var mockDashes = {
         container: {
           position: [6, 0], size: [4, 10], background: 'maroon',
         },
-        // endpoint: "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=1",
-        // endpointPath: "data.0.images.original",
-        // endpointMap: {"url": "src"},
+        endpoint: "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=1",
+        endpointPath: "data.0.images.original",
+        endpointMap: {"url": "src"},
       },
     },
   },
