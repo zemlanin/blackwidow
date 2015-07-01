@@ -9,13 +9,13 @@ export var mockDashes = {
       "2020a34a-87d2-45f9-8157-524ec2ddb143": {
         type: 'text',
         container: {
-          position: [0, 2], size: [6, 3], background: 'green',
+          position: [0, 0], size: [6, 3], background: 'green',
         },
         endpoint: getParseUrl(CLOUD_CODE, {
           name: 'duty',
         }),
-        endpointPath: "result.0.person",
-        endpointMap: {"name": "text"},
+        endpointPath: "result.0",
+        endpointMap: {"person_name": "text"},
         endpointMethod: 'POST',
         endpointHeaders: {
           "X-Parse-Application-Id": "JehoJqxLNxVzTR3f50XEPo214bxPaqFgt1XR5SAz",
@@ -25,7 +25,7 @@ export var mockDashes = {
       "30e46823-3175-43a6-9a89-203eb763ae63": {
         type: 'text',
         container: {
-          position: [0, 5], size: [6, 3], background: 'orange',
+          position: [0, 3], size: [6, 3], background: 'orange',
         },
         endpoint: 'https://api.parse.com/1/classes/Message/bHT4slQ8Vy',
         endpointMethod: 'GET',
@@ -39,10 +39,28 @@ export var mockDashes = {
         container: {
           position: [6, 0], size: [4, 10], background: 'maroon',
         },
-        endpoint: "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=1",
+        endpoint: "http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=1&rating=pg-13",
         endpointPath: "data.0.images.original",
         endpointMap: {"url": "src"},
       },
+      "c8ff8eef-aae4-4acc-8152-5a98fbd00ddd": {
+        type: 'image',
+        container: {
+          position: [0, 6], size: [3, 4], background: 'maroon',
+        },
+        data: {
+          src: 'http://noc.uaprom/munin/LeaseWeb/lizard.LeaseWeb/nginx_response_uaprom_norm-day.png',
+        },
+      },
+      "c8ff8eef-aae4-4acc-8152-5a98fbd00d9d": {
+        type: 'image',
+        container: {
+          position: [3, 6], size: [3, 4], background: 'maroon',
+        },
+        data: {
+          src: 'https://munin.uaprom/munin-cgi/munin-cgi-graph/Totals/Requests/requests_ua-day.png?size_x=480&full_size_mode=1&size_y=360',
+        },
+      }
     },
   },
   10: {
