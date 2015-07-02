@@ -54,6 +54,7 @@ dashStore.pull
     })
     .map(data => JSON.parse(data.response))
     .map(response => widget.endpointPath ? R.path(widget.endpointPath.split('.'), response) : response)
+    .filter(r => r)
     .map(data => {
       if (widget.endpointMap) {
         return _.reduce(
@@ -62,13 +63,15 @@ dashStore.pull
             result[v] = data[key]
             return result
           },
-          {}
+          _.assign({}, widget.data)
         )
       }
-      return data
+
+      return _.assign({}, widget.data, data)
     })
     .map(data => ({widgetId, data}))
   )
   .subscribe(
-    ({widgetId, data}) => dashStore.push(['widgets', widgetId, 'data'], data)
+    ({widgetId, data}) => dashStore.push(['widgets', widgetId, 'data'], data),
+    error => console.error(error)
   )
