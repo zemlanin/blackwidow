@@ -1,6 +1,6 @@
 'use strict'
 
-export var redTextUuid = "a84dc27d-2ffc-44bf-b8fb-f576c2e6161c"
+import {hawkeyeEndpoint} from 'config'
 
 export var mockDashes = {
   0: {
@@ -10,7 +10,7 @@ export var mockDashes = {
         container: {
           position: [0, 0], size: [6, 2], background: 'green',
         },
-        endpoint: 'https://blackwidow.parseapp.com/duty',
+        endpoint: hawkeyeEndpoint+'/duty',
         endpointMethod: 'POST',
         data: {
           note: '/duty',
@@ -21,7 +21,7 @@ export var mockDashes = {
         container: {
           position: [0, 2], size: [6, 2], background: 'orange',
         },
-        endpoint: 'https://blackwidow.parseapp.com/text?type=default',
+        endpoint: hawkeyeEndpoint+'/text?type=default',
         endpointMethod: 'POST',
         data: {
           note: '/text default',
@@ -32,7 +32,7 @@ export var mockDashes = {
         container: {
           position: [0, 4], size: [6, 2], background: 'orange',
         },
-        endpoint: 'https://blackwidow.parseapp.com/text?type=quote',
+        endpoint: hawkeyeEndpoint+'/text?type=quote',
         endpointMethod: 'POST',
         data: {
           note: '/text quote',
@@ -43,7 +43,7 @@ export var mockDashes = {
         container: {
           position: [6, 0], size: [4, 10], background: 'maroon',
         },
-        endpoint: "https://blackwidow.parseapp.com/text?type=gif",
+        endpoint: hawkeyeEndpoint+"/text?type=gif",
         endpointMap: {"text": "src"},
         endpointMethod: 'POST',
         data: {
@@ -55,7 +55,7 @@ export var mockDashes = {
         container: {
           position: [0, 6], size: [3, 4], background: 'maroon',
         },
-        endpoint: "https://blackwidow.parseapp.com/text?type=uno",
+        endpoint: hawkeyeEndpoint+"/text?type=uno",
         endpointMap: {"text": "src"},
         endpointMethod: 'POST',
         data: {
@@ -67,7 +67,7 @@ export var mockDashes = {
         container: {
           position: [3, 6], size: [3, 4], background: 'maroon',
         },
-        endpoint: "https://blackwidow.parseapp.com/text?type=dos",
+        endpoint: hawkeyeEndpoint+"/text?type=dos",
         endpointMap: {"text": "src"},
         endpointMethod: 'POST',
         data: {

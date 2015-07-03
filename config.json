@@ -1,5 +1,5 @@
 {
-  "wsEndpoint": "ws://localhost:5000/",
+  "hawkeyeEndpoint": "https://blackwidow.parseapp.com",
   "debug": true,
   "cast": {
     "logLevel": "DEBUG" 
