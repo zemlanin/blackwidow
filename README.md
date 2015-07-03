@@ -1,18 +1,18 @@
 # blackwidow
-frontend for [jo](http://github.com/zemlanin/jo) server
+dashboard for [hawkeye](http://github.com/zemlanin/hawkeye) server
 
 aka playground for:
 - ~~Firebase~~
 - WebSockets
-- Bacon.js
+- ~~Bacon.js~~
+- RxJS
 - React.js
 - ~~Grunt/Gulp~~
 - make/watchman
 - functional-ish style (lo-dash and ramda)
 
 # demo
-http://blackwidow.bitballoon.com  
-http://blackwidow.bitballoon.com/server
+http://blackwidow.bitballoon.com/cast.html
 
 # setup
 ```bash
