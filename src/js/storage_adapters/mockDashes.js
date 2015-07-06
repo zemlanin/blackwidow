@@ -93,8 +93,8 @@ export var mockDashes = {
           type: ['timeInterval'],
           timeInterval: 1 * 60 * 1000,
         },
-        endpointPath: 'by_version.uaprom1.cfg',
-        endpointMap: {"title": "text"},
+        endpointPath: 'last_migration',
+        endpointMap: {"target_title": "text"},
         data: { note: 'UA', }
       },
       "30e46823-3175-43a6-9a89-203eb763fe66": {
@@ -108,8 +108,8 @@ export var mockDashes = {
           type: ['timeInterval'],
           timeInterval: 1 * 60 * 1000,
         },
-        endpointPath: 'by_version.ruprom1.cfg',
-        endpointMap: {"title": "text"},
+        endpointPath: 'last_migration',
+        endpointMap: {"target_title": "text"},
         data: { note: 'RU', }
       },
       "30e46823-3175-43a6-9a89-203eb763fe67": {
@@ -123,8 +123,8 @@ export var mockDashes = {
           type: ['timeInterval'],
           timeInterval: 1 * 60 * 1000,
         },
-        endpointPath: 'by_version.byprom1.cfg',
-        endpointMap: {"title": "text"},
+        endpointPath: 'last_migration',
+        endpointMap: {"target_title": "text"},
         data: { note: 'BY', }
       },
       "30e46823-3175-43a6-9a89-203eb763fe68": {
@@ -138,8 +138,8 @@ export var mockDashes = {
           type: ['timeInterval'],
           timeInterval: 1 * 60 * 1000,
         },
-        endpointPath: 'by_version.kzprom1.cfg',
-        endpointMap: {"title": "text"},
+        endpointPath: 'last_migration',
+        endpointMap: {"target_title": "text"},
         data: { note: 'KZ', }
       },
       "30e46823-3175-43a6-9a89-203eb763fe69": {
@@ -153,8 +153,8 @@ export var mockDashes = {
           type: ['timeInterval'],
           timeInterval: 1 * 60 * 1000,
         },
-        endpointPath: 'by_version.mdprom1.cfg',
-        endpointMap: {"title": "text"},
+        endpointPath: 'last_migration',
+        endpointMap: {"target_title": "text"},
         data: { note: 'MD', }
       },
     },
