@@ -11,10 +11,10 @@ export default React.createClass({
 
     var fontSize = container.fontSize || '3em'
     if (data.text && !container.fontSize) {
-      if (data.text.length > 50) {
-        fontSize = '4em'
-      } else if (data.text.length > 40) {
-        fontSize = '5em'
+      if (data.text.length > 100) {
+        fontSize = '4.5em'
+      } else if (data.text.length > 50) {
+        fontSize = '5.5em'
       } else if (data.text.length > 20) {
         fontSize = '6em'
       } else if (data.text.length > 15) {
