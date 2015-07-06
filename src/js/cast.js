@@ -1,6 +1,7 @@
 'use strict'
 
 import R from 'ramda'
+import Rx from 'rx'
 import _ from 'lodash'
 import {DOM as RxDOM} from 'rx-dom'
 import React from 'react'
@@ -31,7 +32,7 @@ dashStore.pull
   )
   .subscribe()
 
-dashStore.pull
+var endpoints = dashStore.pull
   .map(({widgets}) => widgets || {})
   .startWith({})
   .distinctUntilChanged()
@@ -41,9 +42,30 @@ dashStore.pull
     added: R.pick(R.difference(R.keys(cur), R.keys(prev)), cur),
     removed: R.pick(R.difference(R.keys(prev), R.keys(cur)), prev),
   }))
-  .doAction(({removed}) => {/* removed scheduled requests */})
-  .map(({added}) => added)
-  .flatMap(R.toPairs)
+
+var endpointAdded = endpoints.pluck('added').flatMap(R.toPairs)
+
+var endpointSchedules = endpointAdded
+  .filter(([widgetId, widget]) =>
+    widget.endpointSchedule
+    && widget.endpointSchedule.type.indexOf('timeInterval') > -1
+    && widget.endpointSchedule.timeInterval
+  )
+  .flatMap(([widgetId, widget]) => Rx.Observable.interval(widget.endpointSchedule.timeInterval)
+    .takeUntil(
+      endpoints
+      .map(({removed}) => removed[widgetId])
+      .filter(v => v)
+    )
+    .map([widgetId, widget])
+  )
+
+var endpointRequests = Rx.Observable.merge(
+  endpointAdded,
+  endpointSchedules
+)
+
+endpointRequests
   .flatMap(([widgetId, widget]) => RxDOM.ajax({
       url: widget.endpoint,
       responseType: 'text/plain',

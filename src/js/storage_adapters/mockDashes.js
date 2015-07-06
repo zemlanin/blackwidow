@@ -12,6 +12,10 @@ export var mockDashes = {
         },
         endpoint: hawkeyeEndpoint+'/duty',
         endpointMethod: 'POST',
+        endpointSchedule: {
+          type: ['timeInterval'],
+          timeInterval: 60 * 60 * 1000,
+        },
         data: {
           note: '/duty',
         }
@@ -23,6 +27,10 @@ export var mockDashes = {
         },
         endpoint: hawkeyeEndpoint+'/text?type=default',
         endpointMethod: 'POST',
+        endpointSchedule: {
+          type: ['timeInterval'],
+          timeInterval: 10 * 60 * 1000,
+        },
         data: {
           note: '/text default',
         }
@@ -34,6 +42,10 @@ export var mockDashes = {
         },
         endpoint: hawkeyeEndpoint+'/text?type=quote',
         endpointMethod: 'POST',
+        endpointSchedule: {
+          type: ['timeInterval'],
+          timeInterval: 20 * 60 * 1000,
+        },
         data: {
           note: '/text quote',
         }
@@ -46,6 +58,10 @@ export var mockDashes = {
         endpoint: hawkeyeEndpoint+"/text?type=gif",
         endpointMap: {"text": "src"},
         endpointMethod: 'POST',
+        endpointSchedule: {
+          type: ['timeInterval'],
+          timeInterval: 15 * 60 * 1000,
+        },
         data: {
           note: '/text gif',
         }
@@ -58,6 +74,10 @@ export var mockDashes = {
         endpoint: hawkeyeEndpoint+"/text?type=uno",
         endpointMap: {"text": "src"},
         endpointMethod: 'POST',
+        endpointSchedule: {
+          type: ['timeInterval'],
+          timeInterval: 60 * 60 * 1000,
+        },
         data: {
           note: '/text uno',
         }
@@ -70,6 +90,10 @@ export var mockDashes = {
         endpoint: hawkeyeEndpoint+"/text?type=dos",
         endpointMap: {"text": "src"},
         endpointMethod: 'POST',
+        endpointSchedule: {
+          type: ['timeInterval'],
+          timeInterval: 60 * 60 * 1000,
+        },
         data: {
           note: '/text dos',
         }
