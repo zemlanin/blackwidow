@@ -6,11 +6,11 @@ export default React.createClass({
   displayName: 'widgets/Text',
 
   render: function() {
-    var {data} = this.props
+    var {data, container} = this.props
     data = data || {}
 
-    var fontSize = '3em'
-    if (data.text) {
+    var fontSize = container.fontSize || '3em'
+    if (data.text && !container.fontSize) {
       if (data.text.length > 50) {
         fontSize = '4em'
       } else if (data.text.length > 40) {
@@ -27,7 +27,7 @@ export default React.createClass({
     return DOM.div({
         id: data.id,
         style: {
-          padding: '0.5em',
+          padding: '0.1em',
           fontSize: fontSize,
           whiteSpace: 'normal',
         }
@@ -39,7 +39,7 @@ export default React.createClass({
             bottom: 0,
             right: 0,
             color: 'gray',
-            fontSize: '2vh',
+            fontSize: '0.5em',
             backgroundColor: 'black',
             padding: '5px',
           }

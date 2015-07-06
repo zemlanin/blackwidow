@@ -92,7 +92,9 @@ endpointRequests
       return _.assign({}, widget.data, data)
     })
     .map(data => ({widgetId, data}))
+    .catch(err => Rx.Observable.return(null))
   )
+  .filter(r => r)
   .subscribe(
     ({widgetId, data}) => dashStore.push(['widgets', widgetId, 'data'], data),
     error => console.error(error)

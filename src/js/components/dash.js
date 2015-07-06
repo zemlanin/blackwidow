@@ -47,7 +47,10 @@ export default React.createClass({
               outline: debug ? '1px solid ' + widget.container.background : '',
             }
           },
-          React.createElement(component, {data: widget.data})
+          React.createElement(
+            component,
+            {data: widget.data, container: widget.container}
+          )
         )
       })
     )
