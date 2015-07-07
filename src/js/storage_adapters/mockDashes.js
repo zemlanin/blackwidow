@@ -67,16 +67,16 @@ export var mockDashes = {
         }
       },
       "c8ff8eef-aae4-4acc-8152-5a98fbd00ddd": {
-        type: 'image',
+        type: 'text',
         container: {
           position: [3, 5], size: [3, 5], background: 'maroon',
+          fontSize: '10em'
         },
         endpoint: hawkeyeEndpoint+"/text?type=uno",
-        endpointMap: {"text": "src"},
         endpointMethod: 'POST',
         endpointSchedule: {
           type: ['timeInterval'],
-          timeInterval: 60 * 60 * 1000,
+          timeInterval: 30 * 60 * 1000,
         },
         data: {
           note: '/text uno',
