@@ -34,14 +34,16 @@ static:
 
 notify_inprogress:
 	@# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar
-	@echo "question\c" | nc -4u -w0 localhost 1738
+	@# http://stackoverflow.com/a/24198520
+	@echo "question\c" | (nc -4u -z localhost 1738 && nc -4u -w0 localhost 1738)
 
 notify_result:
 	@# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar
+	@# http://stackoverflow.com/a/24198520
 	@read code; ([ $$code -eq 0 ] \
 		&& echo -n "green" \
 		|| echo -n "red" \
-	) | nc -4u -w0 localhost 1738; exit $$code
+	) | (nc -4u -z localhost 1738 && nc -4u -w0 localhost 1738); exit $$code
 
 jscore: notify_inprogress
 	mkdir -p $(dist)/js
