@@ -23,7 +23,7 @@ export var mockDashes = {
       "30e46823-3175-43a6-9a89-203eb763ae63": {
         type: 'text',
         container: {
-          position: [4, 0], size: [5, 2], background: 'orange',
+          position: [4, 0], size: [4, 2], background: 'orange',
         },
         endpoint: hawkeyeEndpoint+'/text?type=default',
         endpointMethod: 'POST',
@@ -38,8 +38,8 @@ export var mockDashes = {
       "30e46823-3175-43a6-9a89-203eb763ae67": {
         type: 'image',
         container: {
-          position: [9, 0], size: [1, 2], background: 'orange',
-          fontSize: '3em',
+          position: [8, 0], size: [2, 2], background: 'orange',
+          fontSize: '5em',
         },
         endpoint: 'http://api.openweathermap.org/data/2.5/weather?q=Kiev&units=metric',
         endpointSchedule: {
