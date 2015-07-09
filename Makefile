@@ -25,19 +25,24 @@ prepend-x = sed 's/\([^ ]*\)/-x \1/g' # prepending '-x' to each dependency
 
 build: static js
 
-clean:
-	rm -rf $(node_modules) $(dist)
+clean_dist:
+	rm -rf $(dist)
+
+clean: clean_dist
+	rm -rf $(node_modules)
 
 static:
 	mkdir -p $(dist)
 	cp -R $(src)/views/* $(dist)
 	cp -R CNAME $(dist)
 
+.PHONY: notify_inprogress
 notify_inprogress:
 	@# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar
 	@# http://stackoverflow.com/a/24198520
 	@echo "question\c" | (nc -4u -z localhost 1738 && nc -4u -w0 localhost 1738)
 
+.PHONY: notify_result
 notify_result:
 	@# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar
 	@# http://stackoverflow.com/a/24198520
@@ -46,7 +51,7 @@ notify_result:
 		|| echo -n "red" \
 	) | (nc -4u -z localhost 1738 && nc -4u -w0 localhost 1738); exit $$code
 
-jscore: notify_inprogress
+jscore: notify_inprogress package.json
 	mkdir -p $(dist)/js
 	set -o pipefail && echo $(dependencies) \
 		| $(prepend-r) \
@@ -64,18 +69,9 @@ jsbundle: notify_inprogress
 	&& make lint \
 	&& echo $(dependencies) \
 		| $(prepend-x) \
-		| xargs $(browserify) $(src)/js/castInit.js \
-			-t babelify \
-			-r $(config_json):config \
-		| $(uglifyjs) --mangle \
-		> $(dist)/js/castInit.js \
-	&& echo $(dependencies) \
-		| $(prepend-x) \
 		| xargs $(browserify) $(src)/js/cast.js \
 			-t babelify \
 			-r $(config_json):config \
-			-d \
-		| $(exorcist) $(dist)/js/cast.js.map \
 		> $(dist)/js/cast.js \
 	; echo $$? | make notify_result
 
@@ -100,18 +96,9 @@ unwatch:
 	watchman trigger-del $(shell pwd) restatic
 
 deploy:
+	$(MAKE) clean_dist
 	$(MAKE) config=prod
 	$(surge) $(dist)
 
-me a:
-	@true
 
-sandwich:
-ifeq ($(shell if touch / 2> /dev/null; then id -u; fi),0)
-	@echo "Okay."
-	@wget -q -O - http://imgs.xkcd.com/comics/sandwich.png > sandwich.png
-else
-	@echo "What? Make it yourself."
-endif
-
-.PHONY: me a sandwich deploy build watch unwatch js jsbundle jscore serve lint static
+.PHONY: deploy watch unwatch serve lint static
