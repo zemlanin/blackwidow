@@ -30,7 +30,6 @@ clean:
 
 static:
 	mkdir -p $(dist)
-	cp -R $(src)/css $(dist)/css
 	cp -R $(src)/views/* $(dist)
 	cp -R CNAME $(dist)
 
