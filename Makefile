@@ -7,6 +7,7 @@ browserify = $(bin)/browserify
 exorcist = $(bin)/exorcist
 uglifyjs = $(bin)/uglifyjs
 eslint = $(bin)/eslint
+surge = $(bin)/surge
 
 dependencies = $(shell set -o pipefail && cat package.json | $(json) dependencies | $(json) -ka)
 
@@ -31,6 +32,7 @@ static:
 	mkdir -p $(dist)
 	cp -R $(src)/css $(dist)/css
 	cp -R $(src)/views/* $(dist)
+	cp -R CNAME $(dist)
 
 notify_inprogress:
 	@# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar
@@ -100,7 +102,7 @@ unwatch:
 
 deploy:
 	$(MAKE) config=prod
-	bitballoon deploy $(dist)
+	$(surge) $(dist)
 
 me a:
 	@true

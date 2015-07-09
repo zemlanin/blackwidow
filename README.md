@@ -12,7 +12,7 @@ aka playground for:
 - functional-ish style (lo-dash and ramda)
 
 # demo
-http://blackwidow.bitballoon.com/cast.html
+http://blackwidow.surge.com/cast.html
 
 # setup
 ```bash
