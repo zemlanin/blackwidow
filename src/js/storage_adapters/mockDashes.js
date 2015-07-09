@@ -8,7 +8,7 @@ export var mockDashes = {
       "2020a34a-87d2-45f9-8157-524ec2ddb143": {
         type: 'text',
         container: {
-          position: [0, 0], size: [5, 2], background: 'green',
+          position: [0, 0], size: [4, 2], background: 'green',
         },
         endpoint: hawkeyeEndpoint+'/duty',
         endpointMethod: 'POST',
@@ -23,7 +23,7 @@ export var mockDashes = {
       "30e46823-3175-43a6-9a89-203eb763ae63": {
         type: 'text',
         container: {
-          position: [5, 0], size: [5, 2], background: 'orange',
+          position: [4, 0], size: [5, 2], background: 'orange',
         },
         endpoint: hawkeyeEndpoint+'/text?type=default',
         endpointMethod: 'POST',
@@ -33,6 +33,28 @@ export var mockDashes = {
         },
         data: {
           note: '/text default',
+        }
+      },
+      "30e46823-3175-43a6-9a89-203eb763ae67": {
+        type: 'image',
+        container: {
+          position: [9, 0], size: [1, 2], background: 'orange',
+          fontSize: '3em',
+        },
+        endpoint: 'http://api.openweathermap.org/data/2.5/weather?q=Kiev&units=metric',
+        endpointSchedule: {
+          type: ['timeInterval'],
+          timeInterval: 10 * 60 * 1000,
+        },
+        endpointMap: {
+          "src": {
+            _format: "http://openweathermap.org/img/w/{}.png",
+            _path: "weather.0.icon",
+          },
+          "note": {
+            _format: "{}°C",
+            _path: "main.temp",
+          }
         }
       },
       "30e46823-3175-43a6-9a89-203eb763fe63": {
@@ -56,7 +78,7 @@ export var mockDashes = {
           position: [6, 2], size: [4, 8], background: 'maroon',
         },
         endpoint: hawkeyeEndpoint+"/text?type=gif",
-        endpointMap: {"text": "src"},
+        endpointMap: {"src": "text"},
         endpointMethod: 'POST',
         endpointSchedule: {
           type: ['timeInterval'],
@@ -94,7 +116,7 @@ export var mockDashes = {
           timeInterval: 1 * 60 * 1000,
         },
         endpointPath: 'last_migration',
-        endpointMap: {"target_title": "text"},
+        endpointMap: {"text": "target_title"},
         data: { note: 'UA', }
       },
       "30e46823-3175-43a6-9a89-203eb763fe66": {
@@ -109,7 +131,7 @@ export var mockDashes = {
           timeInterval: 1 * 60 * 1000,
         },
         endpointPath: 'last_migration',
-        endpointMap: {"target_title": "text"},
+        endpointMap: {"text": "target_title"},
         data: { note: 'RU', }
       },
       "30e46823-3175-43a6-9a89-203eb763fe67": {
@@ -124,7 +146,7 @@ export var mockDashes = {
           timeInterval: 1 * 60 * 1000,
         },
         endpointPath: 'last_migration',
-        endpointMap: {"target_title": "text"},
+        endpointMap: {"text": "target_title"},
         data: { note: 'BY', }
       },
       "30e46823-3175-43a6-9a89-203eb763fe68": {
@@ -139,7 +161,7 @@ export var mockDashes = {
           timeInterval: 1 * 60 * 1000,
         },
         endpointPath: 'last_migration',
-        endpointMap: {"target_title": "text"},
+        endpointMap: {"text": "target_title"},
         data: { note: 'KZ', }
       },
       "30e46823-3175-43a6-9a89-203eb763fe69": {
@@ -154,7 +176,7 @@ export var mockDashes = {
           timeInterval: 1 * 60 * 1000,
         },
         endpointPath: 'last_migration',
-        endpointMap: {"target_title": "text"},
+        endpointMap: {"text": "target_title"},
         data: { note: 'MD', }
       },
     },

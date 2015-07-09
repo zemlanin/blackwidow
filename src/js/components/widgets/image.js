@@ -8,8 +8,7 @@ export default React.createClass({
   displayName: 'widgets/Image',
 
   render: function() {
-    var {data} = this.props
-    data = data || {}
+    var {data={}, container={}} = this.props
 
     return DOM.div({
         style: {
@@ -26,7 +25,7 @@ export default React.createClass({
             bottom: 0,
             right: 0,
             color: 'gray',
-            fontSize: '2vh',
+            fontSize: container.fontSize || '2em',
             backgroundColor: 'black',
             padding: '5px',
           }

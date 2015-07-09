@@ -65,6 +65,26 @@ var endpointRequests = Rx.Observable.merge(
   endpointSchedules
 )
 
+function endpointMapper(data, result, mappingFrom, mappingTo) {
+  var dataValue
+
+  if (mappingFrom instanceof Object) {
+    if (mappingFrom._path) {
+      dataValue = R.path(mappingFrom._path.split('.'), data)
+    } else {
+      dataValue = data[mappingFrom]
+    }
+
+    if (mappingFrom._format) {
+      dataValue = mappingFrom._format.replace('{}', dataValue)
+    }
+  } else {
+    dataValue = data[mappingFrom]
+  }
+  result[mappingTo] = dataValue
+  return result
+}
+
 endpointRequests
   .flatMap(([widgetId, widget]) => RxDOM.ajax({
       url: widget.endpoint,
@@ -81,10 +101,7 @@ endpointRequests
       if (widget.endpointMap) {
         return _.reduce(
           widget.endpointMap,
-          (result, v, key) => {
-            result[v] = data[key]
-            return result
-          },
+          _.partial(endpointMapper, data),
           _.assign({}, widget.data)
         )
       }
