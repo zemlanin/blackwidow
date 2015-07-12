@@ -237,6 +237,18 @@
         }
       }
     }
+  },
+  "2": {
+    "widgets": {
+      "error": {
+        "type": "text",
+        "container": {
+          "position": [0, 0],
+          "size": [4, 2],
+          "background": "green"
+        },
+        "data": {"text": "lol"}
+      }
     }
   }
 }
