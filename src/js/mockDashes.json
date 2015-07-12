@@ -6,7 +6,7 @@
         "container": {
           "position": [0, 0],
           "size": [4, 2],
-          "background": "green"
+          "debug": "green"
         },
         "endpoint": {
           "url": "https://blackwidow.parseapp.com/duty",
@@ -25,7 +25,7 @@
         "container": {
           "position": [4, 0],
           "size": [4, 2],
-          "background": "orange"
+          "debug": "orange"
         },
         "endpoint": {
           "url": "https://blackwidow.parseapp.com/text?type=default",
@@ -44,7 +44,7 @@
         "container": {
           "position": [8, 0],
           "size": [2, 2],
-          "background": "orange",
+          "debug": "orange",
           "fontSize": "5em"
         },
         "endpoint": {
@@ -70,7 +70,7 @@
         "container": {
           "position": [0, 2],
           "size": [6, 3],
-          "background": "orange"
+          "debug": "orange"
         },
         "endpoint": {
           "url": "https://blackwidow.parseapp.com/text?type=quote",
@@ -89,7 +89,7 @@
         "container": {
           "position": [6, 2],
           "size": [4, 8],
-          "background": "maroon"
+          "debug": "maroon"
         },
         "endpoint": {
           "url": "https://blackwidow.parseapp.com/text?type=gif",
@@ -111,7 +111,7 @@
         "container": {
           "position": [3, 5],
           "size": [3, 5],
-          "background": "maroon",
+          "debug": "maroon",
           "fontSize": "10em"
         },
         "endpoint": {
@@ -131,7 +131,7 @@
         "container": {
           "position": [0, 5],
           "size": [3, 1],
-          "background": "orange",
+          "debug": "orange",
           "fontSize": "5em"
         },
         "endpoint": {
@@ -153,7 +153,7 @@
         "container": {
           "position": [0, 6],
           "size": [3, 1],
-          "background": "orange",
+          "debug": "orange",
           "fontSize": "5em"
         },
         "endpoint": {
@@ -175,7 +175,7 @@
         "container": {
           "position": [0, 7],
           "size": [3, 1],
-          "background": "orange",
+          "debug": "orange",
           "fontSize": "5em"
         },
         "endpoint": {
@@ -197,7 +197,7 @@
         "container": {
           "position": [0, 8],
           "size": [3, 1],
-          "background": "orange",
+          "debug": "orange",
           "fontSize": "5em"
         },
         "endpoint": {
@@ -219,7 +219,7 @@
         "container": {
           "position": [0, 9],
           "size": [3, 1],
-          "background": "orange",
+          "debug": "orange",
           "fontSize": "5em"
         },
         "endpoint": {

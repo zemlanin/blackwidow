@@ -16,8 +16,9 @@ export default React.createClass({
       null,
       _.map(this.props.widgets, (widget, widgetId) => {
         var component
+        var {container} = widget
 
-        if (widget.container === void 0) {
+        if (container === void 0) {
           return ''
         }
 
@@ -40,16 +41,16 @@ export default React.createClass({
               overflow: 'hidden',
               whiteSpace: 'nowrap',
 
-              left: 10 * widget.container.position[0] + '%',
-              top: 10 * widget.container.position[1] + '%',
-              width: 10 * widget.container.size[0] + '%',
-              height: 10 * widget.container.size[1] + '%',
-              outline: debug ? '1px solid ' + widget.container.background : '',
+              left: 10 * container.position[0] + '%',
+              top: 10 * container.position[1] + '%',
+              width: 10 * container.size[0] + '%',
+              height: 10 * container.size[1] + '%',
+              outline: debug ? '1px solid ' + container.debug : '',
             }
           },
           React.createElement(
             component,
-            {data: widget.data, container: widget.container}
+            {data: widget.data, container}
           )
         )
       })
