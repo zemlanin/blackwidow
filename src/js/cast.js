@@ -59,9 +59,11 @@ var endpointRequests = Rx.Observable.merge(
 function endpointMapper(data, result, mappingFrom, mappingTo) {
   var dataValue
 
-  if (mappingFrom instanceof Object) {
+  if (_.isObject(mappingFrom)) {
     if (mappingFrom._path) {
       dataValue = R.path(mappingFrom._path.split('.'), data)
+    } else if (_.isString(data)) {
+      dataValue = data
     } else {
       dataValue = data[mappingFrom]
     }
@@ -69,8 +71,10 @@ function endpointMapper(data, result, mappingFrom, mappingTo) {
     if (mappingFrom._format) {
       dataValue = mappingFrom._format.replace('{}', dataValue)
     }
-  } else {
+  } else if (mappingFrom) {
     dataValue = R.path(mappingFrom.split('.'), data)
+  } else {
+    dataValue = data
   }
   result[mappingTo] = dataValue
   return result
@@ -85,7 +89,7 @@ endpointRequests
       headers: widget.endpoint.headers,
       method: widget.endpoint.method || 'GET',
     })
-    .map(data => JSON.parse(data.response))
+    .map(data => widget.endpoint.plain ? data.response : JSON.parse(data.response))
     .filter(r => r)
     .map(data => {
       if (widget.endpoint.map) {
