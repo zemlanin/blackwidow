@@ -6,9 +6,8 @@ import _ from 'lodash'
 import {DOM as RxDOM} from 'rx-dom'
 import React from 'react'
 
-import {getStream} from './store'
+import {getStream, getDash} from './store'
 import Dash from './components/dash'
-import {getDash} from './storage_adapters/jo'
 
 var dashStore = getStream('dashStore')
 

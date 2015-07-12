@@ -1,7 +1,5 @@
-"use strict"
-
-export var mockDashes = {
-  0: {
+{
+  "0": {
     "widgets": {
       "duty": {
         "type": "text",

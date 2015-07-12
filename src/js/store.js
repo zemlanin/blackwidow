@@ -2,7 +2,12 @@
 
 import R from 'ramda'
 import _ from 'lodash'
-import {Subject, BehaviorSubject} from 'rx'
+import {Subject, BehaviorSubject, Observable} from 'rx'
+import mockDashes from './mockDashes'
+
+export function getDash(id) {
+  return Observable.return(mockDashes[id] || mockDashes[0])
+}
 
 function StoreStream(name) {
   var pushStream = new Subject()
