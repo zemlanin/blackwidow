@@ -1,0 +1,25 @@
+{
+  "widgets": {
+    "bamImage": {
+      "type": "image",
+      "container": {
+        "position": [3, 2],
+        "size": [4, 4],
+        "background": "green"
+      },
+      "data": {
+        "src": "http://media.giphy.com/media/kS1aph1nPE1lm/giphy.gif"
+      }
+    },
+    "bamText": {
+      "type": "text",
+      "container": {
+        "position": [4, 6],
+        "size": [2, 2],
+        "background": "green",
+        "fontSize": "10em"
+      },
+      "data": {"text": "BAM!"}
+    }
+  }
+}
