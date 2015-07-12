@@ -57,12 +57,12 @@ export var mockDashes = {
           },
           "map": {
             "src": {
-              _format: "http://openweathermap.org/img/w/{}.png",
-              _path: "weather.0.icon",
+              "_format": "http://openweathermap.org/img/w/{}.png",
+              "_path": "weather.0.icon",
             },
             "note": {
-              _format: "{}°C",
-              _path: "main.temp",
+              "_format": "{}°C",
+              "_path": "main.temp",
             },
           },
         },
