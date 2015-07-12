@@ -6,6 +6,16 @@ import {Subject, BehaviorSubject, Observable} from 'rx'
 import {DOM as RxDOM} from 'rx-dom'
 import mockDashes from './mockDashes'
 
+function getAjaxSteam(url) {
+  return RxDOM.ajax({
+      url,
+      responseType: 'text/plain',
+      contentType: 'application/json; charset=UTF-8',
+      crossDomain: true,
+    })
+    .map(data => JSON.parse(data.response))
+}
+
 export function getDash() {
   var id
   var url
@@ -18,13 +28,18 @@ export function getDash() {
 
     if (location.hash.match(/^#https?:/)) {
       url = location.hash.replace(/^#/, '')
-      return RxDOM.ajax({
-        url,
-        responseType: 'text/plain',
-        contentType: 'application/json; charset=UTF-8',
-        crossDomain: true,
+      return getAjaxSteam(url)
+      .flatMap(v => {
+        if (v.refresh && parseInt(v.refresh, 10)) {
+          return Observable
+            .interval(parseInt(v.refresh, 10) * 1000)
+            .map(url)
+            .flatMap(getAjaxSteam)
+            .startWith(v)
+        }
+
+        return Observable.return(v)
       })
-      .map(data => JSON.parse(data.response))
       .catch(err => Observable.return({
         "widgets": {
           "error": {
@@ -50,7 +65,10 @@ function StoreStream(name) {
 
   var dataSubscription = pushStream
     .filter(v => v && v.length === 2)
-    .scan({}, (acc, [path, value]) => R.assocPath(path, value, acc))
+    .scan({}, (acc, [path, value]) => _.merge(
+      acc,
+      R.assocPath(path, value, acc)
+    ))
     .subscribe(dataStream)
 
   this.name = name
