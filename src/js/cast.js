@@ -17,20 +17,11 @@ getDash()
 
 // dashStore.pull.subscribe(console.log.bind(console, 'dS'))
 
-var componentStream = dashStore.pull
-  .take(1)
-  .map(dashData => React.render(
-    React.createFactory(Dash)(dashData),
+dashStore.pull
+  .subscribe(dashData => React.render(
+    React.createElement(Dash, dashData),
     document.getElementById('dash')
   ))
-
-dashStore.pull
-  .skip(1)
-  .combineLatest(
-    componentStream,
-    (dashData, component) => component.setProps(dashData)
-  )
-  .subscribe()
 
 var endpoints = dashStore.pull
   .map(({widgets}) => widgets || {})
