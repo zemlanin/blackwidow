@@ -34,7 +34,7 @@ clean: clean_dist
 static:
 	mkdir -p $(dist)
 	cp -R $(src)/views/* $(dist)
-	cp -R CNAME $(dist)
+	[ -f CNAME ] && cp CNAME $(dist) || :
 	cp -R examples $(dist)
 
 .PHONY: notify_inprogress
