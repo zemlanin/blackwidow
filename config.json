@@ -1,7 +1,3 @@
 {
-  "hawkeyeEndpoint": "https://blackwidow.parseapp.com",
   "debug": true,
-  "cast": {
-    "logLevel": "DEBUG" 
-  }
 }
