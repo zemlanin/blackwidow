@@ -26,7 +26,7 @@ export function getDash() {
       return Observable.return(mockDashes[id] || mockDashes[0])
     }
 
-    if (location.hash.match(/^#https?:/)) {
+    if (location.hash.match(/^#(https?|file):/)) {
       url = location.hash.replace(/^#/, '')
       return getAjaxSteam(url)
       .flatMap(v => {
