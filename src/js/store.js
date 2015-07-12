@@ -29,30 +29,30 @@ export function getDash() {
     if (location.hash.match(/^#(https?|file):/)) {
       url = location.hash.replace(/^#/, '')
       return getAjaxSteam(url)
-      .flatMap(v => {
-        if (v.refresh && parseInt(v.refresh, 10)) {
-          return Observable
-            .interval(parseInt(v.refresh, 10) * 1000)
-            .map(url)
-            .flatMap(getAjaxSteam)
-            .startWith(v)
-        }
+        .flatMap(v => {
+          if (v.refresh && parseInt(v.refresh, 10)) {
+            return Observable
+              .interval(parseInt(v.refresh, 10) * 1000)
+              .map(url)
+              .flatMap(getAjaxSteam)
+              .startWith(v)
+          }
 
-        return Observable.return(v)
-      })
-      .catch(err => Observable.return({
-        "widgets": {
-          "error": {
-            "type": "text",
-            "container": {
-              "position": [0, 0],
-              "size": [10, 10],
-              "background": "red",
+          return Observable.return(v)
+        })
+        .catch(err => Observable.return({
+          "widgets": {
+            "error": {
+              "type": "text",
+              "container": {
+                "position": [0, 0],
+                "size": [10, 10],
+                "background": "red",
+              },
+              "data": {"text": err.message},
             },
-            "data": {"text": err.message},
           },
-        },
-      }))
+        }))
     }
   }
 

@@ -8,8 +8,10 @@ import React from 'react'
 
 import {getStream, getDash} from './store'
 import Dash from './components/dash'
+import Settings from './components/settings'
 
 var dashStore = getStream('dashStore')
+var settingsStore = getStream('settingsStore')
 
 getDash()
   .subscribe(dashStore.push)
@@ -20,6 +22,13 @@ dashStore.pull
   .subscribe(dashData => React.render(
     React.createElement(Dash, dashData),
     document.getElementById('dash')
+  ))
+
+settingsStore.push({text: 'edit'})
+settingsStore.pull
+  .subscribe(settings => React.render(
+    React.createElement(Settings, settings),
+    document.getElementById('settings')
   ))
 
 var endpoints = dashStore.pull
