@@ -1,20 +1,22 @@
 # blackwidow
-dashboard for [hawkeye](http://github.com/zemlanin/hawkeye) server
+dashboard. works better with [hawkeye](http://github.com/zemlanin/hawkeye) server
 
-aka playground for:
-- ~~Firebase~~
-- WebSockets
-- ~~Bacon.js~~
-- RxJS
-- React.js
-- ~~Grunt/Gulp~~
-- make/watchman
-- functional-ish style (lo-dash and ramda)
+## demo
+https://blackwidow.surge.sh/
+https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/static_data.json
+https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/external_data.json
 
-# demo
-http://blackwidow.surge.com/
+## example dashes
+* src/js/mockDashes.json
+* https://blackwidow.surge.sh/examples/static_data.json
+* https://blackwidow.surge.sh/examples/external_data.json
 
-# setup
+## setup
 ```bash
 npm install
+```
+
+### deploy (via surge.sh)
+```bash
+make deploy
 ```
