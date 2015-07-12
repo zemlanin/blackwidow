@@ -45,7 +45,7 @@ export default React.createClass({
               top: 10 * container.position[1] + '%',
               width: 10 * container.size[0] + '%',
               height: 10 * container.size[1] + '%',
-              outline: debug ? '1px solid ' + container.debug : '',
+              outline: debug && container.debug ? '1px solid ' + container.debug : '',
             }
           },
           React.createElement(
