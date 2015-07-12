@@ -38,11 +38,12 @@ var endpointAdded = endpoints.pluck('added').flatMap(R.toPairs)
 
 var endpointSchedules = endpointAdded
   .filter(([widgetId, widget]) =>
-    widget.endpointSchedule
-    && widget.endpointSchedule.type.indexOf('timeInterval') > -1
-    && widget.endpointSchedule.timeInterval
+    widget.endpoint.schedule
+    && widget.endpoint.schedule.type.indexOf('timeInterval') > -1
+    && widget.endpoint.schedule.timeInterval
   )
-  .flatMap(([widgetId, widget]) => Rx.Observable.interval(widget.endpointSchedule.timeInterval)
+  .flatMap(([widgetId, widget]) => Rx.Observable
+    .interval(widget.endpoint.schedule.timeInterval * 1000)
     .takeUntil(
       endpoints
       .map(({removed}) => removed[widgetId])
@@ -70,7 +71,7 @@ function endpointMapper(data, result, mappingFrom, mappingTo) {
       dataValue = mappingFrom._format.replace('{}', dataValue)
     }
   } else {
-    dataValue = data[mappingFrom]
+    dataValue = R.path(mappingFrom.split('.'), data)
   }
   result[mappingTo] = dataValue
   return result
@@ -78,20 +79,19 @@ function endpointMapper(data, result, mappingFrom, mappingTo) {
 
 endpointRequests
   .flatMap(([widgetId, widget]) => RxDOM.ajax({
-      url: widget.endpoint,
+      url: widget.endpoint.url,
       responseType: 'text/plain',
       contentType: 'application/json; charset=UTF-8',
       crossDomain: true,
-      headers: widget.endpointHeaders,
-      method: widget.endpointMethod || 'GET',
+      headers: widget.endpoint.headers,
+      method: widget.endpoint.method || 'GET',
     })
     .map(data => JSON.parse(data.response))
-    .map(response => widget.endpointPath ? R.path(widget.endpointPath.split('.'), response) : response)
     .filter(r => r)
     .map(data => {
-      if (widget.endpointMap) {
+      if (widget.endpoint.map) {
         return _.reduce(
-          widget.endpointMap,
+          widget.endpoint.map,
           _.partial(endpointMapper, data),
           _.assign({}, widget.data)
         )
