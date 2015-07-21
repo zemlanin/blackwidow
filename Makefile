@@ -52,7 +52,8 @@ notify_result:
 		|| echo -n "red" \
 	) | (nc -4u -z localhost 1738 && nc -4u -w0 localhost 1738); exit $$code
 
-jscore: notify_inprogress package.json
+jscore: package.json
+	$(MAKE) notify_inprogress
 	mkdir -p $(dist)/js
 	set -o pipefail && echo $(dependencies) \
 		| $(prepend-r) \
@@ -63,7 +64,8 @@ jscore: notify_inprogress package.json
 lint:
 	$(eslint) $(src)/js
 
-jsbundle: notify_inprogress
+jsbundle:
+	$(MAKE) notify_inprogress
 	@mkdir -p $(dist)/js
 
 	set -o pipefail \

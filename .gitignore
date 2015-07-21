@@ -3,5 +3,6 @@ CNAME
 node_modules/
 dist/
 /config.*.json
+/examples/_*.json
 
 *.sublime-workspace

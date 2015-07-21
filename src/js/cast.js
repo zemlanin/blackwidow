@@ -112,9 +112,10 @@ endpointRequests
       return _.assign({}, widget.data, data)
     })
     .map(data => ({widgetId, data}))
-    .catch(err => Rx.Observable.return(null))
+    .catch(err => Rx.Observable.return({err: err}))
   )
-  .filter(r => r)
+  // .do(v => console.log(v))
+  .filter(r => r && !r.err)
   .subscribe(
     ({widgetId, data}) => dashStore.push(['widgets', widgetId, 'data'], data),
     error => console.error(error)
