@@ -23,7 +23,8 @@ endif
 prepend-r = sed 's/\([^ ]*\)/-r \1/g' # prepending '-r' to each dependency
 prepend-x = sed 's/\([^ ]*\)/-x \1/g' # prepending '-x' to each dependency
 
-build: static js
+.PHONY: build
+build: dist_static dist/js/core.js dist/js/cast.js
 
 clean_dist:
 	rm -rf $(dist)
@@ -31,7 +32,8 @@ clean_dist:
 clean: clean_dist
 	rm -rf $(node_modules)
 
-static:
+.PHONY: dist_static
+dist_static:
 	mkdir -p $(dist)
 	cp -R $(src)/views/* $(dist)
 	[ -f CNAME ] && cp CNAME $(dist) || :
@@ -52,21 +54,21 @@ notify_result:
 		|| echo -n "red" \
 	) | (nc -4u -z localhost 1738 && nc -4u -w0 localhost 1738); exit $$code
 
-jscore: package.json
+dist/js/core.js: package.json
 	$(MAKE) notify_inprogress
-	mkdir -p $(dist)/js
+	mkdir -p $(dir $@)
 	set -o pipefail && echo $(dependencies) \
 		| $(prepend-r) \
 		| xargs $(browserify) \
 		| $(uglifyjs) --mangle \
-		> $(dist)/js/core.js; echo $$? | make notify_result
+		> $@; echo $$? | make notify_result
 
 lint:
 	$(eslint) $(src)/js
 
-jsbundle:
+dist/js/cast.js: src/js/*.js
 	$(MAKE) notify_inprogress
-	@mkdir -p $(dist)/js
+	mkdir -p $(dir $@)
 
 	set -o pipefail \
 	&& make lint \
@@ -77,8 +79,6 @@ jsbundle:
 			-r $(config_json):config \
 		> $(dist)/js/cast.js \
 	; echo $$? | make notify_result
-
-js: jscore jsbundle
 
 serve:
 	@echo serving at http://127.0.0.1:8000
@@ -91,7 +91,7 @@ serve_lan:
 watch:
 	# OS X 10.10: https://github.com/facebook/watchman/issues/68
 	watchman watch $(shell pwd)
-	watchman -- trigger $(shell pwd) rejs 'src/*.js' -- make jsbundle
+	watchman -- trigger $(shell pwd) rejs 'src/*.js' -- make dist/js/cast.js
 	watchman -- trigger $(shell pwd) restatic 'src/*.html' -- make static
 
 unwatch:
