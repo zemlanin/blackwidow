@@ -39,35 +39,18 @@ dist_static:
 	[ -f CNAME ] && cp CNAME $(dist) || :
 	cp -R examples $(dist)
 
-.PHONY: notify_inprogress
-notify_inprogress:
-	@# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar
-	@# http://stackoverflow.com/a/24198520
-	@echo "question\c" | (nc -4u -z localhost 1738 && nc -4u -w0 localhost 1738)
-
-.PHONY: notify_result
-notify_result:
-	@# https://github.com/tonsky/AnyBar || https://github.com/limpbrains/somebar
-	@# http://stackoverflow.com/a/24198520
-	@read code; ([ $$code -eq 0 ] \
-		&& echo -n "green" \
-		|| echo -n "red" \
-	) | (nc -4u -z localhost 1738 && nc -4u -w0 localhost 1738); exit $$code
-
 dist/js/core.js: package.json
-	$(MAKE) notify_inprogress
 	mkdir -p $(dir $@)
 	set -o pipefail && echo $(dependencies) \
 		| $(prepend-r) \
 		| xargs $(browserify) \
 		| $(uglifyjs) --mangle \
-		> $@; echo $$? | make notify_result
+		> $@
 
 lint:
 	$(eslint) $(src)/js
 
 dist/js/cast.js: src/js/*.js
-	$(MAKE) notify_inprogress
 	mkdir -p $(dir $@)
 
 	set -o pipefail \
@@ -77,8 +60,7 @@ dist/js/cast.js: src/js/*.js
 		| xargs $(browserify) $(src)/js/cast.js \
 			-t babelify \
 			-r $(config_json):config \
-		> $(dist)/js/cast.js \
-	; echo $$? | make notify_result
+		> $(dist)/js/cast.js
 
 serve:
 	@echo serving at http://127.0.0.1:8000

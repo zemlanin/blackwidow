@@ -18,7 +18,7 @@ function getAjaxSteam(url) {
 
 export function getDash() {
   var id
-  var url
+  var dashStream
 
   if (location.hash) {
     if (location.hash.match(/^#id[0-9a-f]{1,10}$/i)) {
@@ -27,33 +27,34 @@ export function getDash() {
     }
 
     if (location.hash.match(/^#(https?|file):/)) {
-      url = location.hash.replace(/^#/, '')
-      return getAjaxSteam(url)
-        .flatMap(v => {
-          if (v.refresh && parseInt(v.refresh, 10)) {
-            return Observable
-              .interval(parseInt(v.refresh, 10) * 1000)
-              .map(url)
-              .flatMap(getAjaxSteam)
-              .startWith(v)
-          }
-
-          return Observable.return(v)
-        })
-        .catch(err => Observable.return({
-          "widgets": {
-            "error": {
-              "type": "text",
-              "container": {
-                "position": [0, 0],
-                "size": [10, 10],
-                "background": "red",
-              },
-              "data": {"text": err.message},
-            },
-          },
-        }))
+      let url = location.hash.replace(/^#/, '')
+      dashStream = getAjaxSteam(url)
     }
+  }
+
+  if (location.search.match(/[?&]gist=([0-9a-f]+)/i)) {
+    let gistId = location.search.match(/[?&]gist=([0-9a-f]+)/i)[1]
+    dashStream = getAjaxSteam(`https://api.github.com/gists/${gistId}`)
+      .pluck('files')
+      .map(files => _.find(files, file => file.language === 'JSON'))
+      .map(file => JSON.parse(file.content))
+  }
+
+  if (dashStream) {
+    return dashStream
+      .catch(err => Observable.return({
+        "widgets": {
+          "error": {
+            "type": "text",
+            "container": {
+              "position": [0, 0],
+              "size": [10, 10],
+              "background": "red",
+            },
+            "data": {"text": err.message},
+          },
+        },
+      }))
   }
 
   return Observable.return(mockDashes[0])
