@@ -17,7 +17,7 @@
           },
           "map": {
             "src": {
-              "_format": "http://blackwidow.parseapp.com/{}.png",
+              "_format": "http://blackwidow.parseapp.com/{}.gif",
               "_path": "text"
             }
           }
