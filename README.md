@@ -1,29 +1,15 @@
 # blackwidow
 dashboard. works better with [hawkeye](http://github.com/zemlanin/hawkeye) server
 
-## demo
-* https://blackwidow.surge.sh/
-* https://blackwidow.surge.sh/?gist=00fd9405043a98c96a68
-* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/static_data.json
-* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/external_data.json
-
-## example dashes
-* src/js/mockDashes.json
-* https://gist.github.com/zemlanin/00fd9405043a98c96a68
-* https://blackwidow.surge.sh/examples/static_data.json
-* https://blackwidow.surge.sh/examples/external_data.json
-
 ## setup
 ```bash
 npm install
+make          # recompiles
+make serve    # starts a server at http://127.0.0.1:8000
+make deploy   # deploy via surge.sh
 ```
 
-### deploy (via surge.sh)
-```bash
-make deploy
-```
-
-### dashboard api
+## dashboard api
 Dashboard is 10×10 table and described by JSON object:
 
 ```json
@@ -36,8 +22,9 @@ Dashboard is 10×10 table and described by JSON object:
 }
 ```
 
-* `{Object.<string, Object>}` **dashboard**: full dashboard. available keys: `widgets`
-* `{Object.<string, Widget>}` **dashboard.widgets**: object with widgets. available keys: `"type"`, `"container"`, `"endpoint"`, `"data"`
+* `{Object.<string, Object>}` **dashboard**: full dashboard. available keys: `"widgets"`
+* `{Object.<string, Widget>}` **dashboard.widgets**: object with widgets. keys are used to identify widgets
+* `{Widget}` **dashboard.widgets[key]**: widget description. available keys: `"type"`, `"container"`, `"endpoint"`, `"data"`
     * `{string}` **Widget.type**: widget type. available values: `"text"`, `"image"`
     * `{Container}` **Widget.container**: widget container object. available keys: `"position"`, `"size"`, `"fontSize"`, `"debug"`
 
@@ -74,3 +61,15 @@ Dashboard is 10×10 table and described by JSON object:
         * *TODO*
     * `{WidgetData}` **Widget.data**: widget displayed information. keys depend on Widget.type
         * *TODO*
+
+## demo
+* https://blackwidow.surge.sh/
+* https://blackwidow.surge.sh/?gist=00fd9405043a98c96a68
+* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/static_data.json
+* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/external_data.json
+
+## example dashes
+* src/js/mockDashes.json
+* https://gist.github.com/zemlanin/00fd9405043a98c96a68
+* https://blackwidow.surge.sh/examples/static_data.json
+* https://blackwidow.surge.sh/examples/external_data.json
