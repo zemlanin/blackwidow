@@ -3,7 +3,6 @@
 import _ from 'lodash'
 import {Subject, BehaviorSubject, Observable} from 'rx'
 import {DOM as RxDOM} from 'rx-dom'
-import mockDashes from './mockDashes'
 
 function getAjaxSteam(url) {
   return RxDOM.ajax({
@@ -16,15 +15,9 @@ function getAjaxSteam(url) {
 }
 
 export function getDash() {
-  var id
   var dashStream
 
-  if (location.hash) {
-    if (location.hash.match(/^#id[0-9a-f]{1,10}$/i)) {
-      id = location.hash.replace(/^#id/, '')
-      return Observable.return(mockDashes[id] || mockDashes[0])
-    }
-
+  if (location.hash && location.hash.match(/^#(https?|file):/)) {
     if (location.hash.match(/^#(https?|file):/)) {
       let url = location.hash.replace(/^#/, '')
       dashStream = getAjaxSteam(url)
@@ -39,24 +32,24 @@ export function getDash() {
       .map(file => JSON.parse(file.content))
   }
 
-  if (dashStream) {
-    return dashStream
-      .catch(err => Observable.return({
-        "widgets": {
-          "error": {
-            "type": "text",
-            "container": {
-              "position": [0, 0],
-              "size": [10, 10],
-              "background": "red",
-            },
-            "data": {"text": err.message},
-          },
-        },
-      }))
+  if (!dashStream) {
+    dashStream = getAjaxSteam('./examples/mockDashes.json')
   }
 
-  return Observable.return(mockDashes[0])
+  return dashStream
+    .catch(err => Observable.return({
+      "widgets": {
+        "error": {
+          "type": "text",
+          "container": {
+            "position": [0, 0],
+            "size": [10, 10],
+            "background": "red",
+          },
+          "data": {"text": err.message},
+        },
+      },
+    }))
 }
 
 function StoreStream(name) {

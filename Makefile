@@ -50,7 +50,7 @@ dist/js/core.js: package.json
 lint:
 	$(eslint) $(src)/js
 
-dist/js/cast.js: src/js/*.js src/js/*.json
+dist/js/cast.js: src/js/*.js
 	mkdir -p $(dir $@)
 
 	set -o pipefail \
