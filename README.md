@@ -3,9 +3,9 @@ dashboard. works better with [hawkeye](http://github.com/zemlanin/hawkeye) serve
 
 ## setup
 ```bash
-npm install
-make          # recompiles
-make serve    # starts a server at http://127.0.0.1:8000
+npm install   # install dependencies
+make          # recompile
+make serve    # start a server at http://127.0.0.1:8000
 make deploy   # deploy via surge.sh
 ```
 
