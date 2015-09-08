@@ -1,6 +1,5 @@
 'use strict'
 
-import R from 'ramda'
 import Rx from 'rx'
 import _ from 'lodash'
 import {DOM as RxDOM} from 'rx-dom'
@@ -26,14 +25,14 @@ var endpoints = dashStore.pull
   .map(({widgets}) => widgets || {})
   .startWith({})
   .distinctUntilChanged()
-  .map(R.pickBy(R.has('endpoint')))
+  .map(widgets => _.pick(widgets, w => _.has(w, 'endpoint')))
   .bufferWithCount(2, 1)
   .map(([prev, cur]) => ({
-    added: R.pick(R.difference(R.keys(cur), R.keys(prev)), cur),
-    removed: R.pick(R.difference(R.keys(prev), R.keys(cur)), prev),
+    added: _.pick(cur, _.difference(_.keys(cur), _.keys(prev))),
+    removed: _.pick(prev, _.difference(_.keys(prev), _.keys(cur))),
   }))
 
-var endpointAdded = endpoints.pluck('added').flatMap(R.toPairs)
+var endpointAdded = endpoints.pluck('added').flatMap(_.pairs)
 
 var endpointSchedules = endpointAdded
   .filter(([widgetId, widget]) =>
@@ -61,7 +60,7 @@ function endpointMapper(data, result, mappingFrom, mappingTo) {
 
   if (_.isObject(mappingFrom)) {
     if (mappingFrom._path) {
-      dataValue = R.path(mappingFrom._path.split('.'), data)
+      dataValue = _.get(data, mappingFrom._path)
     } else if (_.isString(data)) {
       dataValue = data
     } else {
@@ -72,7 +71,7 @@ function endpointMapper(data, result, mappingFrom, mappingTo) {
       dataValue = mappingFrom._format.replace('{}', dataValue)
     }
   } else if (mappingFrom) {
-    dataValue = R.path(mappingFrom.split('.'), data)
+    dataValue = _.get(data, mappingFrom)
   } else {
     dataValue = data
   }
@@ -108,6 +107,6 @@ endpointRequests
   // .do(v => console.log(v))
   .filter(r => r && !r.err)
   .subscribe(
-    ({widgetId, data}) => dashStore.push(['widgets', widgetId, 'data'], data),
+    ({widgetId, data}) => dashStore.push(`widgets.${widgetId}.data`, data),
     error => console.error(error)
   )

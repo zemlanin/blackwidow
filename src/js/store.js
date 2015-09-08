@@ -1,6 +1,5 @@
 'use strict'
 
-import R from 'ramda'
 import _ from 'lodash'
 import {Subject, BehaviorSubject, Observable} from 'rx'
 import {DOM as RxDOM} from 'rx-dom'
@@ -68,7 +67,7 @@ function StoreStream(name) {
     .filter(v => v && v.length === 2)
     .scan({}, (acc, [path, value]) => _.merge(
       acc,
-      R.assocPath(path, value, acc)
+      _.set({}, path, value)
     ))
     .subscribe(dataStream)
 
