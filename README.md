@@ -29,28 +29,28 @@ Dashboard is 10×10 table and described by JSON object:
     * `{Container}` **Widget.container**: widget container object
 
         ```
-                 x →
-           [0, 0]__1__2__3__4__5__6__7__8__9__[10, 0]
-            y   |                             |
-            ↓   1                             |
-                |                             |
-                2     ..........              |      `.` => {size: [3, 1], position [3, 2]}
-                |     ..........              |
-                3     ..........              |
-                |                             |
-                4                             |
-                |                             |
-                5#####################        |      `#` => {size: [7, 1], position [0, 5]}
-                |#####################        |
-                6#####################        |
-                |                             |
-                7                             |
-                |                             |
-                8xxxxxx                       |      `x` => {size: [2, 2], position [0, 8]}
-                |xxxxxx                       |
-                9xxxxxx                       |
-                |xxxxxx                       |
-          [0, 10]xxxxxx_______________________|
+               x →
+         [0, 0]__1__2__3__4__5__6__7__8__9__[10, 0]
+          y   |                             |
+          ↓   1                             |
+              |                             |
+              2     ..........              |      `.` => {size: [3, 1], position [3, 2]}
+              |     ..........              |
+              3     ..........              |
+              |                             |
+              4                             |
+              |                             |
+              5#####################        |      `#` => {size: [7, 1], position [0, 5]}
+              |#####################        |
+              6#####################        |
+              |                             |
+              7                             |
+              |                             |
+              8xxxxxx                       |      `x` => {size: [2, 2], position [0, 8]}
+              |xxxxxx                       |
+              9xxxxxx                       |
+              |xxxxxx                       |
+        [0, 10]xxxxxx_______________________|
         ```
 
         * `{number[]}` **Container.size**: widget size in [x, y] format (see example above)
@@ -73,10 +73,10 @@ Dashboard is 10×10 table and described by JSON object:
                 * `{string?}` **PayloadFieldMapping._format**: base string for WidgetData field value. `{}` is replaced with data from `payload[PayloadFieldMapping._path]`
 
                 ```json
-                    {
-                        "_path": "main.temp", // take payload.main.temp data
-                        "_format": "{}°C"     // and insert it in a place of {}
-                    }
+                {
+                    "_path": "main.temp", // take payload.main.temp data
+                    "_format": "{}°C"     // and insert it in a place of {}
+                }
                 ```
 
 ## demo
