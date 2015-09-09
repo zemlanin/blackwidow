@@ -12,7 +12,7 @@ make deploy   # deploy via surge.sh
 ## dashboard api
 Dashboard is 10×10 table and described by JSON object:
 
-```json
+```json5
 {
     "widgets": {
         "bam": {
@@ -72,7 +72,7 @@ Dashboard is 10×10 table and described by JSON object:
                 * `{string}` **PayloadFieldMapping._path**: source of WidgetData field value
                 * `{string?}` **PayloadFieldMapping._format**: base string for WidgetData field value. `{}` is replaced with data from `payload[PayloadFieldMapping._path]`
 
-                ```json
+                ```json5
                 {
                     "_path": "main.temp", // take payload.main.temp data
                     "_format": "{}°C"     // and insert it in a place of {}
