@@ -22,11 +22,11 @@ Dashboard is 10×10 table and described by JSON object:
 }
 ```
 
-* `{Object.<string, Object>}` **dashboard**: full dashboard. available keys: `"widgets"`
+* `{Object.<string, Object>}` **dashboard**: full dashboard
 * `{Object.<string, Widget>}` **dashboard.widgets**: object with widgets. keys are used to identify widgets
-* `{Widget}` **dashboard.widgets[key]**: widget description. available keys: `"type"`, `"container"`, `"endpoint"`, `"data"`
+* `{Widget}` **dashboard.widgets[key]**: widget description
     * `{string}` **Widget.type**: widget type. available values: `"text"`, `"image"`
-    * `{Container}` **Widget.container**: widget container object. available keys: `"position"`, `"size"`, `"fontSize"`, `"debug"`
+    * `{Container}` **Widget.container**: widget container object
 
         ```
                  x →
@@ -57,10 +57,27 @@ Dashboard is 10×10 table and described by JSON object:
         * `{number[]}` **Container.position**: position of top left corner of a widget in [x, y] format (see example above)
         * `{string}` **Container.fontSize**: font size for text in widget. em values are recommended
         * `{string}` **Container.debug**: widget border color if config.debug is true
-    * `{Endpoint}` **Widget.endpoint**: widget http(s) endpoint object
-        * *TODO*
     * `{WidgetData}` **Widget.data**: widget displayed information. keys depend on Widget.type
-        * *TODO*
+        * `{string?}` **WidgetData.note**: text if lower right corner of a widget. its fontSize is equal half of `Container.fontSize`
+        * `{string?}` **WidgetData.text**: text for `Widget.type = "text"`
+        * `{string?}` **WidgetData.src**: image url for `Widget.type = "image"`
+    * `{Endpoint}` **Widget.endpoint**: widget http(s) endpoint object
+        * `{string}` **Endpoint.url**: url with WidgetData
+        * `{string?}` **Endpoint.method**: HTTP method for WidgetData requests. `"GET"` by default
+        * `{Schedule}` **Endpoint.schedule**: schudule for updating WidgetData
+            * `{string[]}` **Schedule.type**: schedule types. availale values: `"timeInterval"`
+            * `{number?}` **Schedule.timeInterval**: interval between requests in seconds
+        * `{Object.<string, PayloadFieldMapping>?}` **Endpoint.map**: mapping of endpoint payload to widget data fields. keys are the names of WidgetData field (for example, `"note"`)
+            * `{Object|string}` **PayloadFieldMapping**: mapping rules for a single WidgetData field. string-y PayloadFieldMapping's value is a shortcut for `{"_path": value}`
+                * `{string}` **PayloadFieldMapping._path**: source of WidgetData field value
+                * `{string?}` **PayloadFieldMapping._format**: base string for WidgetData field value. `{}` is replaced with data from `payload[PayloadFieldMapping._path]`
+
+                ```json
+                    {
+                        "_path": "main.temp", // take payload.main.temp data
+                        "_format": "{}°C"     // and insert it in a place of {}
+                    }
+                ```
 
 ## demo
 * https://blackwidow.surge.sh/
