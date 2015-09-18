@@ -49,7 +49,7 @@
         "debug": "orange"
       },
       "endpoint": {
-        "url": "http://46.101.221.64:8080/text/default",
+        "url": "http://bwd.cat/text/default",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 600
@@ -93,7 +93,7 @@
         "debug": "orange"
       },
       "endpoint": {
-        "url": "http://46.101.221.64:8080/text/quote",
+        "url": "http://bwd.cat/text/quote",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 1200
@@ -111,7 +111,7 @@
         "debug": "maroon"
       },
       "endpoint": {
-        "url": "http://46.101.221.64:8080/text/gif",
+        "url": "http://bwd.cat/text/gif",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 900
@@ -133,7 +133,7 @@
         "fontSize": "10em"
       },
       "endpoint": {
-        "url": "http://46.101.221.64:8080/text/uno",
+        "url": "http://bwd.cat/text/uno",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 1800
