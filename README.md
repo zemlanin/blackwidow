@@ -1,5 +1,5 @@
 # blackwidow
-dashboard. works better with [hawkeye](http://github.com/zemlanin/hawkeye) server
+dashboard. works better with [hawkeye](http://github.com/zemlanin/hawkeye)/[quicksilver](http://github.com/zemlanin/quicksilver) server
 
 ## setup
 ```bash

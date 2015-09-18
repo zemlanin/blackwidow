@@ -49,8 +49,7 @@
         "debug": "orange"
       },
       "endpoint": {
-        "url": "https://blackwidow.parseapp.com/text?type=default",
-        "method": "POST",
+        "url": "http://46.101.221.64:8080/text/default",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 600
@@ -94,8 +93,7 @@
         "debug": "orange"
       },
       "endpoint": {
-        "url": "https://blackwidow.parseapp.com/text?type=quote",
-        "method": "POST",
+        "url": "http://46.101.221.64:8080/text/quote",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 1200
@@ -113,8 +111,7 @@
         "debug": "maroon"
       },
       "endpoint": {
-        "url": "https://blackwidow.parseapp.com/text?type=gif",
-        "method": "POST",
+        "url": "http://46.101.221.64:8080/text/gif",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 900
@@ -136,8 +133,7 @@
         "fontSize": "10em"
       },
       "endpoint": {
-        "url": "https://blackwidow.parseapp.com/text?type=uno",
-        "method": "POST",
+        "url": "http://46.101.221.64:8080/text/uno",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 1800
