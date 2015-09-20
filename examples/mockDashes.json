@@ -8,15 +8,14 @@
         "debug": "green"
       },
       "endpoint": {
-        "url": "https://blackwidow.parseapp.com/ready",
-        "method": "POST",
+        "url": "https://bwd.cat/extras/ready",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 300
         },
         "map": {
           "src": {
-            "_format": "http://blackwidow.parseapp.com/{}.gif",
+            "_format": "https://blackwidow.parseapp.com/{}.gif",
             "_path": "text"
           }
         }
