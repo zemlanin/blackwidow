@@ -8,7 +8,7 @@
         "debug": "green"
       },
       "endpoint": {
-        "url": "https://bwd.cat/extras/ready",
+        "url": "https://bwd.cat/text/ready",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 300
@@ -29,15 +29,14 @@
         "debug": "green"
       },
       "endpoint": {
-        "url": "https://blackwidow.parseapp.com/duty",
-        "method": "POST",
+        "url": "https://bwd.cat/text/duty",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 3600
         }
       },
       "data": {
-        "note": "/duty"
+        "note": "duty"
       }
     },
     "defaultVersion": {
@@ -55,7 +54,7 @@
         }
       },
       "data": {
-        "note": "/text default"
+        "note": "default"
       }
     },
     "weather": {
@@ -99,7 +98,7 @@
         }
       },
       "data": {
-        "note": "/text quote"
+        "note": "quote"
       }
     },
     "gif": {
@@ -120,7 +119,7 @@
         }
       },
       "data": {
-        "note": "/text gif"
+        "note": "gif"
       }
     },
     "uno": {
@@ -139,7 +138,7 @@
         }
       },
       "data": {
-        "note": "/text uno"
+        "note": "uno"
       }
     },
     "productionUA": {
