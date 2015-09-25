@@ -17,7 +17,6 @@ function _deepFreeze(o) {
 }
 
 function _valuesMapper(event) {
-
   var data = JSON.parse(event.data.replace(/}.*$/, '}'))
   _deepFreeze(data)
   return data
@@ -80,9 +79,9 @@ function getWsStream(wsUrl) {
   }())
 
   var result = {
-    incomingStream: incomingStream,
-    outgoingStream: outgoingStream,
-    connectedProperty: connectedProperty,
+    incomingStream: incomingStream.share(),
+    outgoingStream: outgoingStream.share(),
+    connectedProperty: connectedProperty.share(),
   }
 
   wsRegistry[wsUrl] = result

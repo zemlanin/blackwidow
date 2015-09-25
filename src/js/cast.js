@@ -115,17 +115,11 @@ endpointRequests
     })
     .map(data => widget.endpoint.plain ? data.response : JSON.parse(data.response))
     .filter(r => r)
-    .map(data => {
-      if (widget.endpoint.map) {
-        return _.reduce(
-          widget.endpoint.map,
-          _.partial(endpointMapper, data),
-          _.assign({}, widget.data)
-        )
-      }
-
-      return _.assign({}, widget.data, data)
-    })
+    .map(data => _.reduce(
+      widget.endpoint.map || [],
+      _.partial(endpointMapper, data),
+      _.assign({}, widget.data, data)
+    ))
     .map(data => ({widgetId, data}))
     .catch(err => Rx.Observable.return({err: err}))
   )
