@@ -6,6 +6,7 @@ import {DOM as RxDOM} from 'rx-dom'
 import React from 'react'
 
 import {getStream, getDash} from './store'
+import {getWsStream} from './ws'
 import Dash from './components/dash'
 
 var dashStore = getStream('dashStore')
@@ -50,8 +51,31 @@ var endpointSchedules = endpointAdded
     .map([widgetId, widget])
   )
 
+var websockets = dashStore.pull
+  .map(({widgets}) => widgets || {})
+  .startWith({})
+  .map(widgets => _.pick(widgets, w => _.has(w, 'data.ws.url')))
+  .distinctUntilChanged()
+  .bufferWithCount(2, 1)
+  .map(([prev, cur]) => ({
+    added: _.pick(cur, _.difference(_.keys(cur), _.keys(prev))),
+    removed: _.pick(prev, _.difference(_.keys(prev), _.keys(cur))),
+  }))
+
+var websocketsAdded = websockets.pluck('added').flatMap(_.pairs)
+var websocketsRemoved = websockets.pluck('removed').flatMap(_.pairs)
+var websocketsUpdates = websocketsAdded
+  .flatMap(([widgetId, widget]) => getWsStream(widget.data.ws.url)
+    .incomingStream
+    .takeUntil(
+      websocketsRemoved.filter(([k, v]) => k === widgetId)
+    )
+    .map([widgetId, widget])
+  )
+
 var endpointRequests = Rx.Observable.merge(
   endpointAdded,
+  websocketsUpdates,
   endpointSchedules
 )
 
