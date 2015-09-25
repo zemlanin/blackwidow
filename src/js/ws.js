@@ -65,10 +65,7 @@ function getWsStream(wsUrl) {
   var outgoingStream = new Rx.Subject()
   var incomingStream = wsProperty
     .filter(_.isObject)
-    .flatMap(function (ws) {
-      console.log('getWsStream', wsUrl)
-      return Rx.Observable.fromEvent(ws, 'message').map(_valuesMapper)
-    })
+    .flatMap(ws => Rx.Observable.fromEvent(ws, 'message').map(_valuesMapper))
   var connectedProperty = wsProperty
     .map(({readyState}) => readyState === 1)
 

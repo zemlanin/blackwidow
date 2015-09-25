@@ -67,6 +67,10 @@ var websocketsRemoved = websockets.pluck('removed').flatMap(_.pairs)
 var websocketsUpdates = websocketsAdded
   .flatMap(([widgetId, widget]) => getWsStream(widget.data.ws.url)
     .incomingStream
+    .filter(msg => _.every(_.map(
+      widget.data.ws.conds,
+      cond => _.where([msg], cond)
+    )))
     .takeUntil(
       websocketsRemoved.filter(([k, v]) => k === widgetId)
     )
