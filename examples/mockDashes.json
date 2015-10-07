@@ -150,13 +150,13 @@
         "fontSize": "5em"
       },
       "endpoint": {
-        "url": "https://ai.uaprom/stats/uaprom",
+        "url": "https://ai.uaprom/overall",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 60
         },
         "map": {
-          "text": "last_migration.target_title"
+          "text": "projects.uaprom.version_title"
         }
       },
       "data": {
@@ -172,13 +172,13 @@
         "fontSize": "5em"
       },
       "endpoint": {
-        "url": "https://ai.uaprom/stats/ruprom",
+        "url": "https://ai.uaprom/overall",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 60
         },
         "map": {
-          "text": "last_migration.target_title"
+          "text": "projects.ruprom.version_title"
         }
       },
       "data": {
@@ -194,13 +194,13 @@
         "fontSize": "5em"
       },
       "endpoint": {
-        "url": "https://ai.uaprom/stats/byprom",
+        "url": "https://ai.uaprom/overall",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 60
         },
         "map": {
-          "text": "last_migration.target_title"
+          "text": "projects.byprom.version_title"
         }
       },
       "data": {
@@ -216,13 +216,13 @@
         "fontSize": "5em"
       },
       "endpoint": {
-        "url": "https://ai.uaprom/stats/kzprom",
+        "url": "https://ai.uaprom/overall",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 60
         },
         "map": {
-          "text": "last_migration.target_title"
+          "text": "projects.kzprom.version_title"
         }
       },
       "data": {
@@ -238,13 +238,13 @@
         "fontSize": "5em"
       },
       "endpoint": {
-        "url": "https://ai.uaprom/stats/mdprom",
+        "url": "https://ai.uaprom/overall",
         "schedule": {
           "type": ["timeInterval"],
           "timeInterval": 60
         },
         "map": {
-          "text": "last_migration.target_title"
+          "text": "projects.mdprom.version_title"
         }
       },
       "data": {
