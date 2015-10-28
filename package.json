@@ -7,7 +7,8 @@
   "readme": "TBA",
   "dependencies": {
     "lodash": "^3.10.1",
-    "react": "^0.13.3",
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0",
     "rx": "^2.5.2",
     "rx-dom": "^6.0.0"
   },
@@ -25,7 +26,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "make"
+    "postinstall": "touch package.json; make"
   },
   "author": "Anton Verinov <github@zemlan.in>",
   "license": "WTFPL"

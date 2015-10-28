@@ -4,6 +4,7 @@ import Rx from 'rx'
 import _ from 'lodash'
 import {DOM as RxDOM} from 'rx-dom'
 import React from 'react'
+import ReactDOM from 'react-dom'
 
 import {getStream, getDash} from './store'
 import {getWsStream} from './ws'
@@ -17,7 +18,7 @@ getDash()
 // dashStore.pull.subscribe(console.log.bind(console, 'dS'))
 
 dashStore.pull
-  .subscribe(dashData => React.render(
+  .subscribe(dashData => ReactDOM.render(
     React.createElement(Dash, dashData),
     document.getElementById('dash')
   ))
