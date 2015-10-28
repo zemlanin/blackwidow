@@ -7,6 +7,7 @@ import {debug} from 'config'
 import Text from './widgets/text'
 import wImage from './widgets/image'
 import wTable from './widgets/table'
+import wGraph from './widgets/graph'
 
 export default React.createClass({
   displayName: 'Dash',
@@ -31,6 +32,9 @@ export default React.createClass({
             break
           case 'table':
             component = wTable
+            break
+          case 'graph':
+            component = wGraph
             break
         }
 

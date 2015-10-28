@@ -50,7 +50,8 @@ dist/js/core.js: package.json
 lint:
 	$(eslint) $(src)/js
 
-dist/js/cast.js: src/js/*.js
+# too lazy
+dist/js/cast.js: src/js/*.js src/js/*/*.js src/js/*/*/*.js
 	mkdir -p $(dir $@)
 
 	set -o pipefail \
