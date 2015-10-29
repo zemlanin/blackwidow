@@ -54,7 +54,7 @@ export default React.createClass({
           },
           React.createElement(
             component,
-            {data: widget.data, container}
+            {data: widget.data, container, widgetId}
           )
         )
       })

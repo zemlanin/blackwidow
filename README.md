@@ -1,5 +1,5 @@
 # blackwidow
-dashboard. works best with [quicksilver](http://github.com/zemlanin/quicksilver) server
+dashboard. works best with [quicksilver](http://github.com/zemlanin/quicksilver) server, but you can use any backend to supply data for widgets
 
 ## setup
 ```bash
@@ -84,9 +84,11 @@ Dashboard is 10×10 table and described by JSON object:
 * https://blackwidow.surge.sh/?gist=00fd9405043a98c96a68
 * https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/static_data.json
 * https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/external_data.json
+* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/graphs.json
 
 ## example dashes
 * https://blackwidow.surge.sh/examples/mockDashes.json
 * https://gist.github.com/zemlanin/00fd9405043a98c96a68
 * https://blackwidow.surge.sh/examples/static_data.json
 * https://blackwidow.surge.sh/examples/external_data.json
+* https://blackwidow.surge.sh/examples/graphs.json

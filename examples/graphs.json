@@ -1,0 +1,62 @@
+{
+  "widgets": {
+    "glif": {
+      "type": "graph",
+      "container": {
+        "position": [0, 0],
+        "size": [3, 10],
+        "debug": "maroon"
+      },
+      "data": {
+        "note": "gif",
+        "style": "bar-chart",
+        "baseValues": {
+          "min": 0,
+          "max": 20
+        },
+        "values": [
+          {"color": "#FFFFFF", "value": 14, "text": "v0"},
+          {"color": "#FF0000", "value": 12, "text": "v1"},
+          {"color": "#00FF00", "value": 20, "text": "v2"},
+          {"color": "#0000FF", "value": 8, "text": "v3"}
+        ]
+      }
+    },
+    "gif": {
+      "type": "graph",
+      "container": {
+        "position": [3, 0],
+        "size": [4, 10],
+        "debug": "maroon"
+      },
+      "data": {
+        "note": "gif",
+        "style": "bar-chart",
+        "sortBy": "value",
+        "values": [
+          1, 3, 5, -5
+        ]
+      }
+    },
+    "gilf": {
+      "type": "graph",
+      "container": {
+        "position": [7, 0],
+        "size": [3, 10],
+        "debug": "maroon"
+      },
+      "data": {
+        "note": "gif",
+        "style": "bar-chart",
+        "sortBy": "value",
+
+        "values": [
+          {"value": 14, "text": "1C2D19F4CCA5"},
+          {"value": 12, "text": "9E765EE72D1F"},
+          {"value": 16, "text": "389A3A352CD1"},
+          {"value": 8, "text": "42C651115CD9"}
+        ]
+      }
+    }
+  }
+}

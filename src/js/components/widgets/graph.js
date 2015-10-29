@@ -1,23 +1,120 @@
 'use strict'
 
+import _ from 'lodash'
 import React from 'react'
 
-export default React.createClass({
-  render: function() {
-    var {data} = this.props
-    data = data || {}
+const TOP_BAR_LINE_Y = 150
+const BOTTOM_BAR_LINE_Y = 650
 
-    return React.createElement("svg", {
-        xmlns: "http://www.w3.org/svg/2000",
-        width: "100%",
-        height: "100%",
-        viewBox: "0 0 100 100",
-        preserveAspectRatio: "xMaxYMax",
-      },
-      React.createElement("path", {
-        fill: "#DCDCDC",
-        d: "M 28.053176443624363 0 L 35.94682355637564 0 L 37.86768066444777 10.796926552500324 A 22 22 0 0 1 42.84376022905525 12.858086195608351 L 51.8365912971095 6.5817573011704615 L 57.41824269882954 12.1634087028905 L 51.14191380439165 21.156239770944754 A 22 22 0 0 1 53.203073447499676 26.132319335552236 L 64 28.053176443624363 L 64 35.94682355637564 L 53.203073447499676 37.86768066444777 A 22 22 0 0 1 51.14191380439165 42.84376022905525 L 57.41824269882954 51.8365912971095 L 51.8365912971095 57.41824269882954 L 42.84376022905525 51.14191380439165 A 22 22 0 0 1 37.86768066444777 53.203073447499676 L 35.94682355637564 64 L 28.053176443624363 64 L 26.13231933555224 53.203073447499676 A 22 22 0 0 1 21.15623977094475 51.14191380439165 L 12.1634087028905 57.41824269882954 L 6.5817573011704615 51.8365912971095 L 12.858086195608351 42.84376022905525 A 22 22 0 0 1 10.796926552500327 37.867680664447775 L 0 35.94682355637565 L 0 28.05317644362437 L 10.79692655250032 26.132319335552246 A 22 22 0 0 1 12.858086195608351 21.156239770944744 L 6.581757301170455 12.163408702890502 L 12.163408702890493 6.581757301170461 L 21.156239770944747 12.858086195608351 A 22 22 0 0 1 26.132319335552232 10.796926552500324 M 32 20 A 12 12 0 0 0 32 44 A 12 12 0 0 0 32 20",
-      })
+const LEFT_BAR_LINE_X = 100
+const RIGHT_BAR_LINE_X = 900
+
+const BAR_SPACING = 25
+
+const COLORS = [
+  '#00A500',
+  '#0FF',
+  '#F0F',
+  '#FF0',
+  '#F00',
+  '#00F',
+]
+
+export default ({data, widgetId}) => {
+  data = data || {}
+
+  var {values, baseValues, sortBy} = data
+  baseValues = baseValues || {}
+  values = _.map(values, v => v.value ? v : {value: v})
+
+  if (sortBy) {
+    values = _.sortByOrder(
+      values,
+      [sortBy.replace(/^-/, '')],
+      [!sortBy.startsWith('-')]
     )
   }
-})
+
+  var {min, max} = baseValues
+
+  if (min === undefined) {
+    min = _.min(values, 'value').value
+  }
+
+  if (max === undefined) {
+    max = _.max(values, 'value').value
+  }
+
+  var baseDelta = max - min
+  const sizeCoef = (BOTTOM_BAR_LINE_Y - TOP_BAR_LINE_Y) / baseDelta
+
+  var lineY = BOTTOM_BAR_LINE_Y
+  if (min < 0) {
+    lineY = TOP_BAR_LINE_Y + max * sizeCoef
+  }
+
+  var spaceBetweenBars = (RIGHT_BAR_LINE_X - LEFT_BAR_LINE_X - BAR_SPACING) / values.length
+
+  return React.createElement("svg", {
+      xmlns: "http://www.w3.org/svg/2000",
+      width: "100%",
+      height: "100%",
+      viewBox: "0 0 1000 1000",
+      preserveAspectRatio: "xMidYMid",
+    },
+    React.createElement("line", {
+      stroke: "#555",
+      x1: LEFT_BAR_LINE_X,
+      x2: RIGHT_BAR_LINE_X,
+      y1: lineY + 3,
+      y2: lineY + 3,
+      strokeWidth: 6,
+    }),
+    _.map(values, (el, i) => {
+      const value = el.value
+      const color = el.color || COLORS[i % COLORS.length]
+
+      var x = LEFT_BAR_LINE_X + BAR_SPACING + spaceBetweenBars * i
+      var y, height
+
+      if (value < 0) {
+        y = lineY
+        height = -value * sizeCoef
+      } else {
+        y = TOP_BAR_LINE_Y + (max - value) * sizeCoef
+        height = lineY - y
+      }
+
+      return [
+        React.createElement("rect", {
+          key: '0' + i,
+          fill: color,
+          x: x,
+          y: y,
+          width: spaceBetweenBars - BAR_SPACING,
+          height: Math.max(height, 6),
+          "data-value": value,
+        }),
+        React.createElement("path", {
+          key: '1' + i,
+          id: `path_bar_${widgetId}_${i}`,
+          d: [
+            `M ${x + BAR_SPACING} ${BOTTOM_BAR_LINE_Y + 25 * 2}`,
+            `L ${800 + x + BAR_SPACING} ${300 + BOTTOM_BAR_LINE_Y + 25 * 2}`
+          ].join(' ')
+        }),
+        React.createElement("text", {
+            key: '2' + i,
+            fill: color,
+            stroke: color,
+            fontSize: 50,
+          },
+          React.createElement("textPath", {
+            xlinkHref: `#path_bar_${widgetId}_${i}`,
+          }, el.text)
+        ),
+      ]
+    }),
+    null // this allows trailing commas
+  )
+}
