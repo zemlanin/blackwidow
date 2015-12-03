@@ -4,7 +4,7 @@
       "type": "graph",
       "container": {
         "position": [0, 0],
-        "size": [3, 10],
+        "size": [3, 5],
         "debug": "maroon"
       },
       "data": {
@@ -64,12 +64,26 @@
         "note": "gif",
         "style": "bar-chart",
         "sortBy": "value",
-
         "values": [
           {"value": 14, "text": "1C2D19F4CCA5"},
           {"value": 12, "text": "9E765EE72D1F"},
           {"value": 16, "text": "389A3A352CD1"},
           {"value": 8, "text": "42C651115CD9"}
+        ]
+      }
+    },
+    "glf": {
+      "type": "graph",
+      "container": {
+        "position": [0, 5],
+        "size": [3, 5],
+        "debug": "maroon"
+      },
+      "data": {
+        "note": "gif",
+        "style": "line-chart",
+        "values": [
+          1, 3, 5, -5, 10
         ]
       }
     }

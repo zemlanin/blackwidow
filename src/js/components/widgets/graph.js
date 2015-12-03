@@ -31,8 +31,8 @@ function getTextHeightShift(text, width) {
         : valueLabelWidth * Math.sin(Math.acos(width / valueLabelWidth))
 }
 
-export default ({data, widgetId}) => {
-  var {values, baseValues, sortBy} = data || {}
+function barChart(data, widgetId) {
+  let {values, baseValues, sortBy} = data || {}
   baseValues = baseValues || {}
   values = _.map(values, v => v.value ? v : {value: v})
 
@@ -44,7 +44,7 @@ export default ({data, widgetId}) => {
     )
   }
 
-  var {min, max} = baseValues
+  let {min, max} = baseValues
 
   if (min === undefined) {
     min = _.min(values, 'value').value
@@ -56,7 +56,7 @@ export default ({data, widgetId}) => {
 
   const sizeCoef = (BOTTOM_BAR_LINE_Y - TOP_BAR_LINE_Y) / (max - min)
 
-  var lineY = BOTTOM_BAR_LINE_Y
+  let lineY = BOTTOM_BAR_LINE_Y
   if (min < 0) {
     lineY = TOP_BAR_LINE_Y + max * sizeCoef
   }
@@ -156,4 +156,116 @@ export default ({data, widgetId}) => {
     }),
     null // this allows trailing commas
   )
+}
+
+function lineChart(data, widgetId) {
+  let {values, baseValues, sortBy} = data || {}
+  baseValues = baseValues || {}
+  values = _.map(values, v => v.value ? v : {value: v})
+
+  if (sortBy) {
+    values = _.sortByOrder(
+      values,
+      [sortBy.replace(/^-/, '')],
+      [!sortBy.startsWith('-')]
+    )
+  }
+
+  let {min, max} = baseValues
+
+  if (min === undefined) {
+    min = _.min(values, 'value').value
+  }
+
+  if (max === undefined) {
+    max = _.max(values, 'value').value
+  }
+
+  const sizeCoef = (BOTTOM_BAR_LINE_Y - TOP_BAR_LINE_Y) / (max - min)
+
+  let lineY = BOTTOM_BAR_LINE_Y
+  if (min < 0) {
+    lineY = TOP_BAR_LINE_Y + max * sizeCoef
+  }
+
+  const spaceBetweenBars = (RIGHT_BAR_LINE_X - LEFT_BAR_LINE_X - BAR_SPACING) / values.length
+
+  const pathPoints = _.map(values, (el, i) => {
+    const x = LEFT_BAR_LINE_X + BAR_SPACING + spaceBetweenBars * (i + 0.5)
+
+    let value
+    if (el.value < min) {
+      value = min
+    } else if (el.value > max) {
+      value = max
+    } else {
+      value = el.value
+    }
+
+    const y = TOP_BAR_LINE_Y + (max - value) * sizeCoef
+    return {el, x, y}
+  })
+
+  return React.createElement("svg", {
+      xmlns: "http://www.w3.org/svg/2000",
+      width: "100%",
+      height: "100%",
+      viewBox: "0 0 1000 1000",
+      preserveAspectRatio: "xMidYMid",
+    },
+    React.createElement("line", {
+      stroke: "#555",
+      x1: LEFT_BAR_LINE_X,
+      x2: RIGHT_BAR_LINE_X,
+      y1: lineY + 3,
+      y2: lineY + 3,
+      strokeWidth: 6,
+    }),
+    React.createElement("path", {
+      stroke: "white",
+      fill: "none",
+      strokeWidth: 6,
+      d: _.map(pathPoints, ({x, y}, i) => {
+        if (i === 0) {
+          return `M ${x} ${y}`
+        }
+        return `L ${x} ${y}`
+      }).join(' ')
+    }),
+    _.map(pathPoints, ({x, y, el}, i) => {
+      const color = el.color || COLORS[i % COLORS.length]
+      return React.createElement("ellipse", {
+        key: 'value_wrapper_' + i,
+        cx: x,
+        cy: y,
+        rx: Math.max(getTextWidth('+'), getTextWidth(el.value) / 1.5),
+        ry: getTextWidth('+'),
+        fill: "black",
+        stroke: color,
+        strokeWidth: 6,
+      })
+    }),
+    _.map(pathPoints, ({x, y, el}, i) => {
+      const color = el.color || COLORS[i % COLORS.length]
+      return React.createElement("text", {
+        key: 'value_label_' + i,
+        x: x - (getTextWidth(el.value) / 2),
+        y: y + 18,
+        fill: color,
+        stroke: color,
+        fontSize: 50,
+      }, el.value)
+    }),
+    null // this allows trailing commas
+  )
+}
+
+export default ({data, widgetId}) => {
+  switch (data && data.style) {
+    case 'line-chart':
+      return lineChart(data, widgetId)
+    case 'bar-chart':
+    default:
+      return barChart(data, widgetId)
+  }
 }
