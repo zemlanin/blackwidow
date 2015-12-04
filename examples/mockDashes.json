@@ -83,22 +83,40 @@
         }
       }
     },
-    "quote": {
-      "type": "text",
+    "qa": {
+      "type": "graph",
       "container": {
         "position": [0, 2],
         "size": [6, 3],
         "debug": "orange"
       },
       "endpoint": {
-        "url": "https://bwd.cat/text/quote",
+        "method": "GET",
+        "url": "https://gist.githubusercontent.com/zemlanin/519918508bc9b0e9fe60/raw/ac8abcf6d3c6a294fa62cbb835792eff7892306d/qa.json",
         "schedule": {
           "type": ["timeInterval"],
-          "timeInterval": 1200
+          "timeInterval": 600
+        },
+        "map": {
+          "values": {
+            "_path": "stats",
+            "_map": {
+              "value": {
+                "_path": "points",
+                "_parseInt": true
+              }
+            }
+          }
         }
       },
       "data": {
-        "note": "quote"
+        "style": "line-chart",
+        "limit": 10,
+        "baseValues": {
+          "min": 0
+        },
+        "color": "white",
+        "note": "bugpoints"
       }
     },
     "gif": {

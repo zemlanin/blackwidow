@@ -24,7 +24,6 @@
     "curly": [2, "multi-line"],
     "radix": 2,
     "brace-style": [2, "1tbs", { "allowSingleLine": true }],
-    "func-style": [2, "declaration"],
     "key-spacing": 2,
     "no-constant-condition": 1,
     "no-unreachable": 2,

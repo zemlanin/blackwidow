@@ -96,6 +96,21 @@ function endpointMapper(data, result, mappingFrom, mappingTo) {
     if (mappingFrom._format) {
       dataValue = mappingFrom._format.replace('{}', dataValue)
     }
+
+    if (mappingFrom._parseInt) {
+      dataValue = parseInt(dataValue, 10)
+    }
+
+    if (mappingFrom._map) {
+      dataValue = _.map(
+        dataValue,
+        v => _.reduce(
+          mappingFrom._map,
+          _.partial(endpointMapper, v),
+          v || {}
+        )
+      )
+    }
   } else if (mappingFrom) {
     dataValue = _.get(data, mappingFrom)
   } else {

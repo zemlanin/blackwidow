@@ -61,6 +61,7 @@ Dashboard is 10×10 table and described by JSON object:
         * `string?` **WidgetData.note**: text if lower right corner of a widget. its fontSize is equal half of `Container.fontSize`
         * `string?` **WidgetData.text**: text for `Widget.type = "text"`
         * `string?` **WidgetData.src**: image url for `Widget.type = "image"`
+        * `Object[]?|number[]?` **WidgetData.values**: values for `Widget.type = "graph"`
     * `Endpoint` **Widget.endpoint**: widget http(s) endpoint object
         * `string` **Endpoint.url**: url with WidgetData
         * `string?` **Endpoint.method**: HTTP method for WidgetData requests. `"GET"` by default
@@ -71,9 +72,11 @@ Dashboard is 10×10 table and described by JSON object:
             * `Object|string` **PayloadFieldMapping**: mapping rules for a single WidgetData field. string-y PayloadFieldMapping's value is a shortcut for `{"_path": value}`
                 * `string` **PayloadFieldMapping._path**: source of WidgetData field value
                 * `string?` **PayloadFieldMapping._format**: base string for WidgetData field value. `{}` is replaced with data from `payload[PayloadFieldMapping._path]`
+                * `PayloadFieldMapping?` **PayloadFieldMapping._map**: mapping for values of array WidgetData field
+                * `bool?` **PayloadFieldMapping._parseInt**: should value be parsed as an integer
 
                 ```json5
-                {
+                {q
                     "_path": "main.temp", // take payload.main.temp data
                     "_format": "{}°C"     // and insert it in a place of {}
                 }
