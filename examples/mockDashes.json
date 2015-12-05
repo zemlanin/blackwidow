@@ -57,32 +57,6 @@
         "note": "default"
       }
     },
-    "weather": {
-      "type": "image",
-      "container": {
-        "position": [8, 0],
-        "size": [2, 2],
-        "debug": "orange",
-        "fontSize": "5em"
-      },
-      "endpoint": {
-        "url": "http://api.openweathermap.org/data/2.5/weather?q=Kiev&units=metric",
-        "schedule": {
-          "type": ["timeInterval"],
-          "timeInterval": 600
-        },
-        "map": {
-          "src": {
-            "_format": "http://openweathermap.org/img/w/{}.png",
-            "_path": "weather.0.icon"
-          },
-          "note": {
-            "_format": "{}°C",
-            "_path": "main.temp"
-          }
-        }
-      }
-    },
     "qa": {
       "type": "graph",
       "container": {
