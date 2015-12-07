@@ -227,6 +227,21 @@ function lineChart([sizeX, sizeY], data, widgetId) {
       y2: lineY + 3,
       strokeWidth: 6,
     }),
+    data.lines ? _.map(data.lines, ({x, y}, i) => {
+      let lineProps = {
+        key: "extraline_" + x + "_" + y,
+        stroke: "#555",
+        strokeWidth: 6,
+      }
+
+      if (y !== undefined) {
+        lineProps.x1 = LEFT_BAR_LINE_X(width)
+        lineProps.x2 = RIGHT_BAR_LINE_X(width)
+        lineProps.y1 = lineProps.y2 = TOP_BAR_LINE_Y(height) + y * sizeCoef + 3
+      }
+
+      return React.createElement("line", lineProps)
+    }) : null,
     React.createElement("path", {
       stroke: "white",
       fill: "none",
@@ -238,29 +253,28 @@ function lineChart([sizeX, sizeY], data, widgetId) {
         return `L ${x} ${y}`
       }).join(' ')
     }),
-    _.map(pathPoints, ({x, y, el}, i) => {
+    data.labelStyle === 'none' ? null : _.map(pathPoints, ({x, y, el}, i) => {
       const color = el.color || data.color || COLORS[i % COLORS.length]
-      return React.createElement("ellipse", {
-        key: 'value_wrapper_' + i,
-        cx: x,
-        cy: y,
-        rx: Math.max(getTextWidth('+'), getTextWidth(el.value) / 1.5),
-        ry: getTextWidth('+'),
-        fill: "black",
-        stroke: color,
-        strokeWidth: 6,
-      })
-    }),
-    _.map(pathPoints, ({x, y, el}, i) => {
-      const color = el.color || data.color || COLORS[i % COLORS.length]
-      return React.createElement("text", {
-        key: 'value_label_' + i,
-        x: x - (getTextWidth(el.value) / 2),
-        y: y + 18,
-        fill: color,
-        stroke: color,
-        fontSize: 50,
-      }, el.value)
+      return [
+        React.createElement("ellipse", {
+          key: 'value_wrapper_' + i,
+          cx: x,
+          cy: y,
+          rx: Math.max(getTextWidth('+'), getTextWidth(el.value) / 1.5),
+          ry: getTextWidth('+'),
+          fill: "black",
+          stroke: color,
+          strokeWidth: 6,
+        }),
+        React.createElement("text", {
+          key: 'value_label_' + i,
+          x: x - (getTextWidth(el.value) / 2),
+          y: y + 18,
+          fill: color,
+          stroke: color,
+          fontSize: 50,
+        }, el.value)
+      ]
     }),
     null // this allows trailing commas
   )

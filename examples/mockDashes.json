@@ -25,7 +25,7 @@
       "type": "text",
       "container": {
         "position": [1, 0],
-        "size": [4, 2],
+        "size": [3, 2],
         "debug": "green"
       },
       "endpoint": {
@@ -42,7 +42,7 @@
     "defaultVersion": {
       "type": "text",
       "container": {
-        "position": [5, 0],
+        "position": [4, 0],
         "size": [3, 2],
         "debug": "orange"
       },
@@ -57,11 +57,11 @@
         "note": "default"
       }
     },
-    "qa": {
+    "qa-graph": {
       "type": "graph",
       "container": {
-        "position": [0, 2],
-        "size": [6, 3],
+        "position": [7, 0],
+        "size": [2, 2],
         "debug": "orange"
       },
       "endpoint": {
@@ -85,12 +85,64 @@
       },
       "data": {
         "style": "line-chart",
-        "limit": 10,
         "baseValues": {
-          "min": 0
+          "min": 0,
+          "max": 800
         },
+        "lines": [
+          {"y": 0},
+          {"y": 800}
+        ],
+        "sortBy": "created",
         "color": "white",
-        "note": "bugpoints"
+        "note": "bugpoints",
+        "labelStyle": "none"
+      }
+    },
+    "qa": {
+      "type": "text",
+      "container": {
+        "position": [9, 0],
+        "size": [1, 2],
+        "debug": "orange",
+        "fontSize": "8em"
+      },
+      "endpoint": {
+        "method": "GET",
+        "url": "https://gist.githubusercontent.com/zemlanin/519918508bc9b0e9fe60/raw/ac8abcf6d3c6a294fa62cbb835792eff7892306d/qa.json",
+        "schedule": {
+          "type": ["timeInterval"],
+          "timeInterval": 600
+        },
+        "map": {
+          "text": {
+            "_path": "points",
+            "_parseInt": true
+          },
+          "note": {
+            "_path": "stats.0.points",
+            "_parseInt": true
+          }
+        }
+      },
+      "data": {}
+    },
+    "quote": {
+      "type": "text",
+      "container": {
+        "position": [0, 2],
+        "size": [6, 3],
+        "debug": "orange"
+      },
+      "endpoint": {
+        "url": "https://bwd.cat/text/quote",
+        "schedule": {
+          "type": ["timeInterval"],
+          "timeInterval": 1200
+        }
+      },
+      "data": {
+        "note": "quote"
       }
     },
     "gif": {
