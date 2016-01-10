@@ -2,7 +2,7 @@
   "name": "blackwidow",
   "version": "0.0.1",
   "description": "TBA",
-  "main": "src/js/client.js",
+  "main": "src/js/main.js",
   "repository": "zemlanin/blackwidow",
   "readme": "TBA",
   "dependencies": {

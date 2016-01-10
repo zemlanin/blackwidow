@@ -24,7 +24,7 @@ prepend-r = sed 's/\([^ ]*\)/-r \1/g' # prepending '-r' to each dependency
 prepend-x = sed 's/\([^ ]*\)/-x \1/g' # prepending '-x' to each dependency
 
 .PHONY: build
-build: dist_static dist/js/core.js dist/js/cast.js
+build: dist_static dist/js/core.js dist/js/main.js
 
 clean_dist:
 	rm -rf $(dist)
@@ -51,17 +51,17 @@ lint:
 	$(eslint) $(src)/js
 
 # too lazy
-dist/js/cast.js: src/js/*.js src/js/*/*.js src/js/*/*/*.js
+dist/js/main.js: src/js/*.js src/js/*/*.js src/js/*/*/*.js
 	mkdir -p $(dir $@)
 
 	set -o pipefail \
 	&& make lint \
 	&& echo $(dependencies) \
 		| $(prepend-x) \
-		| xargs $(browserify) $(src)/js/cast.js \
+		| xargs $(browserify) $(src)/js/main.js \
 			-t babelify \
 			-r $(config_json):config \
-		> $(dist)/js/cast.js
+		> $(dist)/js/main.js
 
 serve:
 	@echo serving at http://127.0.0.1:8000
@@ -74,7 +74,7 @@ serve_lan:
 watch:
 	# OS X 10.10: https://github.com/facebook/watchman/issues/68
 	watchman watch $(shell pwd)
-	watchman -- trigger $(shell pwd) rejs 'src/*.js' -- make dist/js/cast.js
+	watchman -- trigger $(shell pwd) rejs 'src/*.js' -- make dist/js/main.js
 	watchman -- trigger $(shell pwd) restatic 'src/*.html' -- make static
 
 unwatch:
