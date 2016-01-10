@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom'
 
 import {getStream, getDash} from './store'
 import {getWsStream} from './ws'
+import {messageBus} from './cast'
 import Dash from './components/dash'
 
 var dashStore = getStream('dashStore')
@@ -145,3 +146,9 @@ endpointRequests
     ({widgetId, data}) => dashStore.push(`widgets.${widgetId}.data`, data),
     error => console.error(error)
   )
+
+if (messageBus) {
+  messageBus
+    .filter(msg => msg === 'refresh')
+    .subscribe(msg => location.reload())
+}
