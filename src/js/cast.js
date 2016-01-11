@@ -2,6 +2,8 @@
 
 import Rx from 'rx'
 
+const {cast} = window
+
 if (cast && !window.castReceiverManager) {
   window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance()
   window.castMessageBus = window.castReceiverManager.getCastMessageBus('urn:x-cast:blackwidow')

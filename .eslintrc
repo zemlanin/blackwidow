@@ -6,8 +6,7 @@
   "globals": {
     "require": true,
     "module": true,
-    "process": true,
-    "cast": true
+    "process": true
   },
   "rules": {
     "quotes": "single",
