@@ -13,11 +13,13 @@ export default React.createClass({
   displayName: 'Dash',
 
   render: function() {
+    const [viewportX, viewportY] = (this.props.container || {}).size || [10, 10]
+
     return DOM.div(
       null,
       _.map(this.props.widgets, (widget, widgetId) => {
+        const {container} = widget
         var component
-        var {container} = widget
 
         if (container === void 0) {
           return ''
@@ -45,10 +47,10 @@ export default React.createClass({
               overflow: 'hidden',
               whiteSpace: 'nowrap',
 
-              left: 10 * container.position[0] + '%',
-              top: 10 * container.position[1] + '%',
-              width: 10 * container.size[0] + '%',
-              height: 10 * container.size[1] + '%',
+              left: (100 * container.position[0] / viewportX) + '%',
+              top: (100 * container.position[1] / viewportY) + '%',
+              width: (100 * container.size[0] / viewportX) + '%',
+              height: (100 * container.size[1] / viewportY) + '%',
               outline: debug && container.debug ? '1px solid ' + container.debug : '',
             }
           },

@@ -1,10 +1,13 @@
 {
+  "container": {
+    "size": [16, 9]
+  },
   "widgets": {
     "ready": {
       "type": "image",
       "container": {
         "position": [0, 0],
-        "size": [1, 2],
+        "size": [1.5, 1.5],
         "debug": "green"
       },
       "endpoint": {
@@ -24,8 +27,8 @@
     "duty": {
       "type": "text",
       "container": {
-        "position": [1, 0],
-        "size": [3, 2],
+        "position": [2, 0],
+        "size": [7, 1.5],
         "debug": "green"
       },
       "endpoint": {
@@ -42,8 +45,8 @@
     "defaultVersion": {
       "type": "text",
       "container": {
-        "position": [4, 0],
-        "size": [3, 2],
+        "position": [9, 0],
+        "size": [5, 2],
         "debug": "orange"
       },
       "endpoint": {
@@ -60,7 +63,7 @@
     "qa-graph": {
       "type": "graph",
       "container": {
-        "position": [7, 0],
+        "position": [14, 0],
         "size": [2, 2],
         "debug": "orange"
       },
@@ -99,39 +102,11 @@
         "labelStyle": "none"
       }
     },
-    "qa": {
-      "type": "text",
-      "container": {
-        "position": [9, 0],
-        "size": [1, 2],
-        "debug": "orange",
-        "fontSize": "8em"
-      },
-      "endpoint": {
-        "method": "GET",
-        "url": "https://gist.githubusercontent.com/zemlanin/519918508bc9b0e9fe60/raw/ac8abcf6d3c6a294fa62cbb835792eff7892306d/qa.json",
-        "schedule": {
-          "type": ["timeInterval"],
-          "timeInterval": 600
-        },
-        "map": {
-          "text": {
-            "_path": "points",
-            "_parseInt": true
-          },
-          "note": {
-            "_path": "stats.0.points",
-            "_parseInt": true
-          }
-        }
-      },
-      "data": {}
-    },
     "quote": {
       "type": "text",
       "container": {
-        "position": [0, 2],
-        "size": [6, 3],
+        "position": [0, 1.5],
+        "size": [9, 2.5],
         "debug": "orange"
       },
       "endpoint": {
@@ -148,8 +123,8 @@
     "gif": {
       "type": "image",
       "container": {
-        "position": [6, 2],
-        "size": [4, 8],
+        "position": [9, 2],
+        "size": [7, 7],
         "debug": "maroon"
       },
       "endpoint": {
@@ -169,8 +144,8 @@
     "uno": {
       "type": "text",
       "container": {
-        "position": [3, 5],
-        "size": [3, 5],
+        "position": [5, 4],
+        "size": [4, 5],
         "debug": "maroon",
         "fontSize": "10em"
       },
@@ -188,8 +163,8 @@
     "productionUA": {
       "type": "text",
       "container": {
-        "position": [0, 5],
-        "size": [3, 1],
+        "position": [0, 4],
+        "size": [5, 1],
         "debug": "orange",
         "fontSize": "5em"
       },
@@ -210,8 +185,8 @@
     "productionRU": {
       "type": "text",
       "container": {
-        "position": [0, 6],
-        "size": [3, 1],
+        "position": [0, 5],
+        "size": [5, 1],
         "debug": "orange",
         "fontSize": "5em"
       },
@@ -232,8 +207,8 @@
     "productionBY": {
       "type": "text",
       "container": {
-        "position": [0, 7],
-        "size": [3, 1],
+        "position": [0, 6],
+        "size": [5, 1],
         "debug": "orange",
         "fontSize": "5em"
       },
@@ -254,8 +229,8 @@
     "productionKZ": {
       "type": "text",
       "container": {
-        "position": [0, 8],
-        "size": [3, 1],
+        "position": [0, 7],
+        "size": [5, 1],
         "debug": "orange",
         "fontSize": "5em"
       },
@@ -276,8 +251,8 @@
     "productionMD": {
       "type": "text",
       "container": {
-        "position": [0, 9],
-        "size": [3, 1],
+        "position": [0, 8],
+        "size": [5, 1],
         "debug": "orange",
         "fontSize": "5em"
       },

@@ -10,25 +10,31 @@ make deploy   # deploy via surge.sh
 ```
 
 ## dashboard api
-Dashboard is 10×10 table and described by JSON object:
+Dashboard is a table (10×10 by default) described by JSON object:
 
 ```json5
 {
-    "widgets": {
-        "bam": {
-            "type": "text" // ...
-        }
+  "container": {
+    "size": [16, 9]
+  },
+  "widgets": {
+    "bam": {
+      "type": "text" // ...
     }
+  }
 }
 ```
 
 * `Object.<string, Object>` **dashboard**: full dashboard
+* `DashContainer` **dashboard.container**: dashboard container object
+    * `number[]` **DashContainer.size**: dashboard size in [x, y] format (`[10, 10]` by default)
 * `Object.<string, Widget>` **dashboard.widgets**: object with widgets. keys are used to identify widgets
 * `Widget` **dashboard.widgets[key]**: widget description
     * `string` **Widget.type**: widget type. available values: `"text"`, `"image"`
     * `Container` **Widget.container**: widget container object
 
         ```
+          for default case dashboard.container.size = [10, 10]
                x →
          [0, 0]__1__2__3__4__5__6__7__8__9__[10, 0]
           y   |                             |
@@ -76,9 +82,9 @@ Dashboard is 10×10 table and described by JSON object:
                 * `bool?` **PayloadFieldMapping._parseInt**: should value be parsed as an integer
 
                 ```json5
-                {q
-                    "_path": "main.temp", // take payload.main.temp data
-                    "_format": "{}°C"     // and insert it in a place of {}
+                {
+                  "_path": "main.temp", // take payload.main.temp data
+                  "_format": "{}°C"     // and insert it in a place of {}
                 }
                 ```
 
