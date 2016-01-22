@@ -3,50 +3,11 @@
     "size": [16, 9]
   },
   "widgets": {
-    "ready": {
-      "type": "image",
-      "container": {
-        "position": [0, 0],
-        "size": [1.5, 1.5],
-        "debug": "green"
-      },
-      "endpoint": {
-        "url": "https://bwd.cat/text/ready",
-        "schedule": {
-          "type": ["timeInterval"],
-          "timeInterval": 300
-        },
-        "map": {
-          "src": {
-            "_format": "https://blackwidow.parseapp.com/{}.gif",
-            "_path": "text"
-          }
-        }
-      }
-    },
-    "duty": {
-      "type": "text",
-      "container": {
-        "position": [2, 0],
-        "size": [7, 1.5],
-        "debug": "green"
-      },
-      "endpoint": {
-        "url": "https://bwd.cat/text/duty",
-        "schedule": {
-          "type": ["timeInterval"],
-          "timeInterval": 3600
-        }
-      },
-      "data": {
-        "note": "duty"
-      }
-    },
     "defaultVersion": {
       "type": "text",
       "container": {
         "position": [9, 0],
-        "size": [5, 2],
+        "size": [7, 2],
         "debug": "orange"
       },
       "endpoint": {
@@ -60,71 +21,30 @@
         "note": "default"
       }
     },
-    "qa-graph": {
-      "type": "graph",
-      "container": {
-        "position": [14, 0],
-        "size": [2, 2],
-        "debug": "orange"
-      },
-      "endpoint": {
-        "method": "GET",
-        "url": "https://gist.githubusercontent.com/zemlanin/519918508bc9b0e9fe60/raw/ac8abcf6d3c6a294fa62cbb835792eff7892306d/qa.json",
-        "schedule": {
-          "type": ["timeInterval"],
-          "timeInterval": 600
-        },
-        "map": {
-          "values": {
-            "_path": "stats",
-            "_map": {
-              "value": {
-                "_path": "points",
-                "_parseInt": true
-              }
-            }
-          }
-        }
-      },
-      "data": {
-        "style": "line-chart",
-        "baseValues": {
-          "min": 0,
-          "max": 800
-        },
-        "lines": [
-          {"y": 0},
-          {"y": 800}
-        ],
-        "sortBy": "created",
-        "color": "white",
-        "note": "bugpoints",
-        "labelStyle": "none"
-      }
-    },
-    "quote": {
+    "uno": {
       "type": "text",
       "container": {
-        "position": [0, 1.5],
-        "size": [9, 2.5],
-        "debug": "orange"
+        "position": [0, 7.75],
+        "size": [16, 1.25],
+        "debug": "maroon",
+        "fontSize": "10em"
       },
       "endpoint": {
-        "url": "https://bwd.cat/text/quote",
+        "url": "https://bwd.cat/text/uno",
         "schedule": {
           "type": ["timeInterval"],
-          "timeInterval": 1200
+          "timeInterval": 1800
         }
       },
       "data": {
-        "note": "quote"
+        "note": "uno"
       }
     },
     "gif": {
       "type": "image",
       "container": {
-        "position": [9, 2],
-        "size": [7, 7],
+        "position": [1, 1],
+        "size": [7, 5.8],
         "debug": "maroon"
       },
       "endpoint": {
@@ -141,32 +61,50 @@
         "note": "gif"
       }
     },
-    "uno": {
+    "flagBigl": {
+      "type": "image",
+      "container": {
+        "position": [9, 2],
+        "size": [1, 1],
+        "debug": "green"
+      },
+      "data": {"src": "http://static-cache.ua.uaprom.net/bigl/favicons/android-chrome-192x192.png"}
+    },
+    "productionBigl": {
       "type": "text",
       "container": {
-        "position": [5, 4],
-        "size": [4, 5],
-        "debug": "maroon",
-        "fontSize": "10em"
+        "position": [10, 2],
+        "size": [6, 1],
+        "debug": "orange",
+        "fontSize": "6em"
       },
       "endpoint": {
-        "url": "https://bwd.cat/text/uno",
+        "url": "https://ai.uaprom/overall",
         "schedule": {
           "type": ["timeInterval"],
-          "timeInterval": 1800
+          "timeInterval": 60
+        },
+        "map": {
+          "text": "projects.buprom.version_title"
         }
-      },
-      "data": {
-        "note": "uno"
       }
+    },
+    "flagUA": {
+      "type": "image",
+      "container": {
+        "position": [9, 3],
+        "size": [1, 1],
+        "debug": "green"
+      },
+      "data": {"src": "https://github.com/Ranks/emojione/blob/master/assets/png_512x512/1f1fa-1f1e6.png?raw=true"}
     },
     "productionUA": {
       "type": "text",
       "container": {
-        "position": [0, 4],
-        "size": [5, 1],
+        "position": [10, 3],
+        "size": [6, 1],
         "debug": "orange",
-        "fontSize": "5em"
+        "fontSize": "6em"
       },
       "endpoint": {
         "url": "https://ai.uaprom/overall",
@@ -177,16 +115,22 @@
         "map": {
           "text": "projects.uaprom.version_title"
         }
-      },
-      "data": {
-        "note": "UA"
       }
+    },
+    "flagRU": {
+      "type": "image",
+      "container": {
+        "position": [9.25, 4.25],
+        "size": [0.5, 0.5],
+        "debug": "green"
+      },
+      "data": {"src": "https://github.com/Ranks/emojione/blob/master/assets/png_512x512/1f1f7-1f1fa.png?raw=true"}
     },
     "productionRU": {
       "type": "text",
       "container": {
-        "position": [0, 5],
-        "size": [5, 1],
+        "position": [10, 4.25],
+        "size": [6, 1],
         "debug": "orange",
         "fontSize": "5em"
       },
@@ -199,16 +143,22 @@
         "map": {
           "text": "projects.ruprom.version_title"
         }
-      },
-      "data": {
-        "note": "RU"
       }
+    },
+    "flagBY": {
+      "type": "image",
+      "container": {
+        "position": [9.25, 5.25],
+        "size": [0.5, 0.5],
+        "debug": "green"
+      },
+      "data": {"src": "https://github.com/Ranks/emojione/blob/master/assets/png_512x512/1f1e7-1f1fe.png?raw=true"}
     },
     "productionBY": {
       "type": "text",
       "container": {
-        "position": [0, 6],
-        "size": [5, 1],
+        "position": [10, 5.25],
+        "size": [6, 1],
         "debug": "orange",
         "fontSize": "5em"
       },
@@ -221,16 +171,22 @@
         "map": {
           "text": "projects.byprom.version_title"
         }
-      },
-      "data": {
-        "note": "BY"
       }
+    },
+    "flagKZ": {
+      "type": "image",
+      "container": {
+        "position": [9.25, 6.25],
+        "size": [0.5, 0.5],
+        "debug": "green"
+      },
+      "data": {"src": "https://github.com/Ranks/emojione/blob/master/assets/png_512x512/1f1f0-1f1ff.png?raw=true"}
     },
     "productionKZ": {
       "type": "text",
       "container": {
-        "position": [0, 7],
-        "size": [5, 1],
+        "position": [10, 6.25],
+        "size": [6, 1],
         "debug": "orange",
         "fontSize": "5em"
       },
@@ -243,16 +199,22 @@
         "map": {
           "text": "projects.kzprom.version_title"
         }
-      },
-      "data": {
-        "note": "KZ"
       }
+    },
+    "flagMD": {
+      "type": "image",
+      "container": {
+        "position": [9.25, 7.25],
+        "size": [0.5, 0.5],
+        "debug": "green"
+      },
+      "data": {"src": "https://github.com/Ranks/emojione/blob/master/assets/png_512x512/1f1f2-1f1e9.png?raw=true"}
     },
     "productionMD": {
       "type": "text",
       "container": {
-        "position": [0, 8],
-        "size": [5, 1],
+        "position": [10, 7.25],
+        "size": [6, 1],
         "debug": "orange",
         "fontSize": "5em"
       },
@@ -265,9 +227,6 @@
         "map": {
           "text": "projects.mdprom.version_title"
         }
-      },
-      "data": {
-        "note": "MD"
       }
     }
   }
