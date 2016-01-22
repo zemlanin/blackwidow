@@ -86,6 +86,9 @@
         },
         "map": {
           "text": "projects.buprom.version_title"
+        },
+        "onError": {
+          "data": {"text": "oops"}
         }
       }
     },
