@@ -129,6 +129,7 @@ endpointRequests
       crossDomain: true,
       headers: widget.endpoint.headers,
       method: widget.endpoint.method || 'GET',
+      body: _.isObject(widget.endpoint.body) ? JSON.stringify(widget.endpoint.body) : widget.endpoint.body,
     })
     .map(data => widget.endpoint.plain ? data.response : JSON.parse(data.response))
     .filter(r => r)

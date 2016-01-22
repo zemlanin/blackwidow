@@ -71,6 +71,7 @@ Dashboard is a table (10×10 by default) described by JSON object:
     * `Endpoint` **Widget.endpoint**: widget http(s) endpoint object
         * `string` **Endpoint.url**: url with WidgetData
         * `string?` **Endpoint.method**: HTTP method for WidgetData requests. `"GET"` by default
+        * `Object?|string?` **Endpoint.body**: POST request body. If `body` is an Object, it is passed to `JSON.stringify` before sending a request
         * `Schedule` **Endpoint.schedule**: schudule for updating WidgetData
             * `string[]` **Schedule.type**: schedule types. availale values: `"timeInterval"`
             * `number?` **Schedule.timeInterval**: interval between requests in seconds

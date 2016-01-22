@@ -37,7 +37,7 @@ function barChart([sizeX, sizeY], data, widgetId) {
 
   let {values, baseValues, sortBy} = data || {}
   baseValues = baseValues || {}
-  values = _.map(values, v => v.value ? v : {value: v})
+  values = _.map(values, v => _.isObject(v) ? v : {value: v})
 
   if (sortBy) {
     values = _.sortByOrder(
