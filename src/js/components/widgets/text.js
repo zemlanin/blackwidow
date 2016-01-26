@@ -1,9 +1,15 @@
 'use strict'
 
+import _ from 'lodash'
+
 import React, {DOM} from 'react'
 
 export default React.createClass({
   displayName: 'widgets/Text',
+
+  shouldComponentUpdate: function (nextProps) {
+    return _.isEqual(nextProps, this.props)
+  },
 
   render: function() {
     var {data, container} = this.props

@@ -280,16 +280,24 @@ function lineChart([sizeX, sizeY], data, widgetId) {
   )
 }
 
-export default ({data, widgetId, container}) => {
-  if (data && data.limit && data.values) { data.values.splice(data.limit) }
+export default React.createClass({
+  displayName: 'widgets/Graph',
 
-  if (!data.values) { return React.DOM.div() }
+  shouldComponentUpdate: function (nextProps) {
+    return _.isEqual(nextProps, this.props)
+  },
 
-  switch (data && data.style) {
-    case 'line-chart':
-      return lineChart(container.size, data, widgetId)
-    case 'bar-chart':
-    default:
-      return barChart(container.size, data, widgetId)
+  render: function ({data, widgetId, container}) {
+    if (data && data.limit && data.values) { data.values.splice(data.limit) }
+
+    if (!data.values) { return React.DOM.div() }
+
+    switch (data && data.style) {
+      case 'line-chart':
+        return lineChart(container.size, data, widgetId)
+      case 'bar-chart':
+      default:
+        return barChart(container.size, data, widgetId)
+    }
   }
-}
+})

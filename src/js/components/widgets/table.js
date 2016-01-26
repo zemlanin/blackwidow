@@ -4,6 +4,12 @@ import _ from 'lodash'
 import React, {DOM} from 'react'
 
 export default React.createClass({
+  displayName: 'widgets/Table',
+
+  shouldComponentUpdate: function (nextProps) {
+    return _.isEqual(nextProps, this.props)
+  },
+
   render: function() {
     var {data} = this.props
     data = data || {}
