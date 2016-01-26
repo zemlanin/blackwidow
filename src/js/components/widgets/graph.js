@@ -170,7 +170,7 @@ function lineChart([sizeX, sizeY], data, widgetId) {
   values = _.map(values, v => v.value ? v : {value: v})
 
   if (sortBy) {
-    values = _.sortByOrder(
+    values = _.sortBy(
       values,
       [sortBy.replace(/^-/, '')],
       [!sortBy.startsWith('-')]

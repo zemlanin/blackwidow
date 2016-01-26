@@ -28,14 +28,14 @@ var endpoints = dashStore.pull
   .map(({widgets}) => widgets || {})
   .startWith({})
   .distinctUntilChanged()
-  .map(widgets => _.pick(widgets, w => _.has(w, 'endpoint')))
+  .map(widgets => _.pickBy(widgets, w => _.has(w, 'endpoint')))
   .bufferWithCount(2, 1)
   .map(([prev, cur]) => ({
     added: _.pick(cur, _.difference(_.keys(cur), _.keys(prev))),
     removed: _.pick(prev, _.difference(_.keys(prev), _.keys(cur))),
   }))
 
-var endpointAdded = endpoints.pluck('added').flatMap(_.pairs)
+var endpointAdded = endpoints.pluck('added').flatMap(_.toPairs)
 
 var endpointSchedules = endpointAdded
   .filter(([widgetId, widget]) =>
@@ -56,7 +56,7 @@ var endpointSchedules = endpointAdded
 var websockets = dashStore.pull
   .map(({widgets}) => widgets || {})
   .startWith({})
-  .map(widgets => _.pick(widgets, w => _.has(w, 'data.ws.url')))
+  .map(widgets => _.pickBy(widgets, w => _.has(w, 'data.ws.url')))
   .distinctUntilChanged()
   .bufferWithCount(2, 1)
   .map(([prev, cur]) => ({
@@ -64,8 +64,8 @@ var websockets = dashStore.pull
     removed: _.pick(prev, _.difference(_.keys(prev), _.keys(cur))),
   }))
 
-var websocketsAdded = websockets.pluck('added').flatMap(_.pairs)
-var websocketsRemoved = websockets.pluck('removed').flatMap(_.pairs)
+var websocketsAdded = websockets.pluck('added').flatMap(_.toPairs)
+var websocketsRemoved = websockets.pluck('removed').flatMap(_.toPairs)
 var websocketsUpdates = websocketsAdded
   .flatMap(([widgetId, widget]) => getWsStream(widget.data.ws.url)
     .incomingStream

@@ -6,7 +6,7 @@
   "repository": "zemlanin/blackwidow",
   "readme": "TBA",
   "dependencies": {
-    "lodash": "^3.10.1",
+    "lodash": "^4.0.1",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
     "rx": "^2.5.2",
@@ -15,7 +15,7 @@
   "devDependencies": {
     "babel": "^5.2.6",
     "babel-eslint": "^3.0.1",
-    "babelify": "^6.0.2",
+    "babelify": "^6.4.0",
     "browserify": "^8.1.3",
     "eslint": "^0.20.0",
     "exorcist": "^0.1.6",
