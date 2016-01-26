@@ -287,7 +287,8 @@ export default React.createClass({
     return _.isEqual(nextProps, this.props)
   },
 
-  render: function ({data, widgetId, container}) {
+  render: function () {
+    const {data, widgetId, container} = this.props
     if (data && data.limit && data.values) { data.values.splice(data.limit) }
 
     if (!data.values) { return React.DOM.div() }
