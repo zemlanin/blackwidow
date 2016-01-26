@@ -40,7 +40,7 @@ function barChart([sizeX, sizeY], data, widgetId) {
   values = _.map(values, v => _.isObject(v) ? v : {value: v})
 
   if (sortBy) {
-    values = _.sortByOrder(
+    values = _.orderBy(
       values,
       [sortBy.replace(/^-/, '')],
       [!sortBy.startsWith('-')]
@@ -50,11 +50,11 @@ function barChart([sizeX, sizeY], data, widgetId) {
   let {min, max} = baseValues
 
   if (min === undefined) {
-    min = _.min(values, 'value').value
+    min = _.minBy(values, 'value').value
   }
 
   if (max === undefined) {
-    max = _.max(values, 'value').value
+    max = _.maxBy(values, 'value').value
   }
 
   const sizeCoef = (BOTTOM_BAR_LINE_Y(height) - TOP_BAR_LINE_Y(height)) / (max - min)
@@ -170,7 +170,7 @@ function lineChart([sizeX, sizeY], data, widgetId) {
   values = _.map(values, v => v.value ? v : {value: v})
 
   if (sortBy) {
-    values = _.sortBy(
+    values = _.orderBy(
       values,
       [sortBy.replace(/^-/, '')],
       [!sortBy.startsWith('-')]
@@ -180,11 +180,11 @@ function lineChart([sizeX, sizeY], data, widgetId) {
   let {min, max} = baseValues
 
   if (min === undefined) {
-    min = _.min(values, 'value').value
+    min = _.minBy(values, 'value').value
   }
 
   if (max === undefined) {
-    max = _.max(values, 'value').value
+    max = _.maxBy(values, 'value').value
   }
 
   const sizeCoef = (BOTTOM_BAR_LINE_Y(height, false) - TOP_BAR_LINE_Y(height)) / (max - min)
@@ -282,6 +282,8 @@ function lineChart([sizeX, sizeY], data, widgetId) {
 
 export default ({data, widgetId, container}) => {
   if (data && data.limit && data.values) { data.values.splice(data.limit) }
+
+  if (!data.values) { return React.DOM.div() }
 
   switch (data && data.style) {
     case 'line-chart':
