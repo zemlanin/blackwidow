@@ -2,6 +2,7 @@
 
 import Rx from 'rx'
 import _ from 'lodash'
+import hash from 'object-hash'
 import {DOM as RxDOM} from 'rx-dom'
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -12,11 +13,38 @@ import {messageBus} from './cast'
 import Dash from './components/dash'
 
 var dashStore = getStream('dashStore')
+var endpointsStore = getStream('endpointsStore')
+
+const extractEndpointsTo = (dest) => (dash) => {
+  dash.widgets = _(dash.widgets)
+    .mapValues((widget) => {
+      if (widget.endpoint && widget.endpoint.url) {
+        if (_.isObject(widget.endpoint.body)) {
+          widget.endpoint.body = JSON.stringify(widget.endpoint.body)
+        }
+
+        const extractedEndpoint = _.pick(widget.endpoint, ['url', 'method', 'body', 'schedule'])
+        const endpointHash = hash(_.pick(widget.endpoint, ['url', 'method', 'body']))
+
+        widget.endpoint.$ref = endpointHash
+        widget.endpoint = _.omit(widget.endpoint, _.keys(extractedEndpoint))
+
+        _.delay(endpointsStore.push, 0, endpointHash, extractedEndpoint)
+      }
+
+      return widget
+    })
+    .value()
+
+  return dash
+}
 
 getDash()
+  .map(extractEndpointsTo(endpointsStore))
   .subscribe(dashStore.push)
 
 // dashStore.pull.subscribe(console.log.bind(console, 'dS'))
+// endpointsStore.pull.subscribe(console.log.bind(console, 'eS'))
 
 dashStore.pull
   .subscribe(dashData => ReactDOM.render(
@@ -24,33 +52,34 @@ dashStore.pull
     document.getElementById('dash')
   ))
 
-var endpoints = dashStore.pull
-  .map(({widgets}) => widgets || {})
+var endpoints = endpointsStore.pull
+  .map(_.cloneDeep)
   .startWith({})
-  .distinctUntilChanged()
-  .map(widgets => _.pickBy(widgets, w => _.has(w, 'endpoint')))
+  // .distinctUntilChanged()
   .bufferWithCount(2, 1)
   .map(([prev, cur]) => ({
     added: _.pick(cur, _.difference(_.keys(cur), _.keys(prev))),
     removed: _.pick(prev, _.difference(_.keys(prev), _.keys(cur))),
   }))
 
-var endpointAdded = endpoints.pluck('added').flatMap(_.toPairs)
+var endpointAdded = endpoints
+  .pluck('added')
+  .filter(_.negate(_.isEmpty))
+  .flatMap(_.toPairs)
+  .share()
 
 var endpointSchedules = endpointAdded
-  .filter(([widgetId, widget]) =>
-    widget.endpoint.schedule
-    && widget.endpoint.schedule.type.indexOf('timeInterval') > -1
-    && widget.endpoint.schedule.timeInterval
+  .filter(([ref, endpoint]) =>
+    _.get(endpoint, 'schedule.timeInterval')
   )
-  .flatMap(([widgetId, widget]) => Rx.Observable
-    .interval(widget.endpoint.schedule.timeInterval * 1000)
+  .flatMap(([ref, endpoint]) => Rx.Observable
+    .interval(endpoint.schedule.timeInterval * 1000)
     .takeUntil(
       endpoints
-      .map(({removed}) => removed[widgetId])
+      .map(({removed}) => removed[ref])
       .filter(v => v)
     )
-    .map([widgetId, widget])
+    .map([ref, endpoint])
   )
 
 var websockets = dashStore.pull
@@ -81,6 +110,18 @@ var endpointRequests = Rx.Observable.merge(
   websocketsUpdates,
   endpointSchedules
 )
+  .flatMap(([ref, endpoint]) => RxDOM.ajax({
+      url: endpoint.url,
+      responseType: 'text/plain',
+      contentType: 'application/json; charset=UTF-8',
+      crossDomain: true,
+      headers: endpoint.headers,
+      method: endpoint.method || 'GET',
+      body: endpoint.body,
+    })
+    .map(data => [ref, data.response])
+    .catch(err => Rx.Observable.return({err: err}))
+  )
 
 function endpointMapper(data, result, mappingFrom, mappingTo) {
   var dataValue
@@ -122,30 +163,25 @@ function endpointMapper(data, result, mappingFrom, mappingTo) {
 }
 
 endpointRequests
-  .flatMap(([widgetId, widget]) => RxDOM.ajax({
-      url: widget.endpoint.url,
-      responseType: 'text/plain',
-      contentType: 'application/json; charset=UTF-8',
-      crossDomain: true,
-      headers: widget.endpoint.headers,
-      method: widget.endpoint.method || 'GET',
-      body: _.isObject(widget.endpoint.body) ? JSON.stringify(widget.endpoint.body) : widget.endpoint.body,
-    })
-    .map(data => widget.endpoint.plain ? data.response : JSON.parse(data.response))
-    .filter(r => r)
-    .map(data => _.reduce(
-      widget.endpoint.map || [],
-      _.partial(endpointMapper, data),
-      _.assign({}, widget.data, data)
-    ))
-    .map(data => ({widgetId, data}))
-    .catch(err => Rx.Observable.return({err: err}))
-  )
-  // .do(v => console.log(v))
-  .filter(r => r && !r.err)
+  .filter(([ref, response]) => response && !response.err)
+  .withLatestFrom(dashStore.pull, ([ref, response], {widgets}) => {
+    return Rx.Observable.pairs(widgets)
+      .filter(([widgetId, widget]) => widget.endpoint && widget.endpoint.$ref === ref)
+      .map(([widgetId, widget]) => ({widgetId, widget, data: widget.endpoint.plain ? response : JSON.parse(response)}))
+      .map(({widgetId, widget, data}) => ({
+        widgetId,
+        data: _.reduce(
+          widget.endpoint.map || [],
+          _.partial(endpointMapper, data),
+          _.assign({}, widget.data, data)
+        )
+      }))
+  })
+  .mergeAll()
   .subscribe(
     ({widgetId, data}) => dashStore.push(`widgets.${widgetId}.data`, data),
-    error => console.error(error)
+    error => console.error(error),
+    v => console.log('completed')
   )
 
 if (messageBus) {

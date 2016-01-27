@@ -72,8 +72,7 @@ Dashboard is a table (10×10 by default) described by JSON object:
         * `string` **Endpoint.url**: url with WidgetData
         * `string?` **Endpoint.method**: HTTP method for WidgetData requests. `"GET"` by default
         * `Object?|string?` **Endpoint.body**: POST request body. If `body` is an Object, it is passed to `JSON.stringify` before sending a request
-        * `Schedule` **Endpoint.schedule**: schudule for updating WidgetData
-            * `string[]` **Schedule.type**: schedule types. availale values: `"timeInterval"`
+        * `Schedule?` **Endpoint.schedule**: schudule for updating WidgetData
             * `number?` **Schedule.timeInterval**: interval between requests in seconds
         * `Object.<WidgetData[key], PayloadFieldMapping>?` **Endpoint.map**: mapping of endpoint payload to widget data fields. keys are the names of WidgetData field (for example, `"note"`)
             * `Object|string` **PayloadFieldMapping**: mapping rules for a single WidgetData field. string-y PayloadFieldMapping's value is a shortcut for `{"_path": value}`

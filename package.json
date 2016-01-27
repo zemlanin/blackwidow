@@ -7,7 +7,8 @@
   "readme": "TBA",
   "dependencies": {
     "lodash": "^4.0.1",
-    "react": "^0.14.0",
+    "object-hash": "^1.1.0",
+    "react": "^0.14.6",
     "react-dom": "^0.14.0",
     "rx": "^2.5.2",
     "rx-dom": "^6.0.0"
