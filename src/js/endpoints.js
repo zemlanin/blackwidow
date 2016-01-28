@@ -2,6 +2,7 @@
 
 import _ from 'lodash'
 import hash from 'object-hash'
+import expressions from 'angular-expressions'
 
 export const extractEndpointsTo = (dest) => (dash) => {
   dash.widgets = _(dash.widgets)
@@ -27,7 +28,22 @@ export const extractEndpointsTo = (dest) => (dash) => {
   return dash
 }
 
-export function endpointMapper(data, result, mappingFrom, mappingTo) {
+export function endpointMapper(data, result, structure) {
+  for (let key in structure) {
+    result[key] = expressions
+      .compile(structure[key]._expr || structure[key])
+      (_.assign(data, structure[key], {$: data}))
+  }
+
+  return result
+}
+
+expressions.filters.get = (v, key) => _.get(v, key)
+expressions.filters.map = (vs, structure) => vs.map(v => endpointMapper(v, {}, structure))
+expressions.filters.format = (v, tmpl) => tmpl.replace(/{}/ig, v)
+expressions.filters.match = (v, regex) => v.match(regex)
+
+export function endpointMapperOld(data, result, mappingFrom, mappingTo) {
   var dataValue
 
   if (_.isObject(mappingFrom)) {

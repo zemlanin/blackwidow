@@ -6,6 +6,7 @@
   "repository": "zemlanin/blackwidow",
   "readme": "TBA",
   "dependencies": {
+    "angular-expressions": "^0.3.0",
     "lodash": "^4.0.1",
     "object-hash": "^1.1.0",
     "react": "^0.14.6",

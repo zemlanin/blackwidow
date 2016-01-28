@@ -26,6 +26,7 @@ Dashboard is a table (10×10 by default) described by JSON object:
 ```
 
 * `Object.<string, Object>` **dashboard**: full dashboard
+* `bool?` **dashboard.expressions**: [EXPERIMENTAL] mapping of endpoint data via [angular-expressions](https://github.com/peerigon/angular-expressions)
 * `DashContainer` **dashboard.container**: dashboard container object
     * `number[]` **DashContainer.size**: dashboard size in [x, y] format (`[10, 10]` by default)
 * `Object.<string, Widget>` **dashboard.widgets**: object with widgets. keys are used to identify widgets

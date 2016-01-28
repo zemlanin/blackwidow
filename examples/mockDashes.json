@@ -1,4 +1,5 @@
 {
+  "expressions": true,
   "container": {
     "size": [16, 9]
   },
@@ -85,7 +86,7 @@
           "timeInterval": 60
         },
         "map": {
-          "text": "projects.buprom.version_title"
+          "text": "projects.buprom.version_title | match:'.+\\\\)' | get:0"
         },
         "onError": {
           "data": {"text": "oops"}
@@ -116,7 +117,7 @@
           "timeInterval": 60
         },
         "map": {
-          "text": "projects.uaprom.version_title"
+          "text": "projects.uaprom.version_title | match:'.+\\\\)' | get:0"
         }
       }
     },
@@ -144,7 +145,7 @@
           "timeInterval": 60
         },
         "map": {
-          "text": "projects.ruprom.version_title"
+          "text": "projects.ruprom.version_title | match:'.+\\\\)' | get:0"
         }
       }
     },
@@ -172,7 +173,7 @@
           "timeInterval": 60
         },
         "map": {
-          "text": "projects.byprom.version_title"
+          "text": "projects.byprom.version_title | match:'.+\\\\)' | get:0"
         }
       }
     },
@@ -200,7 +201,7 @@
           "timeInterval": 60
         },
         "map": {
-          "text": "projects.kzprom.version_title"
+          "text": "projects.kzprom.version_title | match:'.+\\\\)' | get:0"
         }
       }
     },
@@ -228,7 +229,7 @@
           "timeInterval": 60
         },
         "map": {
-          "text": "projects.mdprom.version_title"
+          "text": "projects.mdprom.version_title | match:'.+\\\\)' | get:0"
         }
       }
     }

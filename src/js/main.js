@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom'
 import {getStream, getDash} from './store'
 import {getWsStream} from './ws'
 import {messageBus} from './cast'
-import {extractEndpointsTo, endpointMapper} from './endpoints'
+import {extractEndpointsTo, endpointMapperOld, endpointMapper} from './endpoints'
 import Dash from './components/dash'
 
 var dashStore = getStream('dashStore')//.do(console.log.bind(console, 'dS')).share()
@@ -105,15 +105,15 @@ endpointRequests
 
 endpointRequests
   .filter(({err}) => !err)
-  .withLatestFrom(dashStore.pull, ({ref, response}, {widgets}) => {
+  .withLatestFrom(dashStore.pull, ({ref, response}, {widgets, expressions}) => {
     return Rx.Observable.pairs(widgets)
       .filter(([widgetId, widget]) => widget.endpoint && widget.endpoint._ref === ref)
       .map(([widgetId, widget]) => ({widgetId, widget, data: widget.endpoint.plain ? response : JSON.parse(response)}))
       .map(({widgetId, widget, data}) => ({
         widgetId,
-        data: _.reduce(
-          widget.endpoint.map || [],
-          _.partial(endpointMapper, data),
+        data: expressions ? endpointMapper(data, _.assign({}, widget.data, data), widget.endpoint.map || {}) :_.reduce(
+          widget.endpoint.map || {},
+          _.partial(endpointMapperOld, data),
           _.assign({}, widget.data, data)
         )
       }))
