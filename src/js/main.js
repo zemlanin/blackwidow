@@ -24,7 +24,7 @@ const extractEndpointsTo = (dest) => (dash) => {
         }
 
         const extractedEndpoint = _.pick(widget.endpoint, ['url', 'method', 'body', 'schedule'])
-        const endpointHash = hash(_.pick(widget.endpoint, ['url', 'method', 'body']))
+        const endpointHash = hash.MD5(_.pick(widget.endpoint, ['url', 'method', 'body']))
 
         widget.endpoint.$ref = endpointHash
         widget.endpoint = _.omit(widget.endpoint, _.keys(extractedEndpoint))
@@ -55,7 +55,7 @@ dashStore.pull
 var endpoints = endpointsStore.pull
   .map(_.cloneDeep)
   .startWith({})
-  // .distinctUntilChanged()
+  // .distinctUntilChanged(hash.MD5)
   .bufferWithCount(2, 1)
   .map(([prev, cur]) => ({
     added: _.pick(cur, _.difference(_.keys(cur), _.keys(prev))),
@@ -82,11 +82,11 @@ var endpointSchedules = endpointAdded
     .map([ref, endpoint])
   )
 
-var websockets = dashStore.pull
-  .map(({widgets}) => widgets || {})
+var websockets = endpointsStore.pull
+  .map(_.cloneDeep)
   .startWith({})
-  .map(widgets => _.pickBy(widgets, w => _.has(w, 'data.ws.url')))
-  .distinctUntilChanged()
+  .map(es => _.pickBy(es, endpoint => _.has(endpoint, 'ws.url')))
+  // .distinctUntilChanged(hash.MD5)
   .bufferWithCount(2, 1)
   .map(([prev, cur]) => ({
     added: _.pick(cur, _.difference(_.keys(cur), _.keys(prev))),
@@ -96,13 +96,13 @@ var websockets = dashStore.pull
 var websocketsAdded = websockets.pluck('added').flatMap(_.toPairs)
 var websocketsRemoved = websockets.pluck('removed').flatMap(_.toPairs)
 var websocketsUpdates = websocketsAdded
-  .flatMap(([widgetId, widget]) => getWsStream(widget.data.ws.url)
+  .flatMap(([ref, endpoint]) => getWsStream(endpoint.ws.url)
     .incomingStream
-    .filter(msg => msg.widgetId === widget.data.ws.conds.widgetId)
+    .filter(msg => msg.widgetId === endpoint.ws.conds.widgetId)
     .takeUntil(
-      websocketsRemoved.filter(([k, v]) => k === widgetId)
+      websocketsRemoved.filter(([k, v]) => k === ref)
     )
-    .map([widgetId, widget])
+    .map([ref, endpoint])
   )
 
 var endpointRequests = Rx.Observable.merge(
@@ -119,9 +119,17 @@ var endpointRequests = Rx.Observable.merge(
       method: endpoint.method || 'GET',
       body: endpoint.body,
     })
-    .map(data => [ref, data.response])
+    .map(({response}) => ({ref, response}))
     .catch(err => Rx.Observable.return({err: err}))
   )
+  .share()
+
+endpointRequests
+  .filter(({response}) => response)
+  .map(({ref, response}) => ({ref, ws: JSON.parse(response).ws}))
+  .catch(err => Rx.Observable.empty())
+  .filter(({ws}) => ws && ws.url && ws.conds)
+  .subscribe(({ref, ws}) => endpointsStore.push(`${ref}.ws`, ws))
 
 function endpointMapper(data, result, mappingFrom, mappingTo) {
   var dataValue
@@ -163,8 +171,8 @@ function endpointMapper(data, result, mappingFrom, mappingTo) {
 }
 
 endpointRequests
-  .filter(([ref, response]) => response && !response.err)
-  .withLatestFrom(dashStore.pull, ([ref, response], {widgets}) => {
+  .filter(({err}) => !err)
+  .withLatestFrom(dashStore.pull, ({ref, response}, {widgets}) => {
     return Rx.Observable.pairs(widgets)
       .filter(([widgetId, widget]) => widget.endpoint && widget.endpoint.$ref === ref)
       .map(([widgetId, widget]) => ({widgetId, widget, data: widget.endpoint.plain ? response : JSON.parse(response)}))
