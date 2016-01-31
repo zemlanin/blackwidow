@@ -4,7 +4,7 @@ import Rx from 'rx'
 import _ from 'lodash'
 import {Subject, BehaviorSubject, Observable} from 'rx'
 
-function getAjaxSteam(url) {
+function getAjaxStream(url) {
   return Rx.Observable.fromPromise(fetch(
       url,
       {
@@ -22,20 +22,20 @@ export function getDash() {
   if (location.hash && location.hash.match(/^#(https?|file):/)) {
     if (location.hash.match(/^#(https?|file):/)) {
       let url = location.hash.replace(/^#/, '')
-      dashStream = getAjaxSteam(url)
+      dashStream = getAjaxStream(url)
     }
   }
 
   if (location.search.match(/[?&]gist=([0-9a-f]+)/i)) {
     let gistId = location.search.match(/[?&]gist=([0-9a-f]+)/i)[1]
-    dashStream = getAjaxSteam(`https://api.github.com/gists/${gistId}`)
+    dashStream = getAjaxStream(`https://api.github.com/gists/${gistId}`)
       .pluck('files')
       .map(files => _.find(files, file => file.language === 'JSON'))
       .map(file => JSON.parse(file.content))
   }
 
   if (!dashStream) {
-    dashStream = getAjaxSteam('./examples/mockDashes.json')
+    dashStream = getAjaxStream('./examples/mockDashes.json')
   }
 
   return dashStream
