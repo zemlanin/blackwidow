@@ -9,6 +9,20 @@ make serve    # start a server at http://127.0.0.1:8000
 make deploy   # deploy via surge.sh
 ```
 
+## demo
+* https://blackwidow.surge.sh/
+* https://blackwidow.surge.sh/?gist=00fd9405043a98c96a68
+* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/static_data.json
+* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/external_data.json
+* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/graphs.json
+
+## example dashes
+* https://blackwidow.surge.sh/examples/mockDashes.json
+* https://gist.github.com/zemlanin/00fd9405043a98c96a68
+* https://blackwidow.surge.sh/examples/static_data.json
+* https://blackwidow.surge.sh/examples/external_data.json
+* https://blackwidow.surge.sh/examples/graphs.json
+
 ## dashboard api
 Dashboard is a table (10×10 by default) described by JSON object:
 
@@ -26,7 +40,6 @@ Dashboard is a table (10×10 by default) described by JSON object:
 ```
 
 * `Object.<string, Object>` **dashboard**: full dashboard
-* `bool?` **dashboard.expressions**: [EXPERIMENTAL] mapping of endpoint data via [angular-expressions](https://github.com/peerigon/angular-expressions)
 * `DashContainer` **dashboard.container**: dashboard container object
     * `number[]` **DashContainer.size**: dashboard size in [x, y] format (`[10, 10]` by default)
 * `Object.<string, Widget>` **dashboard.widgets**: object with widgets. keys are used to identify widgets
@@ -76,29 +89,87 @@ Dashboard is a table (10×10 by default) described by JSON object:
         * `Schedule?` **Endpoint.schedule**: schedule for updating WidgetData
             * `number?` **Schedule.timeInterval**: interval between requests in seconds
         * `Object.<WidgetData[key], PayloadFieldMapping>?` **Endpoint.map**: mapping of endpoint payload to widget data fields. keys are the names of WidgetData field (for example, `"note"`)
-            * `Object|string` **PayloadFieldMapping**: mapping rules for a single WidgetData field. string-y PayloadFieldMapping's value is a shortcut for `{"_path": value}`
-                * `string` **PayloadFieldMapping._path**: source of WidgetData field value
-                * `string?` **PayloadFieldMapping._format**: base string for WidgetData field value. `{}` is replaced with data from `payload[PayloadFieldMapping._path]`
-                * `PayloadFieldMapping?` **PayloadFieldMapping._map**: mapping for values of array WidgetData field
-                * `bool?` **PayloadFieldMapping._parseInt**: should value be parsed as an integer
+            * `Object|string` **PayloadFieldMapping**: mapping rules for a single WidgetData field. string-y PayloadFieldMapping's value is a shortcut for `{"_expr": value}`
+                * `string` **PayloadFieldMapping._expr**: source of WidgetData field value. See [Endpoint Expressions]() for more details
+                * `*` **PayloadFieldMapping[key]**: base scope for endpoint expression
 
-                ```json5
-                {
-                  "_path": "main.temp", // take payload.main.temp data
-                  "_format": "{}°C"     // and insert it in a place of {}
-                }
-                ```
+## Endpoint Expressions
+Endpoint Expressions are evaluated via [angular-expressions](https://github.com/peerigon/angular-expressions). Expression scope is an object, merged from the response value and the `PayloadFieldMapping` of the expression. Plus, full response value is available in `$` key of the scope
 
-## demo
-* https://blackwidow.surge.sh/
-* https://blackwidow.surge.sh/?gist=00fd9405043a98c96a68
-* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/static_data.json
-* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/external_data.json
-* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/graphs.json
+```
+"map": {
+  "src": "text"
+}
 
-## example dashes
-* https://blackwidow.surge.sh/examples/mockDashes.json
-* https://gist.github.com/zemlanin/00fd9405043a98c96a68
-* https://blackwidow.surge.sh/examples/static_data.json
-* https://blackwidow.surge.sh/examples/external_data.json
-* https://blackwidow.surge.sh/examples/graphs.json
+// is equivalent to
+
+"map": {
+  "src": {
+    "_expr": "text"
+  }
+}
+
+// is equivalent to
+
+"map": {
+  "src": "$.text"
+}
+
+// is equivalent to
+
+"map": {
+  "src": {
+    "_expr": "$[_key]",
+    "_key": "text"
+  }
+}
+```
+
+A few filters are available for manipulating response before rendering:
+* `format:[template]` formats `template` with basic Python-like syntax
+
+  ```
+    "map": {
+      "src": "values | format:'http://example.com/{1}.{2}'"
+    }
+
+    // for response == {"values": ["how", "are", "you"]}, widget will receive data
+
+    {
+      "src": "http://example.com/are.you"
+    }
+  ```
+* `match:[pattern]:[flags?]` matches expression with `pattern` via [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp). :!: use *four backslashes for escaping*
+
+  ```
+    "map": {
+      "text": "text | match:'\\\\d{4}-(\\\\d{2})-(\\\\d{2})' | format:'{2}.{1}'"
+    }
+
+    // for response == {"text": "2015-09-13"}, widget will receive data
+
+    {
+      "text": "13.09"
+    }
+  ```
+* `map:[mapping]` maps items of array expressions with passed mapping
+
+  ```
+    "map": {
+      "values": {
+        "_expr": "text | match:'[a-z]+':'ig' | map:_map",
+        "_map": {"value": "$"}
+      }
+    }
+
+    // for response == {"text": "Mal|Zoe|Wash"}, widget will receive data
+
+    {
+      "values": [
+        {"value": "Mal"},
+        {"value": "Zoe"},
+        {"value": "Wash"}
+      ]
+    }
+  ```
+* `get:[key]` for getting specific keys from already filtered expressions

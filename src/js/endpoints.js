@@ -43,43 +43,4 @@ expressions.filters.map = (vs, structure) => vs.map(v => endpointMapper(v, {}, s
 expressions.filters.format = (v, tmpl) => {
   return tmpl.replace(/{(\d*)}/ig, (match, p1) => p1 ? v[parseInt(p1, 10)] : v)
 }
-expressions.filters.match = (v, regex) => v.match(regex)
-
-export function endpointMapperOld(data, result, mappingFrom, mappingTo) {
-  var dataValue
-
-  if (_.isObject(mappingFrom)) {
-    if (mappingFrom._path) {
-      dataValue = _.get(data, mappingFrom._path)
-    } else if (_.isString(data)) {
-      dataValue = data
-    } else {
-      dataValue = data[mappingFrom]
-    }
-
-    if (mappingFrom._format) {
-      dataValue = mappingFrom._format.replace('{}', dataValue)
-    }
-
-    if (mappingFrom._parseInt) {
-      dataValue = parseInt(dataValue, 10)
-    }
-
-    if (mappingFrom._map) {
-      dataValue = _.map(
-        dataValue,
-        v => _.reduce(
-          mappingFrom._map,
-          _.partial(endpointMapper, v),
-          v || {}
-        )
-      )
-    }
-  } else if (mappingFrom) {
-    dataValue = _.get(data, mappingFrom)
-  } else {
-    dataValue = data
-  }
-  result[mappingTo] = dataValue
-  return result
-}
+expressions.filters.match = (v, regex, flags) => v.match(new RegExp(regex, flags))

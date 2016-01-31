@@ -6,10 +6,11 @@ import {DOM as RxDOM} from 'rx-dom'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import {debug} from 'config'
 import {getStream, getDash} from './store'
 import {getWsStream} from './ws'
 import {messageBus} from './cast'
-import {extractEndpointsTo, endpointMapperOld, endpointMapper} from './endpoints'
+import {extractEndpointsTo, endpointMapper} from './endpoints'
 import Dash from './components/dash'
 
 var dashStore = getStream('dashStore')//.do(console.log.bind(console, 'dS')).share()
@@ -105,17 +106,13 @@ endpointRequests
 
 endpointRequests
   .filter(({err}) => !err)
-  .withLatestFrom(dashStore.pull, ({ref, response}, {widgets, expressions}) => {
+  .withLatestFrom(dashStore.pull, ({ref, response}, {widgets}) => {
     return Rx.Observable.pairs(widgets)
       .filter(([widgetId, widget]) => widget.endpoint && widget.endpoint._ref === ref)
       .map(([widgetId, widget]) => ({widgetId, widget, data: widget.endpoint.plain ? response : JSON.parse(response)}))
       .map(({widgetId, widget, data}) => ({
         widgetId,
-        data: expressions ? endpointMapper(data, _.assign({}, widget.data, data), widget.endpoint.map || {}) : _.reduce(
-          widget.endpoint.map || {},
-          _.partial(endpointMapperOld, data),
-          _.assign({}, widget.data, data)
-        )
+        data: endpointMapper(data, _.assign({}, widget.data, data), widget.endpoint.map || {}),
       }))
   })
   .mergeAll()
@@ -129,4 +126,19 @@ if (messageBus) {
   messageBus
     .filter(msg => msg === 'refresh')
     .subscribe(msg => location.reload())
+}
+
+if (debug) {
+  console.log(endpointMapper({"text": "2015-09-13"}, {}, {
+    "text": "text | match:'\\\\d{4}-(\\\\d{2})-(\\\\d{2})' | format:'{2}.{1}'"
+  }))
+  console.log(endpointMapper({"text": "Mal|Zoe|Wash"}, {}, {
+    "values": {
+      "_expr": "text | match:'[a-z]+':'ig' | map:_map",
+      "_map": {"value": "$"}
+    }
+  }))
+  console.log(endpointMapper({project: {rev: "15.9.13(154321)a9324a63ed24"}}, {}, {
+    "text": "project.rev | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
+  }))
 }
