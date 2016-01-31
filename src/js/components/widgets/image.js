@@ -1,21 +1,19 @@
 'use strict'
 
 import _ from 'lodash'
-import React, {DOM} from 'react'
+import {h, Component} from 'preact'
 
 // const noImage = 'linear-gradient(rgba(255, 255, 255, .2) 50%, transparent 50%, transparent)'
 
-export default React.createClass({
-  displayName: 'widgets/Image',
-
-  shouldComponentUpdate: function (nextProps) {
+export default class Image extends Component {
+  shouldComponentUpdate(nextProps) {
     return _.isEqual(nextProps, this.props)
-  },
+  }
 
-  render: function() {
+  render() {
     var {data={}, container={}} = this.props
 
-    return DOM.div({
+    return h("div", {
         style: {
           width: '100%',
           height: '100%',
@@ -24,7 +22,7 @@ export default React.createClass({
           backgroundImage: data.src ? `url(${data.src})` : '',
         }
       },
-      data.note ? DOM.span({
+      data.note ? h("span", {
           style: {
             position: 'absolute',
             bottom: 0,
@@ -39,4 +37,4 @@ export default React.createClass({
       ) : ''
     )
   }
-})
+}

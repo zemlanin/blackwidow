@@ -9,8 +9,7 @@
     "angular-expressions": "^0.3.0",
     "lodash": "^4.0.1",
     "object-hash": "^1.1.0",
-    "react": "^0.14.6",
-    "react-dom": "^0.14.0",
+    "preact": "^2.8.2",
     "rx": "^2.5.2",
     "rx-dom": "^6.0.0"
   },

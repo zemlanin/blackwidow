@@ -1,29 +1,27 @@
 'use strict'
 
 import _ from 'lodash'
-import React, {DOM} from 'react'
+import {h, Component} from 'preact'
 
-export default React.createClass({
-  displayName: 'widgets/Table',
-
-  shouldComponentUpdate: function (nextProps) {
+export default class Table extends Component {
+  shouldComponentUpdate(nextProps) {
     return _.isEqual(nextProps, this.props)
-  },
+  }
 
-  render: function() {
+  render() {
     var {data} = this.props
     data = data || {}
 
-    return DOM.table({
+    return h("table", {
         id: data.id,
       },
-      DOM.tbody(
+      h("tbody",
         null,
-        DOM.tr(
+        h("tr",
           null,
           _.map(
             data.columns,
-            (column, i) => DOM.th(
+            (column, i) => h("th",
               {key: `column_${i}`},
               column
             )
@@ -31,11 +29,11 @@ export default React.createClass({
         ),
         _.map(
           data.rows,
-          (row, i) => DOM.tr(
+          (row, i) => h("tr",
             {key: `row_${i}`},
             _.map(
               row,
-              (cell, j) => DOM.td(
+              (cell, j) => h("td",
                 {key: `cell_${j}`},
                 cell
               )
@@ -45,4 +43,4 @@ export default React.createClass({
       )
     )
   }
-})
+}

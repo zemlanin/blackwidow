@@ -1,7 +1,7 @@
 'use strict'
 
 import _ from 'lodash'
-import React from 'react'
+import {h, Component} from 'preact'
 
 const TOP_BAR_LINE_Y = (height) => height * 0.15
 const BOTTOM_BAR_LINE_Y = (height, axesText=true) => axesText ? height * 0.65 : height * 0.85
@@ -70,14 +70,14 @@ function barChart([sizeX, sizeY], data, widgetId) {
   const valueLabelShift = _.max(_.map(values, v => getTextHeightShift(v.value, barWidth)))
   const barLabelShift = _.max(_.map(values, v => getTextHeightShift(v.text, barWidth)))
 
-  return React.createElement("svg", {
+  return h("svg", {
       xmlns: "http://www.w3.org/svg/2000",
       width: "100%",
       height: "100%",
       viewBox: `0 0 ${width} ${height}`,
       preserveAspectRatio: "xMidYMid",
     },
-    React.createElement("line", {
+    h("line", {
       stroke: "#555",
       x1: LEFT_BAR_LINE_X(width),
       x2: RIGHT_BAR_LINE_X(width),
@@ -88,7 +88,7 @@ function barChart([sizeX, sizeY], data, widgetId) {
     _.map(values, (el, i) => {
       const color = el.color || data.color || COLORS[i % COLORS.length]
       const x = LEFT_BAR_LINE_X(width) + BAR_SPACING(width) + spaceBetweenBars * i
-      let y, h
+      let y, barHeight
 
       let value
       if (el.value < min) {
@@ -101,24 +101,24 @@ function barChart([sizeX, sizeY], data, widgetId) {
 
       if (value < 0) {
         y = lineY
-        h = -value * sizeCoef
+        barHeight = -value * sizeCoef
       } else {
         y = TOP_BAR_LINE_Y(height) + (max - value) * sizeCoef
-        h = lineY - y
+        barHeight = lineY - y
       }
 
       return [
-        React.createElement("rect", {
+        h("rect", {
           key: 'bar' + i,
           fill: color,
           x: x,
           y: y,
           width: barWidth,
-          height: Math.max(h, 6),
+          height: Math.max(barHeight, 6),
           "data-value": value,
         }),
 
-        React.createElement("path", {
+        h("path", {
           key: 'valuelabelpath' + i,
           id: `path_value_${widgetId}_${i}`,
           d: [
@@ -126,18 +126,18 @@ function barChart([sizeX, sizeY], data, widgetId) {
             `L ${x + barWidth} ${y - valueLabelShift}`
           ].join(' ')
         }),
-        React.createElement("text", {
+        h("text", {
             key: 'value_label' + i,
             fill: color,
             stroke: color,
             fontSize: 50,
           },
-          React.createElement("textPath", {
+          h("textPath", {
             xlinkHref: `#path_value_${widgetId}_${i}`,
           }, el.value)
         ),
 
-        React.createElement("path", {
+        h("path", {
           key: 'labelpath' + i,
           id: `path_bar_${widgetId}_${i}`,
           d: [
@@ -145,13 +145,13 @@ function barChart([sizeX, sizeY], data, widgetId) {
             `L ${x + barWidth} ${BOTTOM_BAR_LINE_Y(height) + 50}`
           ].join(' ')
         }),
-        React.createElement("text", {
+        h("text", {
             key: 'label' + i,
             fill: color,
             stroke: color,
             fontSize: 50,
           },
-          React.createElement("textPath", {
+          h("textPath", {
             xlinkHref: `#path_bar_${widgetId}_${i}`,
           }, el.text)
         ),
@@ -212,14 +212,14 @@ function lineChart([sizeX, sizeY], data, widgetId) {
     return {el, x, y}
   })
 
-  return React.createElement("svg", {
+  return h("svg", {
       xmlns: "http://www.w3.org/svg/2000",
       width: "100%",
       height: "100%",
       viewBox: `0 0 ${width} ${height}`,
       //preserveAspectRatio: "xMidYMid",
     },
-    React.createElement("line", {
+    h("line", {
       stroke: "#555",
       x1: LEFT_BAR_LINE_X(width),
       x2: RIGHT_BAR_LINE_X(width),
@@ -240,9 +240,9 @@ function lineChart([sizeX, sizeY], data, widgetId) {
         lineProps.y1 = lineProps.y2 = TOP_BAR_LINE_Y(height) + y * sizeCoef + 3
       }
 
-      return React.createElement("line", lineProps)
+      return h("line", lineProps)
     }) : null,
-    React.createElement("path", {
+    h("path", {
       stroke: "white",
       fill: "none",
       strokeWidth: 6,
@@ -256,7 +256,7 @@ function lineChart([sizeX, sizeY], data, widgetId) {
     data.labelStyle === 'none' ? null : _.map(pathPoints, ({x, y, el}, i) => {
       const color = el.color || data.color || COLORS[i % COLORS.length]
       return [
-        React.createElement("ellipse", {
+        h("ellipse", {
           key: 'value_wrapper_' + i,
           cx: x,
           cy: y,
@@ -266,7 +266,7 @@ function lineChart([sizeX, sizeY], data, widgetId) {
           stroke: color,
           strokeWidth: 6,
         }),
-        React.createElement("text", {
+        h("text", {
           key: 'value_label_' + i,
           x: x - (getTextWidth(el.value) / 2),
           y: y + 18,
@@ -280,18 +280,16 @@ function lineChart([sizeX, sizeY], data, widgetId) {
   )
 }
 
-export default React.createClass({
-  displayName: 'widgets/Graph',
-
-  shouldComponentUpdate: function (nextProps) {
+export default class Graph extends Component {
+  shouldComponentUpdate(nextProps) {
     return _.isEqual(nextProps, this.props)
-  },
+  }
 
-  render: function () {
+  render() {
     const {data, widgetId, container} = this.props
     if (data && data.limit && data.values) { data.values.splice(data.limit) }
 
-    if (!data.values) { return React.DOM.div() }
+    if (!data.values) { return h("div") }
 
     switch (data && data.style) {
       case 'line-chart':
@@ -301,4 +299,4 @@ export default React.createClass({
         return barChart(container.size, data, widgetId)
     }
   }
-})
+}

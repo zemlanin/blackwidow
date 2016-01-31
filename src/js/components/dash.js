@@ -1,6 +1,6 @@
 'use strict'
 
-import React, {DOM} from 'react'
+import {h, Component} from 'preact'
 import _ from 'lodash'
 
 import {debug} from 'config'
@@ -9,13 +9,11 @@ import wImage from './widgets/image'
 import wTable from './widgets/table'
 import wGraph from './widgets/graph'
 
-export default React.createClass({
-  displayName: 'Dash',
-
-  render: function() {
+export default class Dash extends Component {
+  render() {
     const [viewportX, viewportY] = (this.props.container || {}).size || [10, 10]
 
-    return DOM.div(
+    return h("div",
       null,
       _.map(this.props.widgets, (widget, widgetId) => {
         const {container} = widget
@@ -40,7 +38,7 @@ export default React.createClass({
             break
         }
 
-        return DOM.div({
+        return h("div", {
             key: widgetId,
             style: {
               position: 'absolute',
@@ -54,7 +52,7 @@ export default React.createClass({
               outline: debug && container.debug ? '1px solid ' + container.debug : '',
             }
           },
-          React.createElement(
+          h(
             component,
             {data: widget.data, container, widgetId}
           )
@@ -62,4 +60,4 @@ export default React.createClass({
       })
     )
   }
-})
+}

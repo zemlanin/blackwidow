@@ -3,8 +3,8 @@
 import Rx from 'rx'
 import _ from 'lodash'
 import {DOM as RxDOM} from 'rx-dom'
-import React from 'react'
-import ReactDOM from 'react-dom'
+
+import {h, render} from 'preact'
 
 import {debug} from 'config'
 import {getStream, getDash} from './store'
@@ -21,9 +21,10 @@ getDash()
   .subscribe(dashStore.push)
 
 dashStore.pull
-  .subscribe(dashData => ReactDOM.render(
-    React.createElement(Dash, dashData),
-    document.getElementById('dash')
+  .subscribe((dashData, i) => render(
+    h(Dash, dashData),
+    document.getElementById('dash'),
+    document.getElementById('dash').lastChild
   ))
 
 var endpoints = endpointsStore.pull

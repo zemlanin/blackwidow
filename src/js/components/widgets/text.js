@@ -2,16 +2,14 @@
 
 import _ from 'lodash'
 
-import React, {DOM} from 'react'
+import {h, Component} from 'preact'
 
-export default React.createClass({
-  displayName: 'widgets/Text',
-
-  shouldComponentUpdate: function (nextProps) {
+export default class Text extends Component {
+  shouldComponentUpdate(nextProps) {
     return _.isEqual(nextProps, this.props)
-  },
+  }
 
-  render: function() {
+  render() {
     var {data, container} = this.props
     data = data || {}
 
@@ -30,7 +28,7 @@ export default React.createClass({
       }
     }
 
-    return DOM.div({
+    return h("div", {
         id: data.id,
         style: {
           padding: '0.1em',
@@ -38,8 +36,8 @@ export default React.createClass({
           whiteSpace: 'normal',
         }
       },
-      DOM.span(null, data.text),
-      data.note ? DOM.span({
+      h("span", null, data.text),
+      data.note ? h("span", {
           style: {
             position: 'absolute',
             bottom: 0,
@@ -54,4 +52,4 @@ export default React.createClass({
       ) : ''
     )
   }
-})
+}
