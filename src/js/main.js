@@ -111,7 +111,7 @@ endpointRequests
       .map(([widgetId, widget]) => ({widgetId, widget, data: widget.endpoint.plain ? response : JSON.parse(response)}))
       .map(({widgetId, widget, data}) => ({
         widgetId,
-        data: expressions ? endpointMapper(data, _.assign({}, widget.data, data), widget.endpoint.map || {}) :_.reduce(
+        data: expressions ? endpointMapper(data, _.assign({}, widget.data, data), widget.endpoint.map || {}) : _.reduce(
           widget.endpoint.map || {},
           _.partial(endpointMapperOld, data),
           _.assign({}, widget.data, data)
