@@ -86,7 +86,7 @@
           "timeInterval": 60
         },
         "map": {
-          "text": "projects.buprom.version_title | match:'.+\\\\)' | get:0"
+          "text": "projects.buprom.version_title | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
         },
         "onError": {
           "data": {"text": "oops"}
@@ -117,7 +117,7 @@
           "timeInterval": 60
         },
         "map": {
-          "text": "projects.uaprom.version_title | match:'.+\\\\)' | get:0"
+          "text": "projects.uaprom.version_title | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
         }
       }
     },
@@ -145,7 +145,7 @@
           "timeInterval": 60
         },
         "map": {
-          "text": "projects.ruprom.version_title | match:'.+\\\\)' | get:0"
+          "text": "projects.ruprom.version_title | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
         }
       }
     },
@@ -173,7 +173,7 @@
           "timeInterval": 60
         },
         "map": {
-          "text": "projects.byprom.version_title | match:'.+\\\\)' | get:0"
+          "text": "projects.byprom.version_title | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
         }
       }
     },
@@ -201,7 +201,7 @@
           "timeInterval": 60
         },
         "map": {
-          "text": "projects.kzprom.version_title | match:'.+\\\\)' | get:0"
+          "text": "projects.kzprom.version_title | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
         }
       }
     },
@@ -229,7 +229,7 @@
           "timeInterval": 60
         },
         "map": {
-          "text": "projects.mdprom.version_title | match:'.+\\\\)' | get:0"
+          "text": "projects.mdprom.version_title | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
         }
       }
     }

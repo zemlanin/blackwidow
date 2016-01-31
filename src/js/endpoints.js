@@ -40,7 +40,9 @@ export function endpointMapper(data, result, structure) {
 
 expressions.filters.get = (v, key) => _.get(v, key)
 expressions.filters.map = (vs, structure) => vs.map(v => endpointMapper(v, {}, structure))
-expressions.filters.format = (v, tmpl) => tmpl.replace(/{}/ig, v)
+expressions.filters.format = (v, tmpl) => {
+  return tmpl.replace(/{(\d*)}/ig, (match, p1) => p1 ? v[parseInt(p1, 10)] : v)
+}
 expressions.filters.match = (v, regex) => v.match(regex)
 
 export function endpointMapperOld(data, result, mappingFrom, mappingTo) {
