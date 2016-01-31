@@ -9,21 +9,21 @@ make serve    # start a server at http://127.0.0.1:8000
 make deploy   # deploy via surge.sh
 ```
 
-## demo
+## Demo
 * https://blackwidow.surge.sh/
 * https://blackwidow.surge.sh/?gist=00fd9405043a98c96a68
 * https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/static_data.json
 * https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/external_data.json
 * https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/graphs.json
 
-## example dashes
+### Example dashboards
 * https://blackwidow.surge.sh/examples/mockDashes.json
 * https://gist.github.com/zemlanin/00fd9405043a98c96a68
 * https://blackwidow.surge.sh/examples/static_data.json
 * https://blackwidow.surge.sh/examples/external_data.json
 * https://blackwidow.surge.sh/examples/graphs.json
 
-## dashboard api
+## Dashboard API
 Dashboard is a table (10×10 by default) described by JSON object:
 
 ```json5
@@ -90,13 +90,13 @@ Dashboard is a table (10×10 by default) described by JSON object:
             * `number?` **Schedule.timeInterval**: interval between requests in seconds
         * `Object.<WidgetData[key], PayloadFieldMapping>?` **Endpoint.map**: mapping of endpoint payload to widget data fields. keys are the names of WidgetData field (for example, `"note"`)
             * `Object|string` **PayloadFieldMapping**: mapping rules for a single WidgetData field. string-y PayloadFieldMapping's value is a shortcut for `{"_expr": value}`
-                * `string` **PayloadFieldMapping._expr**: source of WidgetData field value. See [Endpoint Expressions]() for more details
+                * `string` **PayloadFieldMapping._expr**: source of WidgetData field value. See [Endpoint Expressions](#endpoint-expressions) for more details
                 * `*` **PayloadFieldMapping[key]**: base scope for endpoint expression
 
-## Endpoint Expressions
+### Endpoint Expressions
 Endpoint Expressions are evaluated via [angular-expressions](https://github.com/peerigon/angular-expressions). Expression scope is an object, merged from the response value and the `PayloadFieldMapping` of the expression. Plus, full response value is available in `$` key of the scope
 
-```
+```js
 "map": {
   "src": "text"
 }
@@ -128,48 +128,60 @@ Endpoint Expressions are evaluated via [angular-expressions](https://github.com/
 A few filters are available for manipulating response before rendering:
 * `format:[template]` formats `template` with basic Python-like syntax
 
+  ```js
+  "map": {
+    "src": "values | format:'http://example.com/{1}.{2}'"
+  }
+
+  // for response == {"values": ["how", "are", "you"]}, widget will receive data
+
+  {
+    "src": "http://example.com/are.you"
+  }
   ```
-    "map": {
-      "src": "values | format:'http://example.com/{1}.{2}'"
-    }
+* `match:[pattern]:[flags?]` matches expression with `pattern` via [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp). :warning: use *four backslashes for escaping*
 
-    // for response == {"values": ["how", "are", "you"]}, widget will receive data
+  ```js
+  "map": {
+    "text": "text | match:'\\\\d{4}-(\\\\d{2})-(\\\\d{2})' | format:'{2}.{1}'"
+  }
 
-    {
-      "src": "http://example.com/are.you"
-    }
-  ```
-* `match:[pattern]:[flags?]` matches expression with `pattern` via [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp). :!: use *four backslashes for escaping*
+  // for response == {"text": "2015-09-13"}, widget will receive data
 
-  ```
-    "map": {
-      "text": "text | match:'\\\\d{4}-(\\\\d{2})-(\\\\d{2})' | format:'{2}.{1}'"
-    }
-
-    // for response == {"text": "2015-09-13"}, widget will receive data
-
-    {
-      "text": "13.09"
-    }
+  {
+    "text": "13.09"
+  }
   ```
 * `map:[mapping]` maps items of array expressions with passed mapping
 
-  ```
-    "map": {
-      "values": {
-        "_expr": "text | match:'[a-z]+':'ig' | map:_map",
-        "_map": {"value": "$"}
-      }
+  ```js
+  "map": {
+    "values": {
+      "_expr": "text | match:'[a-z]+':'ig' | map:_map",
+      "_map": {"value": "$"}
     }
+  }
 
-    // for response == {"text": "Mal|Zoe|Wash"}, widget will receive data
+  // for response == {"text": "Mal|Zoe|Wash"}, widget will receive data
 
-    {
-      "values": [
-        {"value": "Mal"},
-        {"value": "Zoe"},
-        {"value": "Wash"}
-      ]
-    }
+  {
+    "values": [
+      {"value": "Mal"},
+      {"value": "Zoe"},
+      {"value": "Wash"}
+    ]
+  }
   ```
 * `get:[key]` for getting specific keys from already filtered expressions
+
+  ```js
+  "map": {
+    "text": "text | match:'[a-z]+':'ig' | get:0"
+  }
+
+  // for response == {"text": "Mal|Zoe|Wash"}, widget will receive data
+
+  {
+    "text": "Mal"
+  }
+  ```
