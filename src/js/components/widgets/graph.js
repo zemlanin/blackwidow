@@ -282,7 +282,7 @@ function lineChart([sizeX, sizeY], data, widgetId) {
 
 export default class Graph extends Component {
   shouldComponentUpdate(nextProps) {
-    return _.isEqual(nextProps, this.props)
+    return !_.isEqual(nextProps, this.props)
   }
 
   render() {

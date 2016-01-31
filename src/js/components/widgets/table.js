@@ -5,7 +5,7 @@ import {h, Component} from 'preact'
 
 export default class Table extends Component {
   shouldComponentUpdate(nextProps) {
-    return _.isEqual(nextProps, this.props)
+    return !_.isEqual(nextProps, this.props)
   }
 
   render() {

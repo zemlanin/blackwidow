@@ -6,13 +6,10 @@ import {h, Component} from 'preact'
 
 export default class Text extends Component {
   shouldComponentUpdate(nextProps) {
-    return _.isEqual(nextProps, this.props)
+    return !_.isEqual(nextProps, this.props)
   }
 
-  render() {
-    var {data, container} = this.props
-    data = data || {}
-
+  render({data={}, container}) {
     var fontSize = container.fontSize || '3em'
     if (data.text && !container.fontSize) {
       if (data.text.length > 100) {

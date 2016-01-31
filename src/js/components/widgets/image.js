@@ -7,7 +7,7 @@ import {h, Component} from 'preact'
 
 export default class Image extends Component {
   shouldComponentUpdate(nextProps) {
-    return _.isEqual(nextProps, this.props)
+    return !_.isEqual(nextProps, this.props)
   }
 
   render() {
