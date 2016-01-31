@@ -2,7 +2,7 @@
 
 import Rx from 'rx'
 import _ from 'lodash'
-import {DOM as RxDOM} from 'rx-dom'
+import 'whatwg-fetch'
 
 import {h, render} from 'preact'
 
@@ -13,8 +13,11 @@ import {messageBus} from './cast'
 import {extractEndpointsTo, endpointMapper} from './endpoints'
 import Dash from './components/dash'
 
-var dashStore = getStream('dashStore')//.do(console.log.bind(console, 'dS')).share()
-var endpointsStore = getStream('endpointsStore')//.do(console.log.bind(console, 'eS')).share()
+var dashStore = getStream('dashStore')
+var endpointsStore = getStream('endpointsStore')
+
+// dashStore.pull.do(console.log.bind(console, 'dS')).subscribe()
+// endpointsStore.pull.do(console.log.bind(console, 'eS')).subscribe()
 
 getDash()
   .map(extractEndpointsTo(endpointsStore))
@@ -84,25 +87,28 @@ var endpointRequests = Rx.Observable.merge(
   websocketsUpdates,
   endpointSchedules
 )
-  .flatMap(([ref, endpoint]) => RxDOM.ajax({
-      url: endpoint.url,
-      responseType: 'text/plain',
-      contentType: 'application/json; charset=UTF-8',
-      crossDomain: true,
-      headers: endpoint.headers,
-      method: endpoint.method || 'GET',
-      body: endpoint.body,
-    })
-    .map(({response}) => ({ref, response}))
+  .flatMap(([ref, endpoint]) => Rx.Observable.fromPromise(fetch(
+      endpoint.url,
+      {
+        responseType: 'text/plain',
+        contentType: 'application/json; charset=UTF-8',
+        crossDomain: true,
+        headers: endpoint.headers,
+        method: endpoint.method || 'GET',
+        body: endpoint.body,
+      }
+    ))
+    .flatMap((response) => Rx.Observable.fromPromise(endpoint.plain ? response.text() : response.json()))
+    .map((response) => ({ref, response}))
     .catch(err => Rx.Observable.return({err: err}))
   )
   .share()
 
 endpointRequests
   .filter(({response}) => response)
-  .map(({ref, response}) => ({ref, ws: JSON.parse(response).ws}))
-  .catch(err => Rx.Observable.empty())
   .filter(({ws}) => ws && ws.url && ws.conds)
+  .map(({ref, response: {ws}}) => ({ref, ws}))
+  .catch(err => Rx.Observable.empty())
   .subscribe(({ref, ws}) => endpointsStore.push(`${ref}.ws`, ws))
 
 endpointRequests
@@ -110,7 +116,7 @@ endpointRequests
   .withLatestFrom(dashStore.pull, ({ref, response}, {widgets}) => {
     return Rx.Observable.pairs(widgets)
       .filter(([widgetId, widget]) => widget.endpoint && widget.endpoint._ref === ref)
-      .map(([widgetId, widget]) => ({widgetId, widget, data: widget.endpoint.plain ? response : JSON.parse(response)}))
+      .map(([widgetId, widget]) => ({widgetId, widget, data: response}))
       .map(({widgetId, widget, data}) => ({
         widgetId,
         data: endpointMapper(data, _.assign({}, widget.data, data), widget.endpoint.map || {}),

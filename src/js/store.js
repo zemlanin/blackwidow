@@ -1,17 +1,19 @@
 'use strict'
 
+import Rx from 'rx'
 import _ from 'lodash'
 import {Subject, BehaviorSubject, Observable} from 'rx'
-import {DOM as RxDOM} from 'rx-dom'
 
 function getAjaxSteam(url) {
-  return RxDOM.ajax({
+  return Rx.Observable.fromPromise(fetch(
       url,
-      responseType: 'text/plain',
-      contentType: 'application/json; charset=UTF-8',
-      crossDomain: true,
-    })
-    .map(data => JSON.parse(data.response))
+      {
+        responseType: 'text/plain',
+        contentType: 'application/json; charset=UTF-8',
+        crossDomain: true,
+      }
+    ))
+    .flatMap((response) => Rx.Observable.fromPromise(response.json()))
 }
 
 export function getDash() {
@@ -62,6 +64,7 @@ function StoreStream(name) {
       acc,
       _.set({}, path, value)
     ))
+    .map(_.cloneDeep)
     .subscribe(dataStream)
 
   this.name = name

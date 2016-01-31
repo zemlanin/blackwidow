@@ -12,8 +12,8 @@ export const extractEndpointsTo = (dest) => (dash) => {
           widget.endpoint.body = JSON.stringify(widget.endpoint.body)
         }
 
-        const extractedEndpoint = _.pick(widget.endpoint, ['url', 'method', 'body', 'schedule'])
-        const endpointHash = hash.MD5(_.pick(widget.endpoint, ['url', 'method', 'body']))
+        const extractedEndpoint = _.pick(widget.endpoint, ['url', 'method', 'body', 'schedule', 'plain'])
+        const endpointHash = hash.MD5(_.pick(widget.endpoint, ['url', 'method', 'body', 'plain']))
 
         widget.endpoint._ref = endpointHash
         widget.endpoint = _.omit(widget.endpoint, _.keys(extractedEndpoint))
@@ -29,6 +29,8 @@ export const extractEndpointsTo = (dest) => (dash) => {
 }
 
 export function endpointMapper(data, result, structure) {
+  // console.log(data, result)
+
   for (let key in structure) {
     result[key] = expressions.compile(
       structure[key]._expr || structure[key]
