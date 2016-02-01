@@ -5,15 +5,7 @@ import _ from 'lodash'
 import {Subject, BehaviorSubject, Observable} from 'rx'
 
 function getAjaxStream(url) {
-  return Rx.Observable.fromPromise(fetch(
-      url,
-      {
-        responseType: 'text/plain',
-        contentType: 'application/json; charset=UTF-8',
-        crossDomain: true,
-      }
-    ))
-    .flatMap((response) => Rx.Observable.fromPromise(response.json()))
+  return Rx.Observable.fromPromise(fetch(url).then(_.method('json')))
 }
 
 export function getDash() {
@@ -21,13 +13,13 @@ export function getDash() {
 
   if (location.hash && location.hash.match(/^#(https?|file):/)) {
     if (location.hash.match(/^#(https?|file):/)) {
-      let url = location.hash.replace(/^#/, '')
+      const url = location.hash.replace(/^#/, '')
       dashStream = getAjaxStream(url)
     }
   }
 
   if (location.search.match(/[?&]gist=([0-9a-f]+)/i)) {
-    let gistId = location.search.match(/[?&]gist=([0-9a-f]+)/i)[1]
+    const gistId = location.search.match(/[?&]gist=([0-9a-f]+)/i)[1]
     dashStream = getAjaxStream(`https://api.github.com/gists/${gistId}`)
       .pluck('files')
       .map(files => _.find(files, file => file.language === 'JSON'))

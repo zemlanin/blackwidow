@@ -97,8 +97,7 @@ var endpointRequests = Rx.Observable.merge(
         method: endpoint.method || 'GET',
         body: endpoint.body,
       }
-    ))
-    .flatMap((response) => Rx.Observable.fromPromise(endpoint.plain ? response.text() : response.json()))
+    ).then(endpoint.plain ? _.method('text') : _.method('json')))
     .map((response) => ({ref, response}))
     .catch(err => Rx.Observable.return({err: err}))
   )
@@ -106,8 +105,8 @@ var endpointRequests = Rx.Observable.merge(
 
 endpointRequests
   .filter(({response}) => response)
-  .filter(({ws}) => ws && ws.url && ws.conds)
   .map(({ref, response: {ws}}) => ({ref, ws}))
+  .filter(({ws}) => ws && ws.url && ws.conds)
   .catch(err => Rx.Observable.empty())
   .subscribe(({ref, ws}) => endpointsStore.push(`${ref}.ws`, ws))
 
