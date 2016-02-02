@@ -13,7 +13,6 @@
       "endpoint": {
         "url": "https://bwd.cat/text/default",
         "schedule": {
-          "type": ["timeInterval"],
           "timeInterval": 600
         }
       },
@@ -32,7 +31,6 @@
       "endpoint": {
         "url": "https://bwd.cat/text/uno",
         "schedule": {
-          "type": ["timeInterval"],
           "timeInterval": 1800
         }
       },
@@ -50,7 +48,6 @@
       "endpoint": {
         "url": "https://bwd.cat/text/gif",
         "schedule": {
-          "type": ["timeInterval"],
           "timeInterval": 900
         },
         "map": {
@@ -81,7 +78,6 @@
       "endpoint": {
         "url": "https://ai.uaprom/overall",
         "schedule": {
-          "type": ["timeInterval"],
           "timeInterval": 60
         },
         "map": {
@@ -112,7 +108,6 @@
       "endpoint": {
         "url": "https://ai.uaprom/overall",
         "schedule": {
-          "type": ["timeInterval"],
           "timeInterval": 60
         },
         "map": {
@@ -140,7 +135,6 @@
       "endpoint": {
         "url": "https://ai.uaprom/overall",
         "schedule": {
-          "type": ["timeInterval"],
           "timeInterval": 60
         },
         "map": {
@@ -168,7 +162,6 @@
       "endpoint": {
         "url": "https://ai.uaprom/overall",
         "schedule": {
-          "type": ["timeInterval"],
           "timeInterval": 60
         },
         "map": {
@@ -196,7 +189,6 @@
       "endpoint": {
         "url": "https://ai.uaprom/overall",
         "schedule": {
-          "type": ["timeInterval"],
           "timeInterval": 60
         },
         "map": {
@@ -224,7 +216,6 @@
       "endpoint": {
         "url": "https://ai.uaprom/overall",
         "schedule": {
-          "type": ["timeInterval"],
           "timeInterval": 60
         },
         "map": {
