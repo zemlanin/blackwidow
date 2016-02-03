@@ -6,10 +6,8 @@ import 'whatwg-fetch'
 
 import {h, render} from 'preact'
 
-import {debug} from 'config'
 import {getStream, getDash} from './store'
 import {getWsStream} from './ws'
-import {messageBus} from './cast'
 import {extractEndpointsTo, endpointMapper} from './endpoints'
 import Dash from './components/dash'
 
@@ -128,13 +126,13 @@ endpointRequests
     v => console.log('completed')
   )
 
-if (messageBus) {
-  messageBus
+if (window.castMessageStream) {
+  window.castMessageStream
     .filter(msg => msg === 'refresh')
     .subscribe(msg => location.reload())
 }
 
-if (debug) {
+if (process.env.NODE_ENV !== 'production') {
   console.log(endpointMapper({"text": "2015-09-13"}, {}, {
     "text": "text | match:'\\\\d{4}-(\\\\d{2})-(\\\\d{2})' | format:'{2}.{1}'"
   }))

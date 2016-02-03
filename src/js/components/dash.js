@@ -3,7 +3,6 @@
 import {h, Component} from 'preact'
 import _ from 'lodash'
 
-import {debug} from 'config'
 import Text from './widgets/text'
 import wImage from './widgets/image'
 import wTable from './widgets/table'
@@ -49,7 +48,7 @@ export default class Dash extends Component {
               top: (100 * container.position[1] / viewportY) + '%',
               width: (100 * container.size[0] / viewportX) + '%',
               height: (100 * container.size[1] / viewportY) + '%',
-              outline: debug && container.debug ? '1px solid ' + container.debug : '',
+              outline: process.env.NODE_ENV !== 'production' && container.debug ? '1px solid ' + container.debug : '',
             }
           },
           h(

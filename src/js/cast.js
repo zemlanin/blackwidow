@@ -12,11 +12,6 @@ if (cast && !window.castReceiverManager) {
   appConfig.maxInactivity = 60 * 60 * 24 * 31
 
   window.castReceiverManager.start(appConfig)
-}
 
-module.exports = {
-  receiverManager: window.castReceiverManager,
-  messageBus: window.castMessageBus
-                ? Rx.Observable.fromEvent(window.castMessageBus, 'message').map(m => JSON.parse(m.data))
-                : null,
+  window.castMessageStream = Rx.Observable.fromEvent(window.castMessageBus, 'message').map(m => JSON.parse(m.data))
 }

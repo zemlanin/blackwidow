@@ -76,7 +76,6 @@ Dashboard is a table (10×10 by default) described by JSON object:
         * `number[]` **Container.size**: widget size in [x, y] format (see example above)
         * `number[]` **Container.position**: position of top left corner of a widget in [x, y] format (see example above)
         * `string` **Container.fontSize**: font size for text in widget. em values are recommended
-        * `string` **Container.debug**: widget border color if config.debug is true
     * `WidgetData` **Widget.data**: widget displayed information. keys depend on Widget.type
         * `string?` **WidgetData.note**: text if lower right corner of a widget. its fontSize is equal half of `Container.fontSize`
         * `string?` **WidgetData.text**: text for `Widget.type = "text"`
