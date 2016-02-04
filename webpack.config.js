@@ -4,6 +4,18 @@ var webpack = require("webpack");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var dependencies = require("./package.json").dependencies;
 
+var plugins = [
+  new webpack.DefinePlugin({
+    'process.env.NODE_ENV': process.env.NODE_ENV ? JSON.stringify(process.env.NODE_ENV) : '"development"'
+  }),
+  new webpack.optimize.CommonsChunkPlugin("core", "core.js"),
+  new ExtractTextPlugin("[name].css", {allChunks: true}),
+]
+
+if (process.env.NODE_ENV === "production") {
+  plugins.push(new webpack.optimize.UglifyJsPlugin({warnings: false}))
+}
+
 module.exports = {
   entry: {
     core: Object.keys(dependencies),
@@ -26,16 +38,8 @@ module.exports = {
     modulesDirectories: [
       "node_modules",
       "src/js",
-      ".",
     ],
     extensions: ['.js', '']
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': process.env.NODE_ENV ? JSON.stringify(process.env.NODE_ENV) : '"development"'
-    }),
-    new webpack.optimize.CommonsChunkPlugin("core", "core.js"),
-    new ExtractTextPlugin("[name].css", {allChunks: true}),
-    new webpack.optimize.UglifyJsPlugin({warnings: false}),
-  ],
+  plugins: plugins,
 };
