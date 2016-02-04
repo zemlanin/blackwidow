@@ -1,0 +1,11 @@
+:local(.imageHolder) {
+  width: 100%;
+  height: 100%;
+  background-position: 50% 50%;
+  background-size: cover;
+}
+
+:local(.note) {
+  composes: edit note from "./text.css";
+  font-size: 2em;
+}

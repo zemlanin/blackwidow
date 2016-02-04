@@ -3,7 +3,7 @@
 import _ from 'lodash'
 import {h, Component} from 'preact'
 
-// const noImage = 'linear-gradient(rgba(255, 255, 255, .2) 50%, transparent 50%, transparent)'
+import {imageHolder, note} from 'css/widgets/image'
 
 export default class Image extends Component {
   shouldComponentUpdate(nextProps) {
@@ -14,24 +14,14 @@ export default class Image extends Component {
     var {data={}, container={}} = this.props
 
     return h("div", {
+        class: imageHolder,
         style: {
-          width: '100%',
-          height: '100%',
-          backgroundPosition: '50%',
-          backgroundSize: data.src ? 'cover' : '10%',
           backgroundImage: data.src ? `url(${data.src})` : '',
         }
       },
       data.note ? h("span", {
-          style: {
-            position: 'absolute',
-            bottom: 0,
-            right: 0,
-            color: 'gray',
-            fontSize: container.fontSize || '2em',
-            backgroundColor: 'black',
-            padding: '5px',
-          }
+          class: note,
+          style: {fontSize: container.fontSize}
         },
         data.note
       ) : ''

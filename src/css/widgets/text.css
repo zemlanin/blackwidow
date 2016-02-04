@@ -1,0 +1,14 @@
+:local(.border) {
+  padding: 0.1em;
+  white-space: normal;
+}
+
+:local(.note) {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  color: gray;
+  font-size: 0.5em;
+  background-color: black;
+  padding: 5px;
+}

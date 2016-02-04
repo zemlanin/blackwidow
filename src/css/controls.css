@@ -1,0 +1,9 @@
+:local(.trigger) {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+:local(.trigger):hover {
+  opacity: 1;
+  transition: opacity 0.3s;
+}

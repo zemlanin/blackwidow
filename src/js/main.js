@@ -13,6 +13,8 @@ import {extractEndpointsTo, endpointMapper} from './endpoints'
 import Dash from './components/dash'
 import controlsInit from './controls'
 
+import 'css/base.css'
+
 var dashStore = getStream('dashStore')
 var endpointsStore = getStream('endpointsStore')
 

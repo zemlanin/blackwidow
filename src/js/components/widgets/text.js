@@ -1,8 +1,9 @@
 'use strict'
 
 import _ from 'lodash'
-
 import {h, Component} from 'preact'
+
+import {border, note} from 'css/widgets/text'
 
 export default class Text extends Component {
   shouldComponentUpdate(nextProps) {
@@ -27,26 +28,11 @@ export default class Text extends Component {
 
     return h("div", {
         id: data.id,
-        style: {
-          padding: '0.1em',
-          fontSize: fontSize,
-          whiteSpace: 'normal',
-        }
+        class: border,
+        style: {fontSize: fontSize},
       },
       h("span", null, data.text),
-      data.note ? h("span", {
-          style: {
-            position: 'absolute',
-            bottom: 0,
-            right: 0,
-            color: 'gray',
-            fontSize: '0.5em',
-            backgroundColor: 'black',
-            padding: '5px',
-          }
-        },
-        data.note
-      ) : ''
+      data.note ? h("span", {class: note}, data.note) : ''
     )
   }
 }

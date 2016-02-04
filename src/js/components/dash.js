@@ -8,6 +8,8 @@ import wImage from './widgets/image'
 import wTable from './widgets/table'
 import wGraph from './widgets/graph'
 
+import style from 'css/base.css'
+
 export default class Dash extends Component {
   render() {
     const [viewportX, viewportY] = (this.props.container || {}).size || [10, 10]
@@ -39,11 +41,8 @@ export default class Dash extends Component {
 
         return h("div", {
             key: widgetId,
+            class: style.widget,
             style: {
-              position: 'absolute',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-
               left: (100 * container.position[0] / viewportX) + '%',
               top: (100 * container.position[1] / viewportY) + '%',
               width: (100 * container.size[0] / viewportX) + '%',
@@ -51,10 +50,7 @@ export default class Dash extends Component {
               outline: process.env.NODE_ENV !== 'production' && container.debug ? '1px solid ' + container.debug : '',
             }
           },
-          h(
-            component,
-            {data: widget.data, container, widgetId}
-          )
+          h(component, {data: widget.data, container, widgetId})
         )
       })
     )
