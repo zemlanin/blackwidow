@@ -22,6 +22,7 @@ export default (node, freezer) => {
     .map((msg) => update(msg, freezer.get()))
     .do(([state, effect]) => effect ? effect(freezer).subscribe(send) : null)
     .map(_.head)
+    .startWith({})
     .subscribe(state => render(
       h(Controls, state), node, node.lastChild
     ))
