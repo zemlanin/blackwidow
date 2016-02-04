@@ -25,10 +25,19 @@
       position: relative;
       text-align: center;
     }
+    #controls {
+      z-index: 10;
+      font-size: 5em;
+      cursor: pointer;
+    }
+
+    #controls span {opacity: 0; transition: opacity 0.3s;}
+    #controls span:hover {opacity: 1; transition: opacity 0.3s;}
   </style>
   <script type="text/javascript" src="./js/core.js"></script>
 </head>
 <body>
+  <div id="controls"></div>
   <div id="wrapper">
     <div id="dash"></div>
   </div>

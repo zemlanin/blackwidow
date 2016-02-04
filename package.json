@@ -7,6 +7,7 @@
   "readme": "TBA",
   "dependencies": {
     "angular-expressions": "^0.3.0",
+    "freezer-js": "^0.9.6",
     "lodash": "^4.0.1",
     "object-hash": "^1.1.0",
     "preact": "^2.8.2",

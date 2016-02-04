@@ -2,17 +2,21 @@
 
 import Rx from 'rx'
 import _ from 'lodash'
-import 'whatwg-fetch'
-
 import {h, render} from 'preact'
+import Freezer from 'freezer-js'
+
+import 'whatwg-fetch'
 
 import {getStream, getDash} from './store'
 import {getWsStream} from './ws'
 import {extractEndpointsTo, endpointMapper} from './endpoints'
 import Dash from './components/dash'
+import controlsInit from './controls'
 
 var dashStore = getStream('dashStore')
 var endpointsStore = getStream('endpointsStore')
+
+let freezer = new Freezer({})
 
 // dashStore.pull.do(console.log.bind(console, 'dS')).subscribe()
 // endpointsStore.pull.do(console.log.bind(console, 'eS')).subscribe()
@@ -22,11 +26,13 @@ getDash()
   .subscribe(dashStore.push)
 
 dashStore.pull
-  .subscribe((dashData, i) => render(
+  .subscribe(dashData => render(
     h(Dash, dashData),
     document.getElementById('dash'),
     document.getElementById('dash').lastChild
   ))
+
+controlsInit(document.getElementById('controls'), freezer)
 
 var endpoints = endpointsStore.pull
   .map(_.cloneDeep)
