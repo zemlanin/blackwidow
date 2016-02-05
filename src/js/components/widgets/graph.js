@@ -2,6 +2,7 @@
 
 import _ from 'lodash'
 import {h, Component} from 'preact'
+import SVG from 'preact-svg'
 
 const TOP_BAR_LINE_Y = (height) => height * 0.15
 const BOTTOM_BAR_LINE_Y = (height, axesText=true) => axesText ? height * 0.65 : height * 0.85
@@ -70,8 +71,9 @@ function barChart([sizeX, sizeY], data, widgetId) {
   const valueLabelShift = _.max(_.map(values, v => getTextHeightShift(v.value, barWidth)))
   const barLabelShift = _.max(_.map(values, v => getTextHeightShift(v.text, barWidth)))
 
-  return h("svg", {
-      xmlns: "http://www.w3.org/svg/2000",
+  return h(SVG, {
+      xmlns: "http://www.w3.org/2000/svg",
+      "xmlns:xlink": "http://www.w3.org/1999/xlink",
       width: "100%",
       height: "100%",
       viewBox: `0 0 ${width} ${height}`,
@@ -83,9 +85,9 @@ function barChart([sizeX, sizeY], data, widgetId) {
       x2: RIGHT_BAR_LINE_X(width),
       y1: lineY + 3,
       y2: lineY + 3,
-      strokeWidth: 6,
+      "stroke-width": 6,
     }),
-    _.map(values, (el, i) => {
+    ..._.map(values, (el, i) => {
       const color = el.color || data.color || COLORS[i % COLORS.length]
       const x = LEFT_BAR_LINE_X(width) + BAR_SPACING(width) + spaceBetweenBars * i
       let y, barHeight
@@ -130,10 +132,10 @@ function barChart([sizeX, sizeY], data, widgetId) {
             key: 'value_label' + i,
             fill: color,
             stroke: color,
-            fontSize: 50,
+            "font-size": 50,
           },
           h("textPath", {
-            xlinkHref: `#path_value_${widgetId}_${i}`,
+            "xlink:href": `#path_value_${widgetId}_${i}`,
           }, el.value)
         ),
 
@@ -149,12 +151,12 @@ function barChart([sizeX, sizeY], data, widgetId) {
             key: 'label' + i,
             fill: color,
             stroke: color,
-            fontSize: 50,
+            "font-size": 50,
           },
           h("textPath", {
-            xlinkHref: `#path_bar_${widgetId}_${i}`,
+            "xlink:href": `#path_bar_${widgetId}_${i}`,
           }, el.text)
-        ),
+        )
       ]
     }),
     null // this allows trailing commas
@@ -212,8 +214,9 @@ function lineChart([sizeX, sizeY], data, widgetId) {
     return {el, x, y}
   })
 
-  return h("svg", {
-      xmlns: "http://www.w3.org/svg/2000",
+  return h(SVG, {
+      xmlns: "http://www.w3.org/2000/svg",
+      "xmlns:xlink": "http://www.w3.org/1999/xlink",
       width: "100%",
       height: "100%",
       viewBox: `0 0 ${width} ${height}`,
@@ -225,13 +228,13 @@ function lineChart([sizeX, sizeY], data, widgetId) {
       x2: RIGHT_BAR_LINE_X(width),
       y1: lineY + 3,
       y2: lineY + 3,
-      strokeWidth: 6,
+      "stroke-width": 6,
     }),
-    data.lines ? _.map(data.lines, ({x, y}, i) => {
+    ..._.map(data.lines, ({x, y}, i) => {
       let lineProps = {
         key: "extraline_" + x + "_" + y,
         stroke: "#555",
-        strokeWidth: 6,
+        "stroke-width": 6,
       }
 
       if (y !== undefined) {
@@ -241,11 +244,11 @@ function lineChart([sizeX, sizeY], data, widgetId) {
       }
 
       return h("line", lineProps)
-    }) : null,
+    }),
     h("path", {
       stroke: "white",
       fill: "none",
-      strokeWidth: 6,
+      "stroke-width": 6,
       d: _.map(pathPoints, ({x, y}, i) => {
         if (i === 0) {
           return `M ${x} ${y}`
@@ -253,7 +256,7 @@ function lineChart([sizeX, sizeY], data, widgetId) {
         return `L ${x} ${y}`
       }).join(' ')
     }),
-    data.labelStyle === 'none' ? null : _.map(pathPoints, ({x, y, el}, i) => {
+    ..._.map(data.labelStyle === 'none' ? null : pathPoints, ({x, y, el}, i) => {
       const color = el.color || data.color || COLORS[i % COLORS.length]
       return [
         h("ellipse", {
@@ -264,7 +267,7 @@ function lineChart([sizeX, sizeY], data, widgetId) {
           ry: getTextWidth('+'),
           fill: "black",
           stroke: color,
-          strokeWidth: 6,
+          "stroke-width": 6,
         }),
         h("text", {
           key: 'value_label_' + i,
@@ -272,7 +275,7 @@ function lineChart([sizeX, sizeY], data, widgetId) {
           y: y + 18,
           fill: color,
           stroke: color,
-          fontSize: 50,
+          "font-size": 50,
         }, el.value)
       ]
     }),
