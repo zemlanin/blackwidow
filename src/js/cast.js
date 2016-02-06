@@ -1,5 +1,3 @@
-'use strict'
-
 import Rx from 'rx'
 
 const {cast} = window
@@ -13,5 +11,5 @@ if (cast && !window.castReceiverManager) {
 
   window.castReceiverManager.start(appConfig)
 
-  window.castMessageStream = Rx.Observable.fromEvent(window.castMessageBus, 'message').map(m => JSON.parse(m.data))
+  window.castMessageStream = Rx.Observable.fromEvent(window.castMessageBus, 'message').map((m) => JSON.parse(m.data))
 }

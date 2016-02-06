@@ -1,5 +1,3 @@
-'use strict'
-
 import _ from 'lodash'
 import hash from 'object-hash'
 import expressions from 'angular-expressions'
@@ -28,7 +26,7 @@ export const extractEndpointsTo = (dest) => (dash) => {
   return dash
 }
 
-export function endpointMapper(data, result, structure) {
+export function endpointMapper (data, result, structure) {
   // console.log(data, result)
 
   for (let key in structure) {
@@ -41,7 +39,7 @@ export function endpointMapper(data, result, structure) {
 }
 
 expressions.filters.get = (v, key) => _.get(v, key)
-expressions.filters.map = (vs, structure) => vs.map(v => endpointMapper(v, {}, structure))
+expressions.filters.map = (vs, structure) => vs.map((v) => endpointMapper(v, {}, structure))
 expressions.filters.format = (v, tmpl) => {
   return tmpl.replace(/{(\d*)}/ig, (match, p1) => p1 ? v[parseInt(p1, 10)] : v)
 }

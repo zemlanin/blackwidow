@@ -1,15 +1,13 @@
-'use strict'
-
 import Rx from 'rx'
 import _ from 'lodash'
-import {h, render} from 'preact'
+import { h, render } from 'preact'
 import Freezer from 'freezer-js'
 
 import 'whatwg-fetch'
 
-import {getStream, getDash} from './store'
-import {getWsStream} from './ws'
-import {extractEndpointsTo, endpointMapper} from './endpoints'
+import { getStream, getDash } from './store'
+import { getWsStream } from './ws'
+import { extractEndpointsTo, endpointMapper } from './endpoints'
 import Dash from './components/dash'
 import controlsInit from './controls'
 
@@ -28,7 +26,7 @@ getDash()
   .subscribe(dashStore.push)
 
 dashStore.pull
-  .subscribe(dashData => render(
+  .subscribe((dashData) => render(
     h(Dash, dashData),
     document.getElementById('dash'),
     document.getElementById('dash').lastChild
@@ -53,15 +51,13 @@ var endpointAdded = endpoints
   .share()
 
 var endpointSchedules = endpointAdded
-  .filter(([ref, endpoint]) =>
-    _.get(endpoint, 'schedule.timeInterval')
-  )
+  .filter(([ref, endpoint]) => _.get(endpoint, 'schedule.timeInterval'))
   .flatMap(([ref, endpoint]) => Rx.Observable
     .interval(endpoint.schedule.timeInterval * 1000)
     .takeUntil(
       endpoints
-      .map(({removed}) => removed[ref])
-      .filter(v => v)
+        .map(({removed}) => removed[ref])
+        .filter((v) => v)
     )
     .map([ref, endpoint])
   )
@@ -69,7 +65,7 @@ var endpointSchedules = endpointAdded
 var websockets = endpointsStore.pull
   .map(_.cloneDeep)
   .startWith({})
-  .map(es => _.pickBy(es, endpoint => _.has(endpoint, 'ws.url')))
+  .map((es) => _.pickBy(es, (endpoint) => _.has(endpoint, 'ws.url')))
   // .distinctUntilChanged(hash.MD5)
   .bufferWithCount(2, 1)
   .map(([prev, cur]) => ({
@@ -81,12 +77,12 @@ var websocketsAdded = websockets.pluck('added').flatMap(_.toPairs)
 var websocketsUpdates = websocketsAdded
   .flatMap(([ref, endpoint]) => getWsStream(endpoint.ws.url)
     .incomingStream
-    .filter(msg => msg.widgetId === endpoint.ws.conds.widgetId)
+    .filter((msg) => msg.widgetId === endpoint.ws.conds.widgetId)
     .takeUntil(
       websockets.pluck('removed').flatMap(_.keys).filter(_.matches(ref))
     )
     .map([ref, endpoint])
-  )
+)
 
 var endpointRequests = Rx.Observable.merge(
   endpointAdded,
@@ -94,18 +90,18 @@ var endpointRequests = Rx.Observable.merge(
   endpointSchedules
 )
   .flatMap(([ref, endpoint]) => Rx.Observable.fromPromise(fetch(
-      endpoint.url,
-      {
-        responseType: 'text/plain',
-        contentType: 'application/json; charset=UTF-8',
-        crossDomain: true,
-        headers: endpoint.headers,
-        method: endpoint.method || 'GET',
-        body: endpoint.body,
-      }
-    ).then(endpoint.plain ? _.method('text') : _.method('json')))
+    endpoint.url,
+    {
+      responseType: 'text/plain',
+      contentType: 'application/json; charset=UTF-8',
+      crossDomain: true,
+      headers: endpoint.headers,
+      method: endpoint.method || 'GET',
+      body: endpoint.body,
+    }
+  ).then(endpoint.plain ? _.method('text') : _.method('json')))
     .map((response) => ({ref, response}))
-    .catch(err => Rx.Observable.return({err: err}))
+    .catch((err) => Rx.Observable.return({err: err}))
   )
   .share()
 
@@ -113,7 +109,7 @@ endpointRequests
   .filter(({response}) => response)
   .map(({ref, response: {ws}}) => ({ref, ws}))
   .filter(({ws}) => ws && ws.url && ws.conds)
-  .catch(err => Rx.Observable.empty())
+  .catch(() => Rx.Observable.empty())
   .subscribe(({ref, ws}) => endpointsStore.push(`${ref}.ws`, ws))
 
 endpointRequests
@@ -130,12 +126,12 @@ endpointRequests
   .mergeAll()
   .subscribe(
     ({widgetId, data}) => dashStore.push(`widgets.${widgetId}.data`, data),
-    error => console.error(error),
-    v => console.log('completed')
+    (error) => console.error(error),
+    (v) => console.log('completed')
   )
 
 if (window.castMessageStream) {
   window.castMessageStream
-    .filter(msg => msg === 'refresh')
-    .subscribe(msg => location.reload())
+    .filter((msg) => msg === 'refresh')
+    .subscribe((msg) => location.reload())
 }

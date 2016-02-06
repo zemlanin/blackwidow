@@ -1,27 +1,22 @@
-'use strict'
-
 import _ from 'lodash'
-import {h, Component} from 'preact'
+import { h, Component } from 'preact'
 
 export default class Table extends Component {
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate (nextProps) {
     return !_.isEqual(nextProps, this.props)
   }
 
-  render() {
-    var {data} = this.props
-    data = data || {}
-
-    return h("table", {
-        id: data.id,
-      },
-      h("tbody",
+  render ({data = {}}) {
+    return h('table', {
+      id: data.id,
+    },
+      h('tbody',
         null,
-        h("tr",
+        h('tr',
           null,
           _.map(
             data.columns,
-            (column, i) => h("th",
+            (column, i) => h('th',
               {key: `column_${i}`},
               column
             )
@@ -29,11 +24,11 @@ export default class Table extends Component {
         ),
         _.map(
           data.rows,
-          (row, i) => h("tr",
+          (row, i) => h('tr',
             {key: `row_${i}`},
             _.map(
               row,
-              (cell, j) => h("td",
+              (cell, j) => h('td',
                 {key: `cell_${j}`},
                 cell
               )

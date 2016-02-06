@@ -1,9 +1,7 @@
-"use strict"
+import _ from 'lodash'
+import Rx from 'rx'
 
-var _ = require('lodash')
-var Rx = require('rx')
-
-function _deepFreeze(o) {
+function _deepFreeze (o) {
   var prop, propKey
   Object.freeze(o)
   for (propKey in o) {
@@ -16,7 +14,7 @@ function _deepFreeze(o) {
   }
 }
 
-function _valuesMapper(event) {
+function _valuesMapper (event) {
   var data = JSON.parse(event.data.replace(/}.*$/, '}'))
   _deepFreeze(data)
   return data
@@ -24,25 +22,25 @@ function _valuesMapper(event) {
 
 var wsRegistry = {}
 
-function getWsStream(wsUrl) {
+function getWsStream (wsUrl) {
   if (wsRegistry[wsUrl]) { return wsRegistry[wsUrl] }
 
   var wsOpen = new Rx.Subject()
   var wsClose = new Rx.Subject()
 
-  function _reconnect(retry) {
+  function _reconnect (retry) {
     setTimeout(
       wsClose.onNext.bind(wsClose, retry),
       1000 * Math.exp(retry)
     )
   }
 
-  function _wsOpenHandler(ws) {
+  function _wsOpenHandler (ws) {
     ws.onclose = wsClose.onNext.bind(wsClose, null)
     return ws
   }
 
-  function _wsCloseHandler(retry) {
+  function _wsCloseHandler (retry) {
     if (retry > 5) {
       wsRegistry[wsUrl] = null
       return null
@@ -64,15 +62,17 @@ function getWsStream(wsUrl) {
   var outgoingStream = new Rx.Subject()
   var incomingStream = wsProperty
     .filter(_.isObject)
-    .flatMap(ws => Rx.Observable.fromEvent(ws, 'message').map(_valuesMapper))
+    .flatMap((ws) => Rx.Observable.fromEvent(ws, 'message').map(_valuesMapper))
   var connectedProperty = wsProperty
     .map(({readyState}) => readyState === 1)
 
-  ; (function _initWsStream() {
+  ;(function _initWsStream () {
     wsProperty
       .sample(
-        outgoingStream.pausableBuffered(connectedProperty.map(v => !v)).flatMap(JSON.stringify)
-      )
+        outgoingStream
+          .pausableBuffered(connectedProperty.map((v) => !v))
+          .flatMap(JSON.stringify)
+    )
       .map(({send}) => send())
       .subscribe(_.noop)
     wsClose.onNext(null)
@@ -90,5 +90,5 @@ function getWsStream(wsUrl) {
 
 module.exports = {
   getWsStream: getWsStream,
-  // TODO: close streams
+// TODO: close streams
 }

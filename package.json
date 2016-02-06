@@ -17,17 +17,20 @@
   },
   "devDependencies": {
     "babel-core": "^6.3.26",
-    "babel-eslint": "^3.0.1",
+    "babel-eslint": "^4.1.8",
     "babel-loader": "^6.2.0",
+    "babel-plugin-transform-strict-mode": "^6.3.13",
     "babel-preset-es2015": "^6.3.13",
     "babel-register": "^6.4.3",
     "css-loader": "^0.23.1",
-    "eslint": "^0.20.0",
     "extract-text-webpack-plugin": "^0.9.1",
     "json5": "^0.4.0",
     "json5-loader": "^0.6.0",
     "mocha": "^2.4.5",
     "node-static": "^0.7.6",
+    "snazzy": "^2.0.1",
+    "standard": "^6.0.1",
+    "standard-loader": "^2.0.0",
     "style-loader": "^0.13.0",
     "surge": "^0.14.3",
     "webpack": "^1.12.12"
@@ -35,6 +38,20 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "touch package.json; make"
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "env": {
+      "browser": true,
+      "mocha": true
+    },
+    "globals": [],
+    "rules": {
+      "comma-dangle": [
+        1,
+        "always-multiline"
+      ]
+    }
   },
   "author": "Anton Verinov <github@zemlan.in>",
   "license": "WTFPL"

@@ -1,16 +1,14 @@
-'use strict'
-
 import _ from 'lodash'
-import {h, Component} from 'preact'
+import { h, Component } from 'preact'
 
-import {border, note} from 'css/widgets/text'
+import { border, note } from 'css/widgets/text'
 
 export default class Text extends Component {
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate (nextProps) {
     return !_.isEqual(nextProps, this.props)
   }
 
-  render({data={}, container}) {
+  render ({ data = {}, container }) {
     var fontSize = container.fontSize || '3em'
     if (data.text && !container.fontSize) {
       if (data.text.length > 100) {
@@ -26,13 +24,13 @@ export default class Text extends Component {
       }
     }
 
-    return h("div", {
-        id: data.id,
-        class: border,
-        style: {fontSize: fontSize},
-      },
-      h("span", null, data.text),
-      data.note ? h("span", {class: note}, data.note) : ''
+    return h('div', {
+      id: data.id,
+      class: border,
+      style: {fontSize: fontSize},
+    },
+      h('span', null, data.text),
+      data.note ? h('span', {class: note}, data.note) : ''
     )
   }
 }

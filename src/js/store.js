@@ -1,14 +1,12 @@
-'use strict'
-
 import Rx from 'rx'
 import _ from 'lodash'
-import {Subject, BehaviorSubject, Observable} from 'rx'
+import { Subject, BehaviorSubject, Observable } from 'rx'
 
-function getAjaxStream(url) {
+function getAjaxStream (url) {
   return Rx.Observable.fromPromise(fetch(url).then(_.method('json')))
 }
 
-export function getDash() {
+export function getDash () {
   var dashStream
 
   if (location.hash && location.hash.match(/^#(https?|file):/)) {
@@ -22,8 +20,8 @@ export function getDash() {
     const gistId = location.search.match(/[?&]gist=([0-9a-f]+)/i)[1]
     dashStream = getAjaxStream(`https://api.github.com/gists/${gistId}`)
       .pluck('files')
-      .map(files => _.find(files, file => file.language === 'JSON'))
-      .map(file => JSON.parse(file.content))
+      .map((files) => _.find(files, (file) => file.language === 'JSON'))
+      .map((file) => JSON.parse(file.content))
   }
 
   if (!dashStream) {
@@ -31,27 +29,27 @@ export function getDash() {
   }
 
   return dashStream
-    .catch(err => Observable.return({
-      "widgets": {
-        "error": {
-          "type": "text",
-          "container": {
-            "position": [0, 0],
-            "size": [10, 10],
-            "background": "red",
+    .catch((err) => Observable.return({
+      'widgets': {
+        'error': {
+          'type': 'text',
+          'container': {
+            'position': [0, 0],
+            'size': [10, 10],
+            'background': 'red',
           },
-          "data": {"text": err.message},
+          'data': {'text': err.message},
         },
       },
     }))
 }
 
-function StoreStream(name) {
+function StoreStream (name) {
   var pushStream = new Subject()
   var dataStream = new BehaviorSubject({})
 
   var dataSubscription = pushStream
-    .filter(v => v && v.length === 2)
+    .filter((v) => v && v.length === 2)
     .scan({}, (acc, [path, value]) => _.merge(
       acc,
       _.set({}, path, value)
@@ -76,7 +74,7 @@ function StoreStream(name) {
 
 window.__streamsMap = window.__streamsMap || {}
 
-export function getStream(name) {
+export function getStream (name) {
   window.__streamsMap[name] = window.__streamsMap[name] || new StoreStream(name)
 
   return window.__streamsMap[name]

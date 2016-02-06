@@ -1,8 +1,6 @@
-'use strict'
-
 import _ from 'lodash'
 import Rx from 'rx'
-import {render, h} from 'preact'
+import { render, h } from 'preact'
 
 import Controls from './components/controls'
 
@@ -23,7 +21,7 @@ export default (node, freezer) => {
     .do(([state, effect]) => effect ? effect(freezer).subscribe(send) : null)
     .map(_.head)
     .startWith({})
-    .subscribe(state => render(
+    .subscribe((state) => render(
       h(Controls, state), node, node.lastChild
     ))
 }

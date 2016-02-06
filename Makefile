@@ -3,7 +3,8 @@ SHELL := /bin/bash
 bin = $(shell npm bin)
 node_static = $(bin)/static
 webpack = $(bin)/webpack
-eslint = $(bin)/eslint
+standard = $(bin)/standard
+snazzy = $(bin)/snazzy
 surge = $(bin)/surge
 mocha = $(bin)/mocha
 
@@ -32,8 +33,9 @@ dist/js:
 	mkdir -p $(dir $@)
 	set -o pipefail && make lint && $(webpack)
 
+.PHONY: lint
 lint:
-	$(eslint) $(src)/js
+	$(standard) --verbose | $(snazzy)
 
 serve:
 	@echo serving at http://127.0.0.1:8000
@@ -53,4 +55,4 @@ test:
 	$(mocha) --compilers js:babel-register
 
 
-.PHONY: deploy serve lint
+.PHONY: deploy serve

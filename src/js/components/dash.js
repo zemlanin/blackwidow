@@ -1,6 +1,4 @@
-'use strict'
-
-import {h, Component} from 'preact'
+import { h, Component } from 'preact'
 import _ from 'lodash'
 
 import Text from './widgets/text'
@@ -11,12 +9,12 @@ import wGraph from './widgets/graph'
 import style from 'css/base.css'
 
 export default class Dash extends Component {
-  render() {
-    const [viewportX, viewportY] = (this.props.container || {}).size || [10, 10]
+  render (props) {
+    const [viewportX, viewportY] = (props.container || {}).size || [10, 10]
 
-    return h("div",
+    return h('div',
       null,
-      _.map(this.props.widgets, (widget, widgetId) => {
+      _.map(props.widgets, (widget, widgetId) => {
         const {container} = widget
         var component
 
@@ -39,17 +37,17 @@ export default class Dash extends Component {
             break
         }
 
-        return h("div", {
-            key: widgetId,
-            class: style.widget,
-            style: {
-              left: (100 * container.position[0] / viewportX) + '%',
-              top: (100 * container.position[1] / viewportY) + '%',
-              width: (100 * container.size[0] / viewportX) + '%',
-              height: (100 * container.size[1] / viewportY) + '%',
-              outline: process.env.NODE_ENV !== 'production' && container.debug ? '1px solid ' + container.debug : '',
-            }
+        return h('div', {
+          key: widgetId,
+          class: style.widget,
+          style: {
+            left: (100 * container.position[0] / viewportX) + '%',
+            top: (100 * container.position[1] / viewportY) + '%',
+            width: (100 * container.size[0] / viewportX) + '%',
+            height: (100 * container.size[1] / viewportY) + '%',
+            outline: process.env.NODE_ENV !== 'production' && container.debug ? '1px solid ' + container.debug : '',
           },
+        },
           h(component, {data: widget.data, container, widgetId})
         )
       })
