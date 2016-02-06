@@ -5,6 +5,7 @@ node_static = $(bin)/static
 webpack = $(bin)/webpack
 eslint = $(bin)/eslint
 surge = $(bin)/surge
+mocha = $(bin)/mocha
 
 src = $(shell pwd)/src
 dist = $(shell pwd)/dist
@@ -46,6 +47,10 @@ deploy:
 	$(MAKE) clean_dist
 	NODE_ENV=production $(MAKE)
 	$(surge) $(dist)
+
+.PHONY: test
+test:
+	$(mocha) --compilers js:babel-register
 
 
 .PHONY: deploy serve lint

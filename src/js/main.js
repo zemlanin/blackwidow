@@ -139,18 +139,3 @@ if (window.castMessageStream) {
     .filter(msg => msg === 'refresh')
     .subscribe(msg => location.reload())
 }
-
-if (process.env.NODE_ENV !== 'production') {
-  console.log(endpointMapper({"text": "2015-09-13"}, {}, {
-    "text": "text | match:'\\\\d{4}-(\\\\d{2})-(\\\\d{2})' | format:'{2}.{1}'"
-  }))
-  console.log(endpointMapper({"text": "Mal|Zoe|Wash"}, {}, {
-    "values": {
-      "_expr": "text | match:'[a-z]+':'ig' | map:_map",
-      "_map": {"value": "$"}
-    }
-  }))
-  console.log(endpointMapper({project: {rev: "15.9.13(154321)a9324a63ed24"}}, {}, {
-    "text": "project.rev | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
-  }))
-}

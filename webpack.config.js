@@ -29,7 +29,7 @@ module.exports = {
   },
   module: {
     loaders: [
-      {test: /\.js$/, exclude: /node_modules/, loader: 'babel?presets[]=react,presets[]=es2015'},
+      {test: /\.js$/, exclude: /node_modules/, loader: 'babel'},
       {test: /\.json$/, loader: 'json5-loader'},
       {test: /\.css$/, loader: ExtractTextPlugin.extract(
         "style-loader",
