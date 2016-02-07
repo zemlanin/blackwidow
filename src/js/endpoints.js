@@ -36,7 +36,7 @@ export function endpointMapper (data, result, structure) {
   for (let key in structure) {
     result[key] = expressions.compile(
       structure[key]._expr || structure[key]
-    )(_.assign(data, structure[key], {$: data}))
+    )(_.assign(data, structure[key], {$: _.cloneDeep(data)}))
   }
 
   return result
