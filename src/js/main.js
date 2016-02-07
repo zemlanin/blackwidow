@@ -73,7 +73,7 @@ var websockets = Rx.Observable.fromEvent(freezer, 'update')
   }))
 
 var websocketsAdded = websockets.pluck('added').flatMap(_.toPairs)
-var websocketsUpdates = websocketsAdded
+const websocketsUpdates = websocketsAdded
   .flatMap(([ref, endpoint]) => getWsStream(endpoint.ws.url)
     .incomingStream
     .filter((msg) => msg.widgetId === endpoint.ws.conds.widgetId)
@@ -83,29 +83,45 @@ var websocketsUpdates = websocketsAdded
     .map(() => [ref, endpoint])
 )
 
+const websocketsConnection = websocketsAdded
+  .flatMap(([ref, endpoint]) => getWsStream(endpoint.ws.url).connectedProperty
+    .map((connected) => ({ref, connected}))
+  )
+
+websocketsConnection
+  .subscribe(({ref, connected}) => freezer.get().endpoints[ref].ws.set('connected', connected))
+
 var endpointRequests = Rx.Observable.merge(
   endpointAdded,
   websocketsUpdates,
   endpointSchedules
 )
-  .flatMap(([ref, endpoint]) => Rx.Observable.fromPromise(fetch(
-    endpoint.url,
-    {
-      responseType: 'text/plain',
-      contentType: 'application/json; charset=UTF-8',
-      crossDomain: true,
-      headers: endpoint.headers,
-      method: endpoint.method || 'GET',
-      body: endpoint.body,
-    }
-  ).then(endpoint.plain ? _.method('text') : _.method('json')))
+  .flatMap(([ref, endpoint]) =>
+    Rx.Observable.fromPromise(
+      fetch(endpoint.url, {
+        responseType: 'text/plain',
+        contentType: 'application/json; charset=UTF-8',
+        crossDomain: true,
+        headers: endpoint.headers,
+        method: endpoint.method || 'GET',
+        body: endpoint.body,
+      })
+      .then(endpoint.plain ? _.method('text') : _.method('json'))
+    )
     .map((response) => ({ref, response}))
-    .catch((err) => Rx.Observable.return({err: err}))
+    .catch((err) => Rx.Observable.return({ref, err}))
   )
+  .do(({ref, err}) => {
+    if (err) {
+      freezer.get().endpoints[ref].set('error', err)
+    } else if (freezer.get().endpoints[ref].error) {
+      freezer.get().endpoints[ref].remove('error')
+    }
+  })
   .share()
 
 endpointRequests
-  .filter(({response}) => response)
+  .filter(({err}) => !err)
   .map(({ref, response: {ws}}) => ({ref, ws}))
   .filter(({ws}) => ws && ws.url && ws.conds)
   .catch(() => Rx.Observable.empty())

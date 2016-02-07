@@ -1,5 +1,5 @@
 :local(.wrapper) {
-  font-size: 3em;
+  font-size: 2em;
   width: 80vw;
   color: black;
   background-color: white;
@@ -9,6 +9,7 @@
   left: 10vw;
   box-shadow: 0px 0px 5px 10px rgba(0, 0, 0, 0.8);
   border-radius: 5px 5px 0 0;
+  padding: 0.5em;
 
   transform: translateY(110%);
   transition: transform 0.8s;
@@ -19,6 +20,10 @@
   transition: transform 0.25s;
 }
 
-:local(.trigger) {
-  cursor: pointer;
+:local(.ws) {
+  color: red;
+}
+
+:local(.ws.connected) {
+  color: green;
 }

@@ -6,7 +6,7 @@ import Controls from './components/controls'
 
 const updates = {
   'updateVisible': ({data}, freezer) => {
-    return [freezer.controls.set('visible', data.visible)]
+    return [freezer.pivot().controls.set('visible', data.visible)]
   },
 }
 
@@ -25,7 +25,7 @@ export default (node, freezer) => {
     .map((msg) => update(msg, freezer.get()))
     .do(([state, effect]) => effect ? effect(freezer).subscribe(send) : null)
     .map(_.head)
-    .startWith({})
+    .startWith(freezer.get())
     .subscribe((state) => render(
       h(Controls, state), node, node.lastChild
     ))
