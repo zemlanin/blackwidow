@@ -5,40 +5,40 @@ function getAjaxStream (url) {
   return Rx.Observable.fromPromise(fetch(url).then(_.method('json')))
 }
 
-export function getDash () {
-  var dashStream
+function dashErrorCallback (err) {
+  return Rx.Observable.of({
+    container: {size: [1, 1]},
+    widgets: {
+      error: {
+        type: 'text',
+        container: {
+          position: [0, 0],
+          size: [10, 10],
+        },
+        data: {text: err.message},
+      },
+    },
+  })
+}
 
+export function getDash () {
   if (location.hash && location.hash.match(/^#(https?|file):/)) {
     if (location.hash.match(/^#(https?|file):/)) {
       const url = location.hash.replace(/^#/, '')
-      dashStream = getAjaxStream(url)
+      return getAjaxStream(url)
+        .catch(dashErrorCallback)
     }
   }
 
   if (location.search.match(/[?&]gist=([0-9a-f]+)/i)) {
     const gistId = location.search.match(/[?&]gist=([0-9a-f]+)/i)[1]
-    dashStream = getAjaxStream(`https://api.github.com/gists/${gistId}`)
+    return getAjaxStream(`https://api.github.com/gists/${gistId}`)
       .pluck('files')
       .map((files) => _.find(files, (file) => file.language === 'JSON'))
       .map((file) => JSON.parse(file.content))
+      .catch(dashErrorCallback)
   }
 
-  if (!dashStream) {
-    dashStream = getAjaxStream('./examples/mockDashes.json')
-  }
-
-  return dashStream
-    .catch((err) => Rx.Observable.return({
-      'widgets': {
-        'error': {
-          'type': 'text',
-          'container': {
-            'position': [0, 0],
-            'size': [10, 10],
-            'background': 'red',
-          },
-          'data': {'text': err.message},
-        },
-      },
-    }))
+  return getAjaxStream('./examples/mockDashes.json')
+    .catch(dashErrorCallback)
 }
