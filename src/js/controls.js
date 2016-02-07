@@ -31,12 +31,12 @@ export default (node, freezer) => {
     ))
 
   const mouseMove = Rx.Observable.fromEvent(document.body, 'mousemove')
-    .debounce(30)
+    .throttle(30)
     .flatMapLatest(() => Rx.Observable.of({visible: false})
-      .delay(1000)
+      .delay(2000)
       .startWith({visible: true})
-    ).share()
+    )
+    .distinctUntilChanged(_.property('visible'))
 
-  mouseMove.subscribe(console.log.bind(console))
   mouseMove.subscribe((data) => send({action: 'updateVisible', data}))
 }
