@@ -6,7 +6,7 @@ import Controls from './components/controls'
 
 const updates = {
   'updateVisible': ({data}, freezer) => {
-    return [freezer.set('visible', data.visible)]
+    return [freezer.controls.set('visible', data.visible)]
   },
 }
 
@@ -19,7 +19,7 @@ export default (node, freezer) => {
 
   const eventStream = new Rx.Subject()
   const send = (v) => eventStream.onNext(v)
-  freezer.get().set('send', send)
+  freezer.get().controls.set('send', send)
 
   eventStream
     .map((msg) => update(msg, freezer.get()))
@@ -30,13 +30,20 @@ export default (node, freezer) => {
       h(Controls, state), node, node.lastChild
     ))
 
-  const mouseMove = Rx.Observable.fromEvent(document.body, 'mousemove')
-    .throttle(30)
+  const mouseMove = Rx.Observable.fromEvent(document.body, 'mousemove').throttle(30)
+  const mouseEnter = Rx.Observable.fromEvent(node, 'mouseenter')
+  const mouseLeave = Rx.Observable.fromEvent(node, 'mouseleave')
+
+  mouseMove
     .flatMapLatest(() => Rx.Observable.of({visible: false})
-      .delay(2000)
+      .delay(1000)
+      .takeUntil(mouseEnter)
       .startWith({visible: true})
     )
+    .pausableBuffered(Rx.Observable.merge(
+      mouseEnter.map(false),
+      mouseLeave.map(true)
+    ))
     .distinctUntilChanged(_.property('visible'))
-
-  mouseMove.subscribe((data) => send({action: 'updateVisible', data}))
+    .subscribe((data) => send({action: 'updateVisible', data}))
 }

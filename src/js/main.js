@@ -16,6 +16,7 @@ import 'css/base.css'
 const freezer = new Freezer({
   endpoints: {},
   dash: {},
+  controls: {},
 })
 
 getDash()
