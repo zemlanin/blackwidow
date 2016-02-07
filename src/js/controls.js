@@ -15,8 +15,6 @@ const update = (msg, state) => msg ? updates[msg.action](msg, state) : [state]
 export default (node, freezer) => {
   if (!node) { return }
 
-  if (process.env.NODE_ENV === 'production') { return }
-
   const eventStream = new Rx.Subject()
   const send = (v) => eventStream.onNext(v)
   freezer.get().controls.set('send', send)
