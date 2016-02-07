@@ -19,7 +19,7 @@ export default (node, freezer) => {
 
   const eventStream = new Rx.Subject()
   const send = (v) => eventStream.onNext(v)
-  freezer.set('send', send)
+  freezer.get().set('send', send)
 
   eventStream
     .map((msg) => update(msg, freezer.get()))

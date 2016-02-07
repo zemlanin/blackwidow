@@ -3,6 +3,10 @@ import hash from 'object-hash'
 import expressions from 'angular-expressions'
 
 export const extractEndpointsTo = (dest) => (dash) => {
+  const state = dest.get()
+
+  let endpoints = state.endpoints.transact()
+
   dash.widgets = _(dash.widgets)
     .mapValues((widget) => {
       if (widget.endpoint && widget.endpoint.url) {
@@ -16,12 +20,14 @@ export const extractEndpointsTo = (dest) => (dash) => {
         widget.endpoint._ref = endpointHash
         widget.endpoint = _.omit(widget.endpoint, _.keys(extractedEndpoint))
 
-        _.delay(dest.push, 0, endpointHash, extractedEndpoint)
+        endpoints[endpointHash] = extractedEndpoint
       }
 
       return widget
     })
     .value()
+
+  state.endpoints.run()
 
   return dash
 }

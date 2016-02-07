@@ -1,6 +1,5 @@
 import Rx from 'rx'
 import _ from 'lodash'
-import { Subject, BehaviorSubject, Observable } from 'rx'
 
 function getAjaxStream (url) {
   return Rx.Observable.fromPromise(fetch(url).then(_.method('json')))
@@ -29,7 +28,7 @@ export function getDash () {
   }
 
   return dashStream
-    .catch((err) => Observable.return({
+    .catch((err) => Rx.Observable.return({
       'widgets': {
         'error': {
           'type': 'text',
@@ -42,40 +41,4 @@ export function getDash () {
         },
       },
     }))
-}
-
-function StoreStream (name) {
-  var pushStream = new Subject()
-  var dataStream = new BehaviorSubject({})
-
-  var dataSubscription = pushStream
-    .filter((v) => v && v.length === 2)
-    .scan((acc, [path, value]) => _.merge(
-      acc,
-      _.set({}, path, value)
-    ), {})
-    .map(_.cloneDeep)
-    .subscribe(dataStream)
-
-  this.name = name
-  this.pull = dataStream
-  this.push = (path, value) => {
-    if (value === undefined) {
-      _.forEach(
-        path,
-        (v, key) => pushStream.onNext([[key], v])
-      )
-    } else {
-      pushStream.onNext([path, value])
-    }
-  }
-  this.dispose = dataSubscription.dispose.bind(dataSubscription)
-}
-
-window.__streamsMap = window.__streamsMap || {}
-
-export function getStream (name) {
-  window.__streamsMap[name] = window.__streamsMap[name] || new StoreStream(name)
-
-  return window.__streamsMap[name]
 }

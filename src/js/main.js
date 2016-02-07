@@ -5,7 +5,7 @@ import Freezer from 'freezer-js'
 
 import 'whatwg-fetch'
 
-import { getStream, getDash } from './store'
+import { getDash } from './store'
 import { getWsStream } from './ws'
 import { extractEndpointsTo, endpointMapper } from './endpoints'
 import Dash from './components/dash'
@@ -13,19 +13,26 @@ import controlsInit from './controls'
 
 import 'css/base.css'
 
-var dashStore = getStream('dashStore')
-var endpointsStore = getStream('endpointsStore')
+// var dashStore = getStream('dashStore')
+// var endpointsStore = getStream('endpointsStore')
 
-let freezer = new Freezer({})
+const freezer = new Freezer({
+  endpoints: {},
+  dash: {},
+})
 
 // dashStore.pull.do(console.log.bind(console, 'dS')).subscribe()
 // endpointsStore.pull.do(console.log.bind(console, 'eS')).subscribe()
 
 getDash()
-  .map(extractEndpointsTo(endpointsStore))
-  .subscribe(dashStore.push)
+  .map(extractEndpointsTo(freezer))
+  .subscribe((dash) => freezer.get().dash.set(dash))
 
-dashStore.pull
+// freezer.on('update', (u) => { console.log('u', u) })
+
+// dashStore.pull
+Rx.Observable.fromEvent(freezer, 'update')
+  .pluck('dash')
   .subscribe((dashData) => render(
     h(Dash, dashData),
     document.getElementById('dash'),
@@ -34,8 +41,8 @@ dashStore.pull
 
 controlsInit(document.getElementById('controls'), freezer)
 
-var endpoints = endpointsStore.pull
-  .map(_.cloneDeep)
+var endpoints = Rx.Observable.fromEvent(freezer, 'update')
+  .pluck('endpoints')
   .startWith({})
   // .distinctUntilChanged(hash.MD5)
   .bufferWithCount(2, 1)
@@ -62,8 +69,8 @@ var endpointSchedules = endpointAdded
     .map(() => [ref, endpoint])
   )
 
-var websockets = endpointsStore.pull
-  .map(_.cloneDeep)
+var websockets = Rx.Observable.fromEvent(freezer, 'update')
+  .pluck('endpoints')
   .startWith({})
   .map((es) => _.pickBy(es, (endpoint) => _.has(endpoint, 'ws.url')))
   // .distinctUntilChanged(hash.MD5)
@@ -110,12 +117,12 @@ endpointRequests
   .map(({ref, response: {ws}}) => ({ref, ws}))
   .filter(({ws}) => ws && ws.url && ws.conds)
   .catch(() => Rx.Observable.empty())
-  .subscribe(({ref, ws}) => endpointsStore.push(`${ref}.ws`, ws))
+  .subscribe(({ref, ws}) => freezer.get().endpoints[ref].set('ws', ws))
 
 endpointRequests
   .filter(({err}) => !err)
-  .withLatestFrom(dashStore.pull, ({ref, response}, {widgets}) => {
-    return Rx.Observable.pairs(widgets)
+  .flatMap(({ref, response}) => {
+    return Rx.Observable.pairs(freezer.get().dash.widgets)
       .filter(([widgetId, widget]) => widget.endpoint && widget.endpoint._ref === ref)
       .map(([widgetId, widget]) => ({widgetId, widget, data: response}))
       .map(({widgetId, widget, data}) => ({
@@ -123,9 +130,8 @@ endpointRequests
         data: endpointMapper(data, _.assign({}, widget.data, data), widget.endpoint.map || {}),
       }))
   })
-  .mergeAll()
   .subscribe(
-    ({widgetId, data}) => dashStore.push(`widgets.${widgetId}.data`, data),
+    ({widgetId, data}) => freezer.get().dash.widgets[widgetId].set('data', data),
     (error) => console.error(error),
     (v) => console.log('completed')
   )
