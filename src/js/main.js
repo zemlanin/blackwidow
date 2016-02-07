@@ -13,16 +13,10 @@ import controlsInit from './controls'
 
 import 'css/base.css'
 
-// var dashStore = getStream('dashStore')
-// var endpointsStore = getStream('endpointsStore')
-
 const freezer = new Freezer({
   endpoints: {},
   dash: {},
 })
-
-// dashStore.pull.do(console.log.bind(console, 'dS')).subscribe()
-// endpointsStore.pull.do(console.log.bind(console, 'eS')).subscribe()
 
 getDash()
   .map(extractEndpointsTo(freezer))
@@ -30,7 +24,6 @@ getDash()
 
 // freezer.on('update', (u) => { console.log('u', u) })
 
-// dashStore.pull
 Rx.Observable.fromEvent(freezer, 'update')
   .pluck('dash')
   .subscribe((dashData) => render(
@@ -44,7 +37,6 @@ controlsInit(document.getElementById('controls'), freezer)
 var endpoints = Rx.Observable.fromEvent(freezer, 'update')
   .pluck('endpoints')
   .startWith({})
-  // .distinctUntilChanged(hash.MD5)
   .bufferWithCount(2, 1)
   .map(([prev, cur]) => ({
     added: _.pick(cur, _.difference(_.keys(cur), _.keys(prev))),
@@ -73,7 +65,6 @@ var websockets = Rx.Observable.fromEvent(freezer, 'update')
   .pluck('endpoints')
   .startWith({})
   .map((es) => _.pickBy(es, (endpoint) => _.has(endpoint, 'ws.url')))
-  // .distinctUntilChanged(hash.MD5)
   .bufferWithCount(2, 1)
   .map(([prev, cur]) => ({
     added: _.pick(cur, _.difference(_.keys(cur), _.keys(prev))),

@@ -33,8 +33,6 @@ export const extractEndpointsTo = (dest) => (dash) => {
 }
 
 export function endpointMapper (data, result, structure) {
-  // console.log(data, result)
-
   for (let key in structure) {
     result[key] = expressions.compile(
       structure[key]._expr || structure[key]
