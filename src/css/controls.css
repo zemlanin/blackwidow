@@ -1,9 +1,24 @@
-:local(.trigger) {
-  opacity: 0;
-  transition: opacity 0.3s;
+:local(.wrapper) {
+  font-size: 3em;
+  width: 80vw;
+  color: black;
+  background-color: white;
+  margin: 0 auto;
+  position: absolute;
+  bottom: 0;
+  left: 10vw;
+  box-shadow: 0px 0px 5px 10px rgba(0, 0, 0, 0.8);
+  border-radius: 5px 5px 0 0;
+
+  transform: translateY(110%);
+  transition: transform 0.8s;
 }
 
-:local(.trigger.visible) {
-  opacity: 1;
-  transition: opacity 0.3s;
+:local(.wrapper.visible) {
+  transform: translateY(0);
+  transition: transform 0.25s;
+}
+
+:local(.trigger) {
+  cursor: pointer;
 }

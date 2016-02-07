@@ -43,7 +43,7 @@ export default (node, freezer) => {
     .pausableBuffered(Rx.Observable.merge(
       mouseEnter.map(false),
       mouseLeave.map(true)
-    ))
+    ).startWith(true))
     .distinctUntilChanged(_.property('visible'))
     .subscribe((data) => send({action: 'updateVisible', data}))
 }

@@ -20,18 +20,6 @@ body {
   text-align: center;
 }
 
-#controls {
-  z-index: 10;
-  font-size: 5em;
-  cursor: pointer;
-  width: 80vw;
-  color: white;
-  margin: 0 auto;
-  position: absolute;
-  bottom: 0;
-  left: 10vw;
-}
-
 :local(.widget) {
   position: absolute;
   overflow: hidden;

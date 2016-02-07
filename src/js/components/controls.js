@@ -1,11 +1,16 @@
 import { h, Component } from 'preact'
+import c from 'classnames'
 
 import * as css from 'css/controls'
 
-const Trigger = ({visible}) => h('div', {class: css.trigger + (visible ? (' ' + css.visible) : '')}, '=')
+const Trigger = () => h('div', {class: css.trigger}, '=')
 
 export default class Controls extends Component {
   render ({visible}) {
-    return h(Trigger, {visible})
+    return h(
+        'div',
+        {class: c(css.wrapper, {[css.visible]: visible})},
+        h(Trigger)
+    )
   }
 }
