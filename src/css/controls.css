@@ -3,7 +3,7 @@
   transition: opacity 0.3s;
 }
 
-:local(.trigger):hover {
+:local(.trigger.visible) {
   opacity: 1;
   transition: opacity 0.3s;
 }

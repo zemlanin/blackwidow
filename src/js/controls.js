@@ -5,12 +5,17 @@ import { render, h } from 'preact'
 import Controls from './components/controls'
 
 const updates = {
+  'updateVisible': ({data}, freezer) => {
+    return [freezer.set('visible', data.visible)]
+  },
 }
 
 const update = (msg, state) => msg ? updates[msg.action](msg, state) : [state]
 
 export default (node, freezer) => {
   if (!node) { return }
+
+  if (process.env.NODE_ENV === 'production') { return }
 
   const eventStream = new Rx.Subject()
   const send = (v) => eventStream.onNext(v)
@@ -24,4 +29,14 @@ export default (node, freezer) => {
     .subscribe((state) => render(
       h(Controls, state), node, node.lastChild
     ))
+
+  const mouseMove = Rx.Observable.fromEvent(document.body, 'mousemove')
+    .debounce(30)
+    .flatMapLatest(() => Rx.Observable.of({visible: false})
+      .delay(1000)
+      .startWith({visible: true})
+    ).share()
+
+  mouseMove.subscribe(console.log.bind(console))
+  mouseMove.subscribe((data) => send({action: 'updateVisible', data}))
 }

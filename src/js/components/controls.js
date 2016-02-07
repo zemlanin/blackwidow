@@ -1,11 +1,12 @@
 import { h, Component } from 'preact'
 
-import { trigger } from 'css/controls'
+import * as css from 'css/controls'
 
-const Trigger = () => h('span', {class: trigger}, '=')
+const Trigger = ({visible}) => h('span', {class: css.trigger + (visible ? (' ' + css.visible) : '')}, '============')
 
 export default class Controls extends Component {
-  render ({opened, send}) {
-    if (!opened || !send) { return h(Trigger) }
+  render ({visible}) {
+    console.log(visible)
+    return h(Trigger, {visible})
   }
 }
