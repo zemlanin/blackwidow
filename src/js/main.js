@@ -59,7 +59,7 @@ var endpointSchedules = endpointAdded
         .map(({removed}) => removed[ref])
         .filter((v) => v)
     )
-    .map([ref, endpoint])
+    .map(() => [ref, endpoint])
   )
 
 var websockets = endpointsStore.pull
@@ -81,7 +81,7 @@ var websocketsUpdates = websocketsAdded
     .takeUntil(
       websockets.pluck('removed').flatMap(_.keys).filter(_.matches(ref))
     )
-    .map([ref, endpoint])
+    .map(() => [ref, endpoint])
 )
 
 var endpointRequests = Rx.Observable.merge(

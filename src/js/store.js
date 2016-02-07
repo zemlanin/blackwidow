@@ -50,10 +50,10 @@ function StoreStream (name) {
 
   var dataSubscription = pushStream
     .filter((v) => v && v.length === 2)
-    .scan({}, (acc, [path, value]) => _.merge(
+    .scan((acc, [path, value]) => _.merge(
       acc,
       _.set({}, path, value)
-    ))
+    ), {})
     .map(_.cloneDeep)
     .subscribe(dataStream)
 
