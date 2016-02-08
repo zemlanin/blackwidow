@@ -3,21 +3,43 @@
   width: 90vw;
   color: black;
   background-color: white;
-  margin: 0 auto;
-  position: absolute;
-  bottom: 0;
-  left: 5vw;
+  margin: 100vh 5vw 0;
   box-shadow: 0px 0px 1em 2px rgba(0, 0, 0, 0.8);
   border-radius: 3px 3px 0 0;
   padding: 0.5em;
 
-  transform: translateY(110%);
+  transform: translateY(0);
   transition: transform 0.8s;
 }
 
 :local(.wrapper.visible) {
+  transform: translateY(-2em);
+  transition: transform 0.3s;
+}
+
+:local(.wrapper:hover) {
+  transform: translateY(-5em);
+  transition: transform 0.3s, margin-top 0.5s;
+}
+
+:local(.wrapper.opened) {
   transform: translateY(0);
-  transition: transform 0.25s;
+  margin-top: 50vh;
+  transition: transform 0, margin-top 0.5s;
+}
+
+:local(.content) {
+  margin-top: 0.5em;
+  opacity: 0;
+  min-height: 50vh;
+}
+
+:local(.wrapper.visible .content) {
+  opacity: 1;
+}
+
+:local(.wrapper.opened .content) {
+  opacity: 1;
 }
 
 :local(.ws) {

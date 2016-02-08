@@ -8,6 +8,11 @@ const updates = {
   'updateVisible': ({data}, freezer) => {
     return [freezer.pivot().controls.set('visible', data.visible)]
   },
+  'updateOpened': ({data}, freezer) => {
+    document.body.classList.toggle('scrollable')
+
+    return [freezer.pivot().controls.set('opened', data.opened)]
+  },
 }
 
 const update = (msg, state) => msg ? updates[msg.action](msg, state) : [state]
@@ -31,6 +36,11 @@ export default (node, freezer) => {
   const mouseMove = Rx.Observable.fromEvent(document.body, 'mousemove').throttle(30)
   const mouseEnter = Rx.Observable.fromEvent(node, 'mouseenter')
   const mouseLeave = Rx.Observable.fromEvent(node, 'mouseleave')
+  const mouseClick = Rx.Observable.fromEvent(node, 'click')
+
+  mouseClick
+    .map((v, i) => ({opened: !(i % 2)}))
+    .subscribe((data) => send({action: 'updateOpened', data}))
 
   mouseMove
     .flatMapLatest(() => Rx.Observable.of({visible: false})
@@ -40,8 +50,8 @@ export default (node, freezer) => {
     )
     .pausableBuffered(Rx.Observable.merge(
       mouseEnter.map(false),
-      mouseLeave.map(true)
-    ).startWith(true))
+      mouseLeave.map(true).pausableBuffered(mouseClick.map((v, i) => i % 2).startWith(true)
+    ).startWith(true)))
     .distinctUntilChanged(_.property('visible'))
     .subscribe((data) => send({action: 'updateVisible', data}))
 }
