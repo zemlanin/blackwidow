@@ -4,8 +4,8 @@
   color: black;
   background-color: white;
   margin: 100vh 5vw 0;
-  box-shadow: 0px 0px 1em 2px rgba(0, 0, 0, 0.8);
-  border-radius: 3px 3px 0 0;
+  box-shadow: 0 0 20px -5px black;
+  border-radius: 2px 2px 0 0;
   padding: 0.5em;
 
   transform: translateY(0);

@@ -44,7 +44,7 @@ export default (node, freezer) => {
 
   mouseMove
     .flatMapLatest(() => Rx.Observable.of({visible: false})
-      .delay(1000)
+      .delay(100)
       .takeUntil(mouseEnter)
       .startWith({visible: true})
     )
