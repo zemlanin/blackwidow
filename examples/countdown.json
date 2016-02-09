@@ -1,0 +1,26 @@
+{
+  "container": {
+    "size": [5, 3]
+  },
+  "widgets": {
+    "timer": {
+      "type": "text",
+      "container": {
+        "position": [1, 1],
+        "size": [3, 1]
+      },
+      "local": {
+        "map": {
+          "text": {
+            "_expr": "_time | timeSince:'seconds' | format:'{} seconds of epoch'",
+            "_time": 0
+          }
+        },
+        "schedule": {
+          "timeInterval": 1
+        }
+      },
+      "data": {}
+    }
+  }
+}
