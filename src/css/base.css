@@ -5,13 +5,10 @@ body {
   color: white;
   font-family: monospace;
   margin: 0;
-
-  transition: background-color 1s;
 }
 
 body.scrollable {
   overflow: auto;
-  background: lightgray;
 }
 
 #wrapper {
@@ -37,8 +34,7 @@ body.scrollable {
 
 body.scrollable #dash {
   transform: scale(0.45);
-
-  box-shadow: 0 0 30px 2px black;
+  box-shadow: 0 0 30px 2px white;
 }
 
 :local(.widget) {
