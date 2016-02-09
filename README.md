@@ -15,6 +15,7 @@ make deploy   # deploy via surge.sh
 * https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/static_data.json
 * https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/external_data.json
 * https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/graphs.json
+* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/countdown.json
 
 ### Example dashboards
 * https://blackwidow.surge.sh/examples/mockDashes.json
@@ -22,6 +23,7 @@ make deploy   # deploy via surge.sh
 * https://blackwidow.surge.sh/examples/static_data.json
 * https://blackwidow.surge.sh/examples/external_data.json
 * https://blackwidow.surge.sh/examples/graphs.json
+* https://blackwidow.surge.sh/examples/countdown.json
 
 ## Dashboard API
 Dashboard is a table (10×10 by default) described by JSON object:
