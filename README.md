@@ -83,13 +83,20 @@ Dashboard is a table (10×10 by default) described by JSON object:
         * `string?` **WidgetData.text**: text for `Widget.type = "text"`
         * `string?` **WidgetData.src**: image url for `Widget.type = "image"`
         * `Object[]?|number[]?` **WidgetData.values**: values for `Widget.type = "graph"`
-    * `Endpoint` **Widget.endpoint**: widget http(s) endpoint object
+    * `Endpoint` **Widget.endpoint**: widget's HTTP(S) endpoint object
         * `string` **Endpoint.url**: url with WidgetData
         * `string?` **Endpoint.method**: HTTP method for WidgetData requests. `"GET"` by default
         * `Object?|string?` **Endpoint.body**: POST request body. If `body` is an Object, it is passed to `JSON.stringify` before sending a request
         * `Schedule?` **Endpoint.schedule**: schedule for updating WidgetData
             * `number?` **Schedule.timeInterval**: interval between requests in seconds
         * `Object.<WidgetData[key], PayloadFieldMapping>?` **Endpoint.map**: mapping of endpoint payload to widget data fields. keys are the names of WidgetData field (for example, `"note"`)
+            * `Object|string` **PayloadFieldMapping**: mapping rules for a single WidgetData field. string-y PayloadFieldMapping's value is a shortcut for `{"_expr": value}`
+                * `string` **PayloadFieldMapping._expr**: source of WidgetData field value. See [Endpoint Expressions](#endpoint-expressions) for more details
+                * `*` **PayloadFieldMapping[key]**: base scope for endpoint expression
+    * `Local` **Widget.local**: widget's local updates object. Useful for random (yet to be implemented) or date/time widgets. Analogous to `Endpoint` without HTTP(S) fields
+        * `Schedule?` **Local.schedule**: schedule for updating WidgetData
+            * `number?` **Schedule.timeInterval**: interval between requests in seconds
+        * `Object.<WidgetData[key], PayloadFieldMapping>?` **Local.map**: mapping of endpoint payload to widget data fields. keys are the names of WidgetData field (for example, `"note"`)
             * `Object|string` **PayloadFieldMapping**: mapping rules for a single WidgetData field. string-y PayloadFieldMapping's value is a shortcut for `{"_expr": value}`
                 * `string` **PayloadFieldMapping._expr**: source of WidgetData field value. See [Endpoint Expressions](#endpoint-expressions) for more details
                 * `*` **PayloadFieldMapping[key]**: base scope for endpoint expression
@@ -184,5 +191,31 @@ A few filters are available for manipulating response before rendering:
 
   {
     "text": "Mal"
+  }
+  ```
+* `timeSince:[units?]` returns time interval since received date (parsed via `new Date()`) in units (`'days'` by default). Possible units: `'s'`, `'m'`, `'h'`, `'d'`, `'seconds'`, `'minutes'`, `'hours'`, `'days'`
+
+  ```js
+  "map": {
+    "text": "0 | timeSince:'seconds'"
+  }
+
+  // widget will receive, for example
+
+  {
+    "text": 1455091752
+  }
+  ```
+* `timeUntil:[units?]` returns time interval until received date (parsed via `new Date()`) in units (`'days'` by default). Possible units: `'s'`, `'m'`, `'h'`, `'d'`, `'seconds'`, `'minutes'`, `'hours'`, `'days'`
+
+  ```js
+  "map": {
+    "text": "'2016-09-13' | timeUntil:'days'"
+  }
+
+  // widget will receive, for example
+
+  {
+    "text": 215
   }
   ```
