@@ -1,4 +1,4 @@
-# blackwidow
+# blackwidow [![Build Status](https://travis-ci.org/zemlanin/blackwidow.svg?branch=master)](https://travis-ci.org/zemlanin/blackwidow)
 dashboard. works best with [quicksilver](http://github.com/zemlanin/quicksilver) server, but you can use any backend to supply data for widgets
 
 ## setup
