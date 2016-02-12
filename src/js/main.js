@@ -114,7 +114,10 @@ var websocketsAdded = websockets.pluck('added').flatMap(_.toPairs)
 const websocketsUpdates = websocketsAdded
   .flatMap(([ref, endpoint]) => getWsStream(endpoint.ws.url)
     .incomingStream
-    .filter((msg) => msg.widgetId === endpoint.ws.conds.widgetId)
+    .filter((msg) => _.isEqual(
+      endpoint.ws.conds,
+      _.pick(msg, _.keys(endpoint.ws.conds))
+    ))
     .takeUntil(
       websockets.pluck('removed').flatMap(_.keys).filter(_.matches(ref))
     )
