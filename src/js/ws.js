@@ -41,7 +41,7 @@ function getWsStream (wsUrl) {
   }
 
   function _wsCloseHandler (retry) {
-    if (retry > 5) {
+    if (retry > 10) {
       wsRegistry[wsUrl] = null
       return null
     }
@@ -52,36 +52,38 @@ function getWsStream (wsUrl) {
     return ws
   }
 
-  var wsPropertySubj = new Rx.BehaviorSubject(null)
+  const wsPropertySubj = new Rx.BehaviorSubject(null)
   Rx.Observable.when(
     wsOpen.thenDo(_wsOpenHandler),
     wsClose.thenDo(_wsCloseHandler)
   ).subscribe(wsPropertySubj)
 
-  var wsProperty = wsPropertySubj.share()
-  var outgoingStream = new Rx.Subject()
-  var incomingStream = wsProperty
+  const wsProperty = wsPropertySubj.share()
+  const outgoingStream = new Rx.Subject()
+  const incomingStream = wsProperty
     .filter(_.isObject)
     .flatMap((ws) => Rx.Observable.fromEvent(ws, 'message').map(_valuesMapper))
-  var connectedProperty = wsProperty
+  const connectedProperty = wsProperty
     .map(({readyState}) => readyState === 1)
+    .share()
+
+  const pings = Rx.Observable.interval(25000).map({subj: 'ping'})
 
   ;(function _initWsStream () {
-    wsProperty
-      .sample(
-        outgoingStream
-          .pausableBuffered(connectedProperty.map((v) => !v))
-          .flatMap(JSON.stringify)
-    )
-      .map(({send}) => send())
+    Rx.Observable.merge(outgoingStream, pings)
+      .pausableBuffered(connectedProperty)
+      .map(JSON.stringify)
+      .combineLatest(wsProperty, (msg, ws) => [ws, msg])
+      .filter(([{readyState}, msg]) => readyState === 1)
+      .map(([ws, msg]) => ws.send(msg))
       .subscribe(_.noop)
     wsClose.onNext(null)
   }())
 
   var result = {
     incomingStream: incomingStream.share(),
-    outgoingStream: outgoingStream.share(),
-    connectedProperty: connectedProperty.share(),
+    outgoingStream: outgoingStream,
+    connectedProperty: connectedProperty,
   }
 
   wsRegistry[wsUrl] = result

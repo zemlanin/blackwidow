@@ -110,7 +110,9 @@ var websockets = Rx.Observable.fromEvent(freezer, 'update')
     removed: _.pick(prev, _.difference(_.keys(prev), _.keys(cur))),
   }))
 
-var websocketsAdded = websockets.pluck('added').flatMap(_.toPairs)
+const websocketsAdded = websockets.pluck('added').flatMap(_.toPairs)
+const websocketsRemoved = websockets.pluck('removed').flatMap(_.toPairs)
+
 const websocketsUpdates = websocketsAdded
   .flatMap(([ref, endpoint]) => getWsStream(endpoint.ws.url)
     .incomingStream
@@ -119,7 +121,7 @@ const websocketsUpdates = websocketsAdded
       _.pick(msg, _.keys(endpoint.ws.conds))
     ))
     .takeUntil(
-      websockets.pluck('removed').flatMap(_.keys).filter(_.matches(ref))
+      websocketsRemoved.map(_.first).filter(_.matches(ref))
     )
     .map(() => [ref, endpoint])
   )
