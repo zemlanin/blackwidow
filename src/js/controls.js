@@ -5,10 +5,10 @@ import { render, h } from 'preact'
 import Controls from './components/controls'
 
 const updates = {
-  'updateVisible': ({data}, freezer) => {
+  updateVisible: ({data}, freezer) => {
     return [freezer.pivot().controls.set('visible', data.visible)]
   },
-  'updateOpened': ({data}, freezer) => {
+  updateOpened: ({data}, freezer) => {
     document.body.classList.toggle('scrollable')
 
     return [freezer.pivot().controls.set('opened', data.opened)]
@@ -16,6 +16,8 @@ const updates = {
 }
 
 const update = (msg, state) => msg ? updates[msg.action](msg, state) : [state]
+
+const isIndexEven = (v, i) => !(i % 2)
 
 export default (node, freezer) => {
   if (!node) { return }
@@ -39,8 +41,8 @@ export default (node, freezer) => {
   const mouseClick = Rx.Observable.fromEvent(node, 'click')
 
   mouseClick
-    .map((v, i) => ({opened: !(i % 2)}))
-    .subscribe((data) => send({action: 'updateOpened', data}))
+    .map(isIndexEven)
+    .subscribe((opened) => send({action: 'updateOpened', data: opened}))
 
   mouseMove
     .flatMapLatest(() => Rx.Observable.of({visible: false})
@@ -50,7 +52,7 @@ export default (node, freezer) => {
     )
     .pausableBuffered(Rx.Observable.merge(
       mouseEnter.map(false),
-      mouseLeave.map(true).pausableBuffered(mouseClick.map((v, i) => i % 2).startWith(true)
+      mouseLeave.map(true).pausableBuffered(mouseClick.map(isIndexEven).map(_.negate).startWith(true)
     ).startWith(true)))
     .distinctUntilChanged(_.property('visible'))
     .subscribe((data) => send({action: 'updateVisible', data}))
