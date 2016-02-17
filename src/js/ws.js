@@ -70,8 +70,10 @@ function getWsStream (wsUrl) {
   const pings = Rx.Observable.interval(25000).map({subj: 'ping'})
 
   ;(function _initWsStream () {
-    Rx.Observable.merge(outgoingStream, pings)
-      .pausableBuffered(connectedProperty)
+    Rx.Observable.merge(
+      outgoingStream.pausableBuffered(connectedProperty),
+      pings.pausable(connectedProperty)
+    )
       .map(JSON.stringify)
       .combineLatest(wsProperty, (msg, ws) => [ws, msg])
       .filter(([{readyState}, msg]) => readyState === 1)
