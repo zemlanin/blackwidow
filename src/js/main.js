@@ -7,7 +7,7 @@ import 'whatwg-fetch'
 
 import { getDash } from './store'
 import { getWsStream } from './ws'
-import { extractEndpointsTo, endpointMapper } from './endpoints'
+import { extractEndpoints, endpointMapper, loadExternalWidgets } from './endpoints'
 import Dash from './components/dash'
 import controlsInit from './controls'
 
@@ -20,8 +20,13 @@ const freezer = new Freezer({
 })
 
 getDash()
-  .map(extractEndpointsTo(freezer))
-  .subscribe((dash) => freezer.get().dash.set(dash))
+  .flatMap(loadExternalWidgets)
+  .map(extractEndpoints)
+  .subscribe(({dash, endpoints}) => {
+    freezer.get().dash.set(dash)
+
+    if (endpoints) { freezer.get().endpoints.set(endpoints) }
+  })
 
 // freezer.on('update', (u) => { console.log('u', u) })
 

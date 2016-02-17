@@ -4,17 +4,11 @@
   },
   "widgets": {
     "defaultVersion": {
-      "type": "text",
+      "src": {"gist": "28d90c458c708193b531"},
       "container": {
         "position": [9, 0],
         "size": [7, 2],
         "debug": "orange"
-      },
-      "endpoint": {
-        "url": "https://bwd.cat/text/default",
-        "schedule": {
-          "timeInterval": 600
-        }
       },
       "data": {
         "note": "default"

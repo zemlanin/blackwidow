@@ -1,11 +1,12 @@
 import _ from 'lodash'
+import Rx from 'rx'
 import hash from 'object-hash'
 import expressions from 'angular-expressions'
 
-export const extractEndpointsTo = (dest) => (dash) => {
-  const state = dest.get()
+import { getAjaxStream, getGistStream } from './store'
 
-  let endpoints = state.endpoints.transact()
+export const extractEndpoints = ({dash}) => {
+  let endpoints = []
 
   dash.widgets = _(dash.widgets)
     .mapValues((widget) => {
@@ -27,9 +28,36 @@ export const extractEndpointsTo = (dest) => (dash) => {
     })
     .value()
 
-  state.endpoints.run()
+  return {dash, endpoints}
+}
 
-  return dash
+export const loadExternalWidgets = ({dash}) => {
+  return Rx.Observable.from(_.toPairs(dash.widgets))
+    .filter(([widgetId, widget]) => widget.src && (widget.src.url || widget.src.gist))
+    .flatMap(([widgetId, widget]) => {
+      if (widget.src.url) {
+        return getAjaxStream(widget.src.url)
+          .map((resp) => [widgetId, _.merge(widget, resp)])
+      }
+
+      if (widget.src.gist) {
+        return getGistStream(widget.src.gist)
+          .map((resp) => [widgetId, _.merge(resp, widget)])
+      }
+    })
+    .flatMapObserver(
+      (v) => Rx.Observable.of(v),
+      (err) => {
+        console.error(err)
+
+        return Rx.Observable.empty()
+      },
+      () => Rx.Observable.empty()
+    )
+    .do(([widgetId, widget]) => { dash.widgets[widgetId] = widget })
+    .startWith(null)
+    .takeLast(1)
+    .map({dash})
 }
 
 export function endpointMapper (data, result, structure) {

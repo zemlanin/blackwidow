@@ -58,7 +58,7 @@ function getWsStream (wsUrl) {
     wsClose.thenDo(_wsCloseHandler)
   ).subscribe(wsPropertySubj)
 
-  const wsProperty = wsPropertySubj.share()
+  const wsProperty = wsPropertySubj.filter(_.identity).share()
   const outgoingStream = new Rx.Subject()
   const incomingStream = wsProperty
     .filter(_.isObject)
