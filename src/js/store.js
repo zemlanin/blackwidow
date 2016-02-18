@@ -5,10 +5,15 @@ export function getAjaxStream (url) {
   return Rx.Observable.fromPromise(fetch(url).then(_.method('json')))
 }
 
-export function getGistStream (gistId) {
+const findJSONFile = (files) => _.find(files, (file) => file.language === 'JSON')
+const findNamedFile = (fileName) => (files) => _.find(files, (file) => file.filename === fileName)
+
+export function getGistStream (gistIdWithName) {
+  const [gistId, fileName] = gistIdWithName.split('/')
+
   return getAjaxStream(`https://api.github.com/gists/${gistId}`)
     .pluck('files')
-    .map((files) => _.find(files, (file) => file.language === 'JSON'))
+    .map(fileName ? findNamedFile(fileName) : findJSONFile)
     .map((file) => JSON.parse(file.content))
 }
 
@@ -30,6 +35,8 @@ function dashErrorCallback (err) {
   })
 }
 
+const GIST_PARAM_REGEX = /[?&]gist=([0-9a-f]{20}\/?[a-z0-9\.\-\_]*)/i
+
 export function getDash () {
   if (location.hash && location.hash.match(/^#(https?|file):/)) {
     if (location.hash.match(/^#(https?|file):/)) {
@@ -40,9 +47,9 @@ export function getDash () {
     }
   }
 
-  if (location.search.match(/[?&]gist=([0-9a-f]+)/i)) {
-    const gistId = location.search.match(/[?&]gist=([0-9a-f]+)/i)[1]
-    return getGistStream(gistId)
+  if (location.search.match(GIST_PARAM_REGEX)) {
+    const gistIdWithName = location.search.match(GIST_PARAM_REGEX)[1]
+    return getGistStream(gistIdWithName)
       .map((dash) => ({dash}))
       .catch(dashErrorCallback)
   }
