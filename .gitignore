@@ -1,4 +1,5 @@
 .DS_Store
+.sublimelinterrc
 CNAME
 node_modules/
 dist/
