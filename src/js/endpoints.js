@@ -37,7 +37,7 @@ export const loadExternalWidgets = ({dash}) => {
     .flatMap(([widgetId, widget]) => {
       if (widget.src.url) {
         return getAjaxStream(widget.src.url)
-          .map((resp) => [widgetId, _.merge(widget, resp)])
+          .map((resp) => [widgetId, _.merge(resp, widget)])
       }
 
       if (widget.src.gist) {
