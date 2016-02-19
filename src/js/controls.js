@@ -56,12 +56,12 @@ export default (node, freezer) => {
     keypress$.filter((e) => e.keyCode === TILDA)
   )
     .map(null)
-  
+
   controlsToggles$.subscribe(() => send({action: 'controlsToggle'}))
 
   const hideCursor$ = mouseMove$
     .flatMapLatest(() => Rx.Observable.of(true).delay(1000).startWith(false))
     .filter(() => !freezer.get().controls.opened)
-  
+
   hideCursor$.subscribe((hidden) => send({action: 'hideCursor', data: hidden}))
 }
