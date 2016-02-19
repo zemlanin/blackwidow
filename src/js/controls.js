@@ -61,6 +61,7 @@ export default (node, freezer) => {
 
   const hideCursor$ = mouseMove$
     .flatMapLatest(() => Rx.Observable.of(true).delay(1000).startWith(false))
+    .startWith(true)
     .filter(() => !freezer.get().controls.opened)
 
   hideCursor$.subscribe((hidden) => send({action: 'hideCursor', data: hidden}))
