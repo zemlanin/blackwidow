@@ -10,14 +10,22 @@ import { getWsStream } from './ws'
 import { extractEndpoints, endpointMapper, loadExternalWidgets } from './endpoints'
 import Dash from './components/dash'
 import controlsInit from './controls'
+import * as github from './github'
 
 import 'css/base.css'
 
 const freezer = new Freezer({
   endpoints: {},
   dash: {},
-  controls: {},
+  controls: {
+    opened: false,
+  },
+  auth: {},
 })
+
+window.event$ = new Rx.Subject()
+
+github.init(freezer)
 
 getDash()
   .flatMap(loadExternalWidgets)

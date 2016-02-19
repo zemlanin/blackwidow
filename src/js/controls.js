@@ -4,56 +4,64 @@ import { render, h } from 'preact'
 
 import Controls from './components/controls'
 
+const TILDA = 96
+
 const updates = {
-  updateVisible: ({data}, freezer) => {
-    return [freezer.pivot().controls.set('visible', data.visible)]
-  },
-  updateOpened: ({data}, freezer) => {
+  controlsToggle: ({data}, freezer) => {
     document.body.classList.toggle('scrollable')
 
-    return [freezer.pivot().controls.set('opened', data.opened)]
+    return [freezer.pivot().controls.set('opened', !freezer.controls.opened)]
+  },
+
+  hideCursor: ({data}, freezer) => {
+    if (data) {
+      document.body.classList.add('no-cursor')
+    } else {
+      document.body.classList.remove('no-cursor')
+    }
+
+    return [freezer]
+  },
+
+  githubLogout: ({data}, freezer) => {
+    localStorage.removeItem('github:token')
+
+    return [freezer.pivot().auth.remove('github')]
   },
 }
 
 const update = (msg, state) => msg ? updates[msg.action](msg, state) : [state]
 
-const isIndexEven = (v, i) => !(i % 2)
+const wrapperClick$ = Rx.Observable.fromEvent(document.getElementById('wrapper'), 'click')
+const keypress$ = Rx.Observable.fromEvent(document.body, 'keypress')
+const mouseMove$ = Rx.Observable.fromEvent(document.body, 'mousemove').throttle(30)
 
 export default (node, freezer) => {
   if (!node) { return }
 
-  const eventStream = new Rx.Subject()
-  const send = (v) => eventStream.onNext(v)
+  const send = (v) => window.event$.onNext(v)
   freezer.get().controls.set('send', send)
 
-  eventStream
+  window.event$
     .map((msg) => update(msg, freezer.get()))
     .do(([state, effect]) => effect ? effect(freezer).subscribe(send) : null)
     .map(_.head)
-    .startWith(freezer.get())
+    .merge(Rx.Observable.fromEvent(freezer, 'update'))
     .subscribe((state) => render(
       h(Controls, state), node, node.lastChild
     ))
 
-  const mouseMove = Rx.Observable.fromEvent(document.body, 'mousemove').throttle(30)
-  const mouseEnter = Rx.Observable.fromEvent(node, 'mouseenter')
-  const mouseLeave = Rx.Observable.fromEvent(node, 'mouseleave')
-  const mouseClick = Rx.Observable.fromEvent(node, 'click')
+  const controlsToggles$ = Rx.Observable.merge(
+    wrapperClick$,
+    keypress$.filter((e) => e.keyCode === TILDA)
+  )
+    .map(null)
+  
+  controlsToggles$.subscribe(() => send({action: 'controlsToggle'}))
 
-  mouseClick
-    .map(isIndexEven)
-    .subscribe((opened) => send({action: 'updateOpened', data: opened}))
-
-  mouseMove
-    .flatMapLatest(() => Rx.Observable.of({visible: false})
-      .delay(100)
-      .takeUntil(mouseEnter)
-      .startWith({visible: true})
-    )
-    .pausableBuffered(Rx.Observable.merge(
-      mouseEnter.map(false),
-      mouseLeave.map(true).pausableBuffered(mouseClick.map(isIndexEven).map(_.negate).startWith(true)
-    ).startWith(true)))
-    .distinctUntilChanged(_.property('visible'))
-    .subscribe((data) => send({action: 'updateVisible', data}))
+  const hideCursor$ = mouseMove$
+    .flatMapLatest(() => Rx.Observable.of(true).delay(1000).startWith(false))
+    .filter(() => !freezer.get().controls.opened)
+  
+  hideCursor$.subscribe((hidden) => send({action: 'hideCursor', data: hidden}))
 }

@@ -1,45 +1,28 @@
 :local(.wrapper) {
+  position: absolute;
   font-size: 2em;
   width: 90vw;
   color: black;
   background-color: white;
-  margin: 100vh 5vw 0;
+  margin: 0 5vw 0;
   box-shadow: 0 0 20px -5px black;
   border-radius: 2px 2px 0 0;
   padding: 0.5em;
 
-  transform: translateY(0);
-  transition: transform 0.8s;
-}
+  min-height: 50vh;
+  margin-top: 100vh;
+  transition: margin-top 0.4s;
 
-:local(.wrapper.visible) {
-  transform: translateY(-2em);
-  transition: transform 0.3s;
-}
-
-:local(.wrapper:hover) {
-  transform: translateY(-5em);
-  transition: transform 0.3s, margin-top 0.5s;
+  z-index: 100;
 }
 
 :local(.wrapper.opened) {
-  transform: translateY(0);
-  margin-top: 50vh;
-  transition: transform 0, margin-top 0.5s;
+  margin-top: 48vh;
+  transition: margin-top 0.5s 0.2s;
 }
 
 :local(.content) {
   margin-top: 0.5em;
-  opacity: 0;
-  min-height: 50vh;
-}
-
-:local(.wrapper.visible .content) {
-  opacity: 1;
-}
-
-:local(.wrapper.opened .content) {
-  opacity: 1;
 }
 
 :local(.ws) {

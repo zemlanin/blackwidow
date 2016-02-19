@@ -7,8 +7,16 @@ body {
   margin: 0;
 }
 
+a {
+  cursor: pointer;
+}
+
 body.scrollable {
-  overflow: auto;
+  overflow-y: auto;
+}
+
+body.no-cursor * {
+  cursor: none;
 }
 
 #wrapper {
@@ -17,6 +25,8 @@ body.scrollable {
   left: 2vw;
   width: 96vw;
   height: 96vh;
+  z-index: 10;
+  cursor: pointer;
 }
 
 #dash {
@@ -29,7 +39,7 @@ body.scrollable {
   text-align: center;
   border-radius: 5px;
   transform-origin: top;
-  transition: transform ease-in-out 0.5s 0.3s, box-shadow 0.5s;
+  transition: transform ease-in-out 0.5s, box-shadow 0.5s;
 }
 
 body.scrollable #dash {
