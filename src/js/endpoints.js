@@ -96,3 +96,6 @@ expressions.filters.format = (v, tmpl) => {
 expressions.filters.match = (v, regex, flags) => v.match(new RegExp(regex, flags))
 expressions.filters.timeUntil = (v, units) => toUnits((new Date(v).getTime() - Date.now()) / 1000, units)
 expressions.filters.timeSince = (v, units) => toUnits((Date.now() - new Date(v).getTime()) / 1000, units)
+expressions.filters.juxt = (v, ...filters) => filters.map((f) => expressions.compile(f)({'$': v}))
+expressions.filters['+'] = (v, b) => b + v
+expressions.filters['-'] = (v, b) => b - v

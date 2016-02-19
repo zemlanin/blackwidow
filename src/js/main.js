@@ -92,12 +92,13 @@ localSchedules
   .flatMap(_.toPairs)
   .flatMap(([widgetId, widget]) => Rx.Observable
     .interval(widget.local.schedule.timeInterval * 1000)
+    .startWith(widgetId)
     .takeUntil(
       localSchedules
         .map(({removed}) => removed[widgetId])
-        .filter((v) => v)
+        .filter(_.identity)
     )
-    .map(() => widgetId)
+    .map(widgetId)
   )
   .map((widgetId) => {
     const widget = freezer.get().dash.widgets[widgetId]
