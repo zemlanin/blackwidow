@@ -1,6 +1,8 @@
 import Rx from 'rx'
 import _ from 'lodash'
 
+import { api } from './github'
+
 export function getAjaxStream (url) {
   return Rx.Observable.fromPromise(fetch(url).then(_.method('json')))
 }
@@ -11,7 +13,7 @@ const findNamedFile = (fileName) => (files) => _.find(files, (file) => file.file
 export function getGistStream (gistIdWithName) {
   const [gistId, fileName] = gistIdWithName.split('/')
 
-  return getAjaxStream(`https://api.github.com/gists/${gistId}`)
+  return api(`/gists/${gistId}`)
     .pluck('files')
     .map(fileName ? findNamedFile(fileName) : findJSONFile)
     .map((file) => JSON.parse(file.content))
