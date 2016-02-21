@@ -36,7 +36,7 @@ const wrapperClick$ = Rx.Observable.fromEvent(document.getElementById('wrapper')
 const keypress$ = Rx.Observable.fromEvent(document.body, 'keypress')
 const mouseMove$ = Rx.Observable.fromEvent(document.body, 'mousemove').throttle(30)
 
-export default (node, freezer) => {
+export const init = (node, freezer) => {
   if (!node) { return }
 
   const send = (v) => window.event$.onNext(v)

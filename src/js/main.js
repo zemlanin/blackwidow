@@ -9,7 +9,7 @@ import { getDash } from './store'
 import { getWsStream } from './ws'
 import { extractEndpoints, endpointMapper, loadExternalWidgets } from './endpoints'
 import Dash from './components/dash'
-import controlsInit from './controls'
+import * as controls from './controls'
 import * as github from './github'
 
 import 'css/base.css'
@@ -46,7 +46,7 @@ Rx.Observable.fromEvent(freezer, 'update')
     document.getElementById('dash').lastChild
   ))
 
-controlsInit(document.getElementById('controls'), freezer)
+controls.init(document.getElementById('controls'), freezer)
 
 var endpoints = Rx.Observable.fromEvent(freezer, 'update')
   .pluck('endpoints')
