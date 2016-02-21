@@ -6,24 +6,24 @@ dashboard. works best with [quicksilver](http://github.com/zemlanin/quicksilver)
 npm install   # install dependencies
 make          # recompile
 make serve    # start a server at http://127.0.0.1:8000
-make deploy   # deploy via surge.sh
+make deploy   # deploy via ./deploy.sh
 ```
 
 ## Demo
-* https://blackwidow.surge.sh/
-* https://blackwidow.surge.sh/?gist=00fd9405043a98c96a68
-* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/static_data.json
-* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/external_data.json
-* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/graphs.json
-* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/countdown.json
+* https://bwd.cat/
+* https://bwd.cat/?gist=00fd9405043a98c96a68
+* https://bwd.cat/#https://bwd.cat/examples/static_data.json
+* https://bwd.cat/#https://bwd.cat/examples/external_data.json
+* https://bwd.cat/#https://bwd.cat/examples/graphs.json
+* https://bwd.cat/#https://bwd.cat/examples/countdown.json
 
 ### Example dashboards
-* https://blackwidow.surge.sh/examples/mockDashes.json
+* https://bwd.cat/examples/mockDashes.json
 * https://gist.github.com/zemlanin/00fd9405043a98c96a68
-* https://blackwidow.surge.sh/examples/static_data.json
-* https://blackwidow.surge.sh/examples/external_data.json
-* https://blackwidow.surge.sh/examples/graphs.json
-* https://blackwidow.surge.sh/examples/countdown.json
+* https://bwd.cat/examples/static_data.json
+* https://bwd.cat/examples/external_data.json
+* https://bwd.cat/examples/graphs.json
+* https://bwd.cat/examples/countdown.json
 
 ## Dashboard API
 Dashboard is a table (10×10 by default) described by JSON object:

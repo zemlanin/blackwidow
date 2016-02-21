@@ -34,8 +34,10 @@
     "standard": "^6.0.3",
     "standard-loader": "^2.0.0",
     "style-loader": "^0.13.0",
-    "surge": "^0.14.3",
     "webpack": "^1.12.12"
+  },
+  "peerDependencies": {
+    "surge": "^0.14.3"
   },
   "scripts": {
     "test": "make test",
