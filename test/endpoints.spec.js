@@ -34,6 +34,19 @@ describe('./endpoints', function () {
           {value: 'Wash'},
         ]}
       )
+
+      assert.deepEqual(
+        endpointMapper(
+          {text: 0}, {},
+          {values: {
+            _expr: 'text | juxt:_plus:_minus:_plus_minus',
+            _plus: '$ | +:1',
+            _minus: '$ | -:1',
+            _plus_minus: '$ | +:-1',
+          }}
+        ),
+        {values: [1, 1, -1]}
+      )
     })
   })
 })
