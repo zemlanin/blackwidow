@@ -12,6 +12,7 @@ make deploy   # deploy via ./deploy.sh
 ## Demo
 * https://bwd.cat/
 * https://bwd.cat/?gist=00fd9405043a98c96a68
+* https://bwd.cat/?gist=8be4e5c03405ab26c9f4/mobileDash.json
 * https://bwd.cat/#https://bwd.cat/examples/static_data.json
 * https://bwd.cat/#https://bwd.cat/examples/external_data.json
 * https://bwd.cat/#https://bwd.cat/examples/graphs.json
@@ -20,6 +21,7 @@ make deploy   # deploy via ./deploy.sh
 ### Example dashboards
 * https://bwd.cat/examples/mockDashes.json
 * https://gist.github.com/zemlanin/00fd9405043a98c96a68
+* https://gist.github.com/zemlanin/8be4e5c03405ab26c9f4
 * https://bwd.cat/examples/static_data.json
 * https://bwd.cat/examples/external_data.json
 * https://bwd.cat/examples/graphs.json
