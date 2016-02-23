@@ -286,7 +286,7 @@ export default class Graph extends Component {
     return !_.isEqual(nextProps, this.props)
   }
 
-  render ({data, widgetId, container}) {
+  render ({data = {}, widgetId, container}) {
     if (data && data.limit && data.values) { data.values.splice(data.limit) }
 
     if (!data.values) { return h('div') }

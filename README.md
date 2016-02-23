@@ -46,6 +46,7 @@ Dashboard is a table (10×10 by default) described by JSON object:
 * `Object.<string, Object>` **dashboard**: full dashboard
 * `DashContainer` **dashboard.container**: dashboard container object
     * `number[]` **DashContainer.size**: dashboard size in [x, y] format (`[10, 10]` by default)
+    * `Object?` **DashContainer.style**: inline `style` attribute of dash in [react.js format](https://facebook.github.io/react/tips/inline-styles.html)
 * `Object.<string, Widget>` **dashboard.widgets**: object with widgets. keys are used to identify widgets
 * `Widget` **dashboard.widgets[key]**: widget description
     * `string` **Widget.type**: widget type. available values: `"text"`, `"image"`

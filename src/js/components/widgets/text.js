@@ -8,7 +8,7 @@ export default class Text extends Component {
     return !_.isEqual(nextProps, this.props)
   }
 
-  render ({ data = {}, container }) {
+  render ({ data = {}, container = {} }) {
     var fontSize = container.fontSize || '3em'
     if (data.text && !container.fontSize) {
       if (data.text.length > 100) {

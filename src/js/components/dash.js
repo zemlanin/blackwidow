@@ -9,12 +9,14 @@ import wGraph from './widgets/graph'
 import style from 'css/base.css'
 
 export default class Dash extends Component {
-  render (props) {
-    const [viewportX, viewportY] = (props.container || {}).size || [10, 10]
+  render ({ container = {}, widgets = [] }) {
+    const [viewportX, viewportY] = (container || {}).size || [10, 10]
 
     return h('div',
-      null,
-      _.map(props.widgets, (widget, widgetId) => {
+      {
+        style: container.style || null,
+      },
+      _.map(widgets, (widget, widgetId) => {
         const {container} = widget
         var component
 

@@ -8,9 +8,7 @@ export default class Image extends Component {
     return !_.isEqual(nextProps, this.props)
   }
 
-  render () {
-    var { data = {}, container = {} } = this.props
-
+  render ({ data = {}, container = {} }) {
     return h('div', {
       class: imageHolder,
       style: {
