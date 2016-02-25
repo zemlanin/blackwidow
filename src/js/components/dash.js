@@ -47,7 +47,7 @@ export default class Dash extends Component {
             top: (100 * container.position[1] / viewportY) + '%',
             width: (100 * container.size[0] / viewportX) + '%',
             height: (100 * container.size[1] / viewportY) + '%',
-            outline: process.env.NODE_ENV !== 'production' && container.debug ? '1px solid ' + container.debug : '',
+            outline: process.env.NODE_ENV !== 'production' ? `1px solid ${container.debug || 'white'}` : '',
           },
         },
           h(component, {data: widget.data, container, widgetId})
