@@ -48,7 +48,7 @@ serve_lan:
 deploy:
 	$(MAKE) clean_dist
 	NODE_ENV=production $(MAKE)
-	[ -x deploy.sh ] && echo "./deploy.sh" || echo "no executable deploy.sh found"
+	[ -x deploy.sh ] && ./deploy.sh || echo "no executable deploy.sh found"
 
 .PHONY: test
 test:
