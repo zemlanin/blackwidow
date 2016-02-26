@@ -4,5 +4,8 @@
 # ./node_modules/.bin/surge dist
 
 # # deploy to own hosting
-# gzip dist/* -rk
-# scp -r dist REMOTE_HOST:/var/projects/blackwidow
+# TDIR=`mktemp -d`
+# cp -r dist $TDIR
+# gzip $TDIR/dist -rk
+# scp -r $TDIR/dist REMOTE_HOST:/var/projects/blackwidow
+# rm -rf $TDIR
