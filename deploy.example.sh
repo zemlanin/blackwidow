@@ -5,7 +5,8 @@
 
 # # deploy to own hosting
 # TDIR=`mktemp -d`
+# REMOTE_HOST=''
 # cp -r dist $TDIR
-# gzip $TDIR/dist -rk
-# scp -r $TDIR/dist REMOTE_HOST:/var/projects/blackwidow
+# gzip $TDIR/dist -rkn
+# rsync --progress --delete -Icru $TDIR/dist $REMOTE_HOST:/var/projects/blackwidow
 # rm -rf $TDIR
