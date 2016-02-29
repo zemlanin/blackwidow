@@ -22,9 +22,7 @@
       },
       "endpoint": {
         "url": "https://bwd.cat/text/uno",
-        "schedule": {
-          "timeInterval": 1800
-        }
+        "schedule": {"timeInterval": 1800}
       },
       "data": {
         "note": "uno"
@@ -38,9 +36,7 @@
       },
       "endpoint": {
         "url": "https://bwd.cat/text/gif",
-        "schedule": {
-          "timeInterval": 900
-        },
+        "schedule": {"timeInterval": 900},
         "map": {
           "src": "text"
         }
@@ -66,9 +62,7 @@
       },
       "endpoint": {
         "url": "https://ai.uaprom/overall",
-        "schedule": {
-          "timeInterval": 60
-        },
+        "schedule": {"timeInterval": 60},
         "map": {
           "text": "projects.buprom.version_title | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
         },
@@ -94,9 +88,7 @@
       },
       "endpoint": {
         "url": "https://ai.uaprom/overall",
-        "schedule": {
-          "timeInterval": 60
-        },
+        "schedule": {"timeInterval": 60},
         "map": {
           "text": "projects.uaprom.version_title | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
         }
@@ -119,9 +111,7 @@
       },
       "endpoint": {
         "url": "https://ai.uaprom/overall",
-        "schedule": {
-          "timeInterval": 60
-        },
+        "schedule": {"timeInterval": 60},
         "map": {
           "text": "projects.ruprom.version_title | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
         }
@@ -144,9 +134,7 @@
       },
       "endpoint": {
         "url": "https://ai.uaprom/overall",
-        "schedule": {
-          "timeInterval": 60
-        },
+        "schedule": {"timeInterval": 60},
         "map": {
           "text": "projects.byprom.version_title | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
         }
@@ -169,9 +157,7 @@
       },
       "endpoint": {
         "url": "https://ai.uaprom/overall",
-        "schedule": {
-          "timeInterval": 60
-        },
+        "schedule": {"timeInterval": 60},
         "map": {
           "text": "projects.kzprom.version_title | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
         }
@@ -194,9 +180,7 @@
       },
       "endpoint": {
         "url": "https://ai.uaprom/overall",
-        "schedule": {
-          "timeInterval": 60
-        },
+        "schedule": {"timeInterval": 60},
         "map": {
           "text": "projects.mdprom.version_title | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"
         }

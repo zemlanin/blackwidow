@@ -61,15 +61,21 @@ export const loadExternalWidgets = ({dash}) => {
     .map({dash})
 }
 
-export function endpointMapper (data, result, structure) {
+export function endpointMapper (update, prevData, structure) {
+  let result = _.assign({}, prevData, _.isObject(update) ? update : null)
+
   if (_.isString(structure)) {
-    return expressions.compile(structure)(_.assign(data, {$: _.cloneDeep(data)}))
+    return expressions.compile(structure)(_.assign(update, {$: _.cloneDeep(update)}))
+  }
+
+  if (!structure) {
+    return result
   }
 
   for (let key in structure) {
     result[key] = expressions.compile(
       structure[key]._expr || structure[key]
-    )(_.assign(data, structure[key], {$: _.cloneDeep(data)}))
+    )(_.assign(update, structure[key], {$: _.cloneDeep(update)}))
   }
 
   return result

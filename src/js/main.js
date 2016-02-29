@@ -11,6 +11,7 @@ import { extractEndpoints, endpointMapper, loadExternalWidgets } from './endpoin
 import Dash from './components/dash'
 import * as controls from './controls'
 import * as github from './github'
+import { repeat, diffFrom } from './stream_utils'
 
 import 'css/base.css'
 
@@ -48,84 +49,32 @@ Rx.Observable.fromEvent(freezer, 'update')
 
 controls.init(document.getElementById('controls'), freezer)
 
-var endpoints = Rx.Observable.fromEvent(freezer, 'update')
-  .pluck('endpoints')
-  .startWith({})
-  .bufferWithCount(2, 1)
-  .map(([prev, cur]) => ({
-    added: _.pick(cur, _.difference(_.keys(cur), _.keys(prev))),
-    removed: _.pick(prev, _.difference(_.keys(prev), _.keys(cur))),
+const endpoints = diffFrom(freezer, ['endpoints'], 'schedule.timeInterval')
+const locals = diffFrom(freezer, ['dash', 'widgets'], 'local.schedule.timeInterval')
+const websockets = diffFrom(freezer, ['endpoints'], 'ws.url')
+
+const endpointAdded = endpoints.pluck('added').flatMap(_.toPairs).share()
+const localsAdded = locals.pluck('added').flatMap(_.toPairs).share()
+const websocketsAdded = websockets.pluck('added').flatMap(_.toPairs).share()
+
+const endpointSchedules = endpointAdded
+  .flatMap(([ref, endpoint]) => repeat({
+    value: [ref, endpoint],
+    each: endpoint.schedule.timeInterval,
+    until: endpoints.pluck('removed', ref).filter(_.identity),
+  }).skip(1))
+
+const localWidgetUpdates = localsAdded
+  .flatMap(([widgetId, widget]) => repeat({
+    value: [widgetId, widget],
+    each: widget.local.schedule.timeInterval,
+    until: locals.pluck('removed', widgetId).filter(_.identity),
   }))
-
-var endpointAdded = endpoints
-  .pluck('added')
-  .filter(_.negate(_.isEmpty))
-  .flatMap(_.toPairs)
-  .share()
-
-var endpointSchedules = endpointAdded
-  .filter(([ref, endpoint]) => _.get(endpoint, 'schedule.timeInterval'))
-  .flatMap(([ref, endpoint]) => Rx.Observable
-    .interval(endpoint.schedule.timeInterval * 1000)
-    .takeUntil(
-      endpoints
-        .map(({removed}) => removed[ref])
-        .filter((v) => v)
-    )
-    .map(() => [ref, endpoint])
-  )
-
-const localSchedules = Rx.Observable.fromEvent(freezer, 'update')
-  .pluck('dash')
-  .pluck('widgets')
-  .map((ws) => _.pickBy(ws, (w) => _.has(w, 'local.schedule.timeInterval')))
-  .startWith({})
-  .bufferWithCount(2, 1)
-  .map(([prev, cur]) => ({
-    added: _.pick(cur, _.difference(_.keys(cur), _.keys(prev))),
-    removed: _.pick(prev, _.difference(_.keys(prev), _.keys(cur))),
+  .map(([widgetId, widget]) => ({
+    widgetId: widgetId,
+    update: {},
+    mapping: widget.local.map,
   }))
-
-localSchedules
-  .pluck('added')
-  .filter(_.negate(_.isEmpty))
-  .flatMap(_.toPairs)
-  .flatMap(([widgetId, widget]) => Rx.Observable
-    .interval(widget.local.schedule.timeInterval * 1000)
-    .startWith(widgetId)
-    .takeUntil(
-      localSchedules
-        .map(({removed}) => removed[widgetId])
-        .filter(_.identity)
-    )
-    .map(widgetId)
-  )
-  .map((widgetId) => {
-    const widget = freezer.get().dash.widgets[widgetId]
-
-    return {
-      widgetId,
-      data: endpointMapper({}, widget.data.toJS(), widget.local.map || {}),
-    }
-  })
-  .subscribe(
-    ({widgetId, data}) => freezer.get().dash.widgets[widgetId].set('data', data),
-    (error) => console.error(error),
-    (v) => console.log('completed')
-  )
-
-var websockets = Rx.Observable.fromEvent(freezer, 'update')
-  .pluck('endpoints')
-  .startWith({})
-  .map((es) => _.pickBy(es, (endpoint) => _.has(endpoint, 'ws.url')))
-  .bufferWithCount(2, 1)
-  .map(([prev, cur]) => ({
-    added: _.pick(cur, _.difference(_.keys(cur), _.keys(prev))),
-    removed: _.pick(prev, _.difference(_.keys(prev), _.keys(cur))),
-  }))
-
-const websocketsAdded = websockets.pluck('added').flatMap(_.toPairs)
-const websocketsRemoved = websockets.pluck('removed').flatMap(_.toPairs)
 
 const websocketsUpdates = websocketsAdded
   .flatMap(([ref, endpoint]) => getWsStream(endpoint.ws.url)
@@ -134,31 +83,24 @@ const websocketsUpdates = websocketsAdded
       endpoint.ws.conds,
       _.pick(msg, _.keys(endpoint.ws.conds))
     ))
-    .takeUntil(
-      websocketsRemoved.map(_.first).filter(_.matches(ref))
-    )
-    .map(() => [ref, endpoint])
+    .takeUntil(websockets.pluck('removed', ref).filter(_.identity))
+    .map([ref, endpoint])
   )
 
 const websocketsConnection = websocketsAdded
-  .flatMap(([ref, endpoint]) => getWsStream(endpoint.ws.url).connectedProperty
+  .flatMap(([ref, endpoint]) => getWsStream(endpoint.ws.url)
+    .connectedProperty
     .map((connected) => ({ref, connected}))
   )
 
-websocketsConnection
-  .subscribe(({ref, connected}) => freezer.get().endpoints[ref].ws.set('connected', connected))
-
-var endpointRequests = Rx.Observable.merge(
+const endpointResponses = Rx.Observable.merge(
   endpointAdded,
   websocketsUpdates,
   endpointSchedules
 )
-  .flatMap(([ref, endpoint]) =>
-    Rx.Observable.fromPromise(
+  .flatMap(([ref, endpoint]) => Rx.Observable
+    .fromPromise(
       fetch(endpoint.url, {
-        responseType: 'text/plain',
-        contentType: 'application/json; charset=UTF-8',
-        crossDomain: true,
         headers: endpoint.headers,
         method: endpoint.method || 'GET',
         body: endpoint.body,
@@ -177,26 +119,40 @@ var endpointRequests = Rx.Observable.merge(
   })
   .share()
 
-endpointRequests
+const endpointWidgetUpdates = endpointResponses
+  .filter(({err}) => !err)
+  .flatMap(({ref, response}) => Rx.Observable
+    .pairs(freezer.get().dash.widgets)
+    .filter(([widgetId, widget]) => widget.endpoint && widget.endpoint._ref === ref)
+    .map(([widgetId, widget]) => ({
+      widgetId: widgetId,
+      update: response,
+      mapping: widget.endpoint.map,
+    }))
+  )
+
+websocketsConnection.subscribe(({ref, connected}) => {
+  freezer.get().endpoints[ref].ws.set('connected', connected)
+})
+
+endpointResponses
   .filter(({err}) => !err)
   .map(({ref, response: {ws}}) => ({ref, ws}))
   .filter(({ws}) => ws && ws.url && ws.conds)
   .catch(() => Rx.Observable.empty())
-  .subscribe(({ref, ws}) => freezer.get().endpoints[ref].set('ws', ws))
-
-endpointRequests
-  .filter(({err}) => !err)
-  .flatMap(({ref, response}) => {
-    return Rx.Observable.pairs(freezer.get().dash.widgets)
-      .filter(([widgetId, widget]) => widget.endpoint && widget.endpoint._ref === ref)
-      .map(([widgetId, widget]) => ({widgetId, widget, data: response}))
-      .map(({widgetId, widget, data}) => ({
-        widgetId,
-        data: endpointMapper(data, _.assign({}, widget.data, data), widget.endpoint.map || {}),
-      }))
+  .subscribe(({ref, ws}) => {
+    freezer.get().endpoints[ref].set('ws', ws)
   })
+
+Rx.Observable.merge(endpointWidgetUpdates, localWidgetUpdates)
   .subscribe(
-    ({widgetId, data}) => freezer.get().dash.widgets[widgetId].set('data', data),
+    ({widgetId, update, mapping}) => {
+      const widget = freezer.get().dash.widgets[widgetId]
+
+      widget.set('data', endpointMapper(
+        update, widget.data && widget.data.toJS(), mapping
+      ))
+    },
     (error) => console.error(error),
     (v) => console.log('completed')
   )

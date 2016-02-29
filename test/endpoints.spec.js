@@ -17,7 +17,10 @@ describe('./endpoints', function () {
           {project: {rev: '15.9.13(154321)a9324a63ed24'}}, {},
           {text: "project.rev | match:'(.*)\\\\((.*)\\\\)' | format:'{1} /{2}'"}
         ),
-        {text: '15.9.13 /154321'}
+        {
+          project: {rev: '15.9.13(154321)a9324a63ed24'},
+          text: '15.9.13 /154321',
+        }
       )
 
       assert.deepEqual(
@@ -28,11 +31,14 @@ describe('./endpoints', function () {
             _map: {value: '$'},
           }}
         ),
-        {values: [
-          {value: 'Mal'},
-          {value: 'Zoe'},
-          {value: 'Wash'},
-        ]}
+        {
+          text: 'Mal|Zoe|Wash',
+          values: [
+            {value: 'Mal'},
+            {value: 'Zoe'},
+            {value: 'Wash'},
+          ],
+        }
       )
 
       assert.deepEqual(
@@ -45,7 +51,7 @@ describe('./endpoints', function () {
             _plus_minus: '$ | +:-1',
           }}
         ),
-        {values: [1, 1, -1]}
+        {text: 0, values: [1, 1, -1]}
       )
     })
   })
