@@ -32,35 +32,6 @@ export const extractEndpoints = ({dash}) => {
   return {dash, endpoints}
 }
 
-export const loadExternalWidgets = ({dash}) => {
-  return Rx.Observable.from(_.toPairs(dash.widgets))
-    .filter(([widgetId, widget]) => widget.src && (widget.src.url || widget.src.gist))
-    .flatMap(([widgetId, widget]) => {
-      if (widget.src.url) {
-        return getAjaxStream(widget.src.url)
-          .map((resp) => [widgetId, _.merge(resp, widget)])
-      }
-
-      if (widget.src.gist) {
-        return getGistStream(widget.src.gist)
-          .map((resp) => [widgetId, _.merge(resp, widget)])
-      }
-    })
-    .flatMapObserver(
-      (v) => Rx.Observable.of(v),
-      (err) => {
-        console.error(err)
-
-        return Rx.Observable.empty()
-      },
-      () => Rx.Observable.empty()
-    )
-    .do(([widgetId, widget]) => { dash.widgets[widgetId] = widget })
-    .startWith(null)
-    .takeLast(1)
-    .map({dash})
-}
-
 export function endpointMapper (update, prevData, structure) {
   let result = _.assign({}, prevData, _.isObject(update) ? update : null)
 
@@ -79,4 +50,33 @@ export function endpointMapper (update, prevData, structure) {
   }
 
   return result
+}
+
+export const loadExternalWidgets = ({dash}) => {
+  return Rx.Observable.from(_.toPairs(dash.widgets))
+    .filter(([widgetId, widget]) => widget.src && (widget.src.url || widget.src.gist))
+    .flatMap(([widgetId, widget]) => {
+      let externalWidget = Rx.Observable.empty()
+
+      if (widget.src.url) { externalWidget = getAjaxStream(widget.src.url) }
+      if (widget.src.gist) { externalWidget = getGistStream(widget.src.gist) }
+
+      return externalWidget.map((resp) => ({
+        widgetId,
+        widget: _.merge(endpointMapper(resp, {}, widget.src.map), widget),
+      }))
+    })
+    .flatMapObserver(
+      (v) => Rx.Observable.of(v),
+      (err) => {
+        console.error(err)
+
+        return Rx.Observable.empty()
+      },
+      () => Rx.Observable.empty()
+    )
+    .do(({widgetId, widget}) => { dash.widgets[widgetId] = widget })
+    .startWith(null)
+    .takeLast(1)
+    .map({dash})
 }
