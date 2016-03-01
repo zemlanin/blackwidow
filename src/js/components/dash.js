@@ -41,6 +41,7 @@ export default class Dash extends Component {
 
         return h('div', {
           key: widgetId,
+          'data-widget-data': process.env.NODE_ENV !== 'production' ? JSON.stringify(widget.data) : null,
           class: style.widget,
           style: {
             left: (100 * container.position[0] / viewportX) + '%',
