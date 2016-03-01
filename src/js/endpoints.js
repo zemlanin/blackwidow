@@ -4,7 +4,7 @@ import hash from 'object-hash'
 import expressions from 'angular-expressions'
 
 import './expressions_filters'
-import { getAjaxStream, getGistStream } from './store'
+import { getAjaxStream, getGistStream, findJSONFile, findNamedFile } from './store'
 
 export const extractEndpoints = ({dash}) => {
   let endpoints = []
@@ -52,19 +52,66 @@ export function endpointMapper (update, prevData, structure) {
   return result
 }
 
+const splitSrc = (src) => {
+  if (src.url) {
+    return {
+      shared: _.pick(src, 'url'),
+      local: _.pick(src, 'map'),
+    }
+  }
+
+  if (src.gist) {
+    return {
+      shared: _.pick(src, 'gist'),
+      local: _.pick(src, 'file', 'map'),
+    }
+  }
+
+  return {}
+}
+
 export const loadExternalWidgets = ({dash}) => {
-  return Rx.Observable.from(_.toPairs(dash.widgets))
+  return Rx.Observable.pairs(dash.widgets)
     .filter(([widgetId, widget]) => widget.src && (widget.src.url || widget.src.gist))
-    .flatMap(([widgetId, widget]) => {
+    .reduce((acc, [widgetId, widget]) => {
+      const {shared, local} = splitSrc(widget.src)
+
+      if (!shared || !local) { return acc }
+
+      const sharedHash = hash(shared)
+
+      if (!acc[sharedHash]) {
+        acc[sharedHash] = {shared, local: []}
+      }
+
+      acc[sharedHash].local.push({widgetId, widget})
+
+      return acc
+    }, {})
+    .flatMap(_.values)
+    .flatMap(({shared, local}) => {
       let externalWidget = Rx.Observable.empty()
 
-      if (widget.src.url) { externalWidget = getAjaxStream(widget.src.url) }
-      if (widget.src.gist) { externalWidget = getGistStream(widget.src.gist) }
+      if (shared.url) { externalWidget = getAjaxStream(shared.url) }
+      if (shared.gist) { externalWidget = getGistStream(shared.gist) }
 
-      return externalWidget.map((resp) => ({
-        widgetId,
-        widget: _.merge(endpointMapper(resp, {}, widget.src.map), widget),
-      }))
+      return externalWidget
+        .flatMap((resp) => local.map(({widgetId, widget}) => {
+          let localResp = resp
+
+          if (shared.gist) {
+            localResp = JSON.parse(
+              widget.src.file
+                ? findNamedFile(widget.src.file)(resp).content
+                : findJSONFile(resp).content
+            )
+          }
+
+          return {
+            widgetId,
+            widget: _.merge(endpointMapper(localResp, {}, widget.src.map), widget),
+          }
+        }))
     })
     .flatMapObserver(
       (v) => Rx.Observable.of(v),

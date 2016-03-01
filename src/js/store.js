@@ -7,16 +7,11 @@ export function getAjaxStream (url) {
   return Rx.Observable.fromPromise(fetch(url).then(_.method('json')))
 }
 
-const findJSONFile = (files) => _.find(files, (file) => file.language === 'JSON')
-const findNamedFile = (fileName) => (files) => _.find(files, (file) => file.filename === fileName)
+export const findJSONFile = (files) => _.find(files, (file) => file.language === 'JSON')
+export const findNamedFile = (fileName) => (files) => _.find(files, (file) => file.filename === fileName)
 
-export function getGistStream (gistIdWithName) {
-  const [gistId, fileName] = gistIdWithName.split('/')
-
-  return api(`/gists/${gistId}`)
-    .pluck('files')
-    .map(fileName ? findNamedFile(fileName) : findJSONFile)
-    .map((file) => JSON.parse(file.content))
+export function getGistStream (gistId) {
+  return api(`/gists/${gistId}`).pluck('files')
 }
 
 function dashErrorCallback (err) {
@@ -50,8 +45,10 @@ export function getDash () {
   }
 
   if (location.search.match(GIST_PARAM_REGEX)) {
-    const gistIdWithName = location.search.match(GIST_PARAM_REGEX)[1]
-    return getGistStream(gistIdWithName)
+    const [gistId, fileName] = location.search.match(GIST_PARAM_REGEX)[1].split('/')
+    return getGistStream(gistId)
+      .map(fileName ? findNamedFile(fileName) : findJSONFile)
+      .map((file) => JSON.parse(file.content))
       .map((dash) => ({dash}))
       .catch(dashErrorCallback)
   }
