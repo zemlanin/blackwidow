@@ -46,7 +46,7 @@ export function endpointMapper (update, prevData, structure) {
   for (let key in structure) {
     result[key] = expressions.compile(
       structure[key]._expr || structure[key]
-    )(_.assign(update, structure[key], {$: _.cloneDeep(update)}))
+    )(_.assign(update, structure[key]._expr ? structure[key] : null, {$: _.cloneDeep(update)}))
   }
 
   return result
@@ -126,4 +126,34 @@ export const loadExternalWidgets = ({dash}) => {
     .startWith(null)
     .takeLast(1)
     .map({dash})
+}
+
+export const copyLocalWidgets = ({dash}) => {
+  dash.widgets = _(dash.widgets)
+    .mapValues((widget) => {
+      if (widget.src && widget.src.copy) {
+        const baseWidget = dash.widgets[widget.src.copy]
+
+        if (!baseWidget) {
+          widget.error = `no base widget "${widget.src.copy}"`
+          console.error(widget.error)
+
+          return widget
+        }
+
+        if (baseWidget.src && baseWidget.src.copy) {
+          widget.error = `you can't make copy of copied widget "${widget.src.copy}"`
+          console.error(widget.error)
+
+          return widget
+        }
+
+        return _.merge({}, baseWidget, widget)
+      }
+
+      return widget
+    })
+    .value()
+
+  return {dash}
 }

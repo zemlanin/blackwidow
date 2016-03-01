@@ -19,14 +19,19 @@ class githubUser extends Component {
 }
 
 export default class Controls extends Component {
-  render ({controls: {opened, send}, endpoints, auth}) {
+  render ({controls: {opened, send}, endpoints, auth, dash}) {
     return h(
       'div',
       {class: c(css.wrapper, {[css.opened]: opened})},
       h('a', {onClick: send.bind(null, {action: 'controlsToggle'})}, 'close'),
+      h('br'),
       _(endpoints)
         .pickBy('error')
         .map(({url, error}) => `${url}: ${error}`)
+        .value(),
+      _(dash.widgets)
+        .pickBy('error')
+        .map('error')
         .value(),
       _(endpoints)
         .pickBy('ws')

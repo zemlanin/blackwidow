@@ -7,7 +7,7 @@ import 'whatwg-fetch'
 
 import { getDash } from './store'
 import { getWsStream } from './ws'
-import { extractEndpoints, endpointMapper, loadExternalWidgets } from './endpoints'
+import { extractEndpoints, endpointMapper, loadExternalWidgets, copyLocalWidgets } from './endpoints'
 import Dash from './components/dash'
 import * as controls from './controls'
 import * as github from './github'
@@ -30,6 +30,7 @@ github.init(freezer)
 
 getDash()
   .flatMap(loadExternalWidgets)
+  .map(copyLocalWidgets)
   .map(extractEndpoints)
   .subscribe(({dash, endpoints}) => {
     freezer.get().dash.set(dash)
