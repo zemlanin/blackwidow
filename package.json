@@ -49,7 +49,7 @@
       "browser": true,
       "mocha": true
     },
-    "globals": [],
+    "globals": ["config"],
     "rules": {
       "comma-dangle": [
         1,

@@ -1,10 +1,18 @@
 var webpack = require('webpack')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
-var dependencies = require('./package.json').dependencies
+var dependencies = require('package.json').dependencies
+var config
+
+if (process.env.NODE_ENV === 'production') {
+  config = require(process.env.BWD_CONFIG)
+} else {
+  config = require(process.env.BWD_CONFIG || 'config/example.json')
+}
 
 var plugins = [
   new webpack.DefinePlugin({
-    'process.env.NODE_ENV': process.env.NODE_ENV ? JSON.stringify(process.env.NODE_ENV) : '"development"',
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    'config': JSON.stringify(config),
   }),
   new webpack.optimize.CommonsChunkPlugin('core', 'js/core.js'),
   new ExtractTextPlugin('css/[name].css', {allChunks: true}),

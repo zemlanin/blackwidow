@@ -4,6 +4,9 @@ CNAME
 deploy.sh
 node_modules/
 dist/
-/examples/_*.json
+examples/_*.json
+
+config/*
+!config/example.json
 
 *.sublime-workspace

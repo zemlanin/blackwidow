@@ -4,8 +4,6 @@ import { h, Component } from 'preact'
 
 import * as css from 'css/controls'
 
-const GITHUB_CLIENT_ID = process.env.NODE_ENV !== 'production' ? '781e22f823bc0ed6e42e' : '3ef5d8670134133c9544'
-
 class githubUser extends Component {
   render ({auth: {github}, controls: {send}}) {
     if (!github.user) { return h('div') }
@@ -41,11 +39,11 @@ export default class Controls extends Component {
           return h('div', {class: c(css.ws, {[css.connected]: ws.connected})}, ws.url)
         })
         .value(),
-      h('div', {class: css.content},
+      config.github ? h('div', {class: css.content},
         auth.github
           ? h(githubUser, this.props)
-          : h('a', {href: `https://github.com/login/oauth/authorize?scope=gist&client_id=${GITHUB_CLIENT_ID}`}, 'github auth')
-      )
+          : h('a', {href: `https://github.com/login/oauth/authorize?scope=gist&client_id=${config.github}`}, 'github auth')
+      ) : ''
     )
   }
 }
