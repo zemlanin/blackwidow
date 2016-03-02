@@ -4,9 +4,9 @@ var dependencies = require('package.json').dependencies
 var config
 
 if (process.env.NODE_ENV === 'production') {
-  config = require(process.env.BWD_CONFIG)
+  config = process.env.BWD_CONFIG
 } else {
-  config = require(process.env.BWD_CONFIG || 'config/example.json')
+  config = process.env.BWD_CONFIG || 'config/example.json'
 }
 
 var plugins = [
@@ -51,8 +51,12 @@ module.exports = {
       'node_modules',
       'src/js',
       'src',
+      __dirname,
     ],
     extensions: ['.js', '.css', ''],
+    alias: {
+      config: config,
+    },
   },
   plugins: plugins,
 }

@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import c from 'classnames'
 import { h, Component } from 'preact'
+import * as config from 'config'
 
 import * as css from 'css/controls'
 

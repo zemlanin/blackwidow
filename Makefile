@@ -54,7 +54,7 @@ serve_lan:
 .PHONY: deploy
 deploy:
 	$(MAKE) clean_dist
-	NODE_ENV=production BWD_CONFIG=config/prod.json $(MAKE)
+	NODE_ENV=production $(MAKE)
 	[ -x deploy.sh ] && ./deploy.sh || echo "no executable deploy.sh found"
 
 .PHONY: test
