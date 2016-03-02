@@ -1,5 +1,4 @@
 SHELL := /bin/bash
-NODE_PATH := $(shell pwd)
 
 bin = $(shell npm bin)
 node_static = $(bin)/static
@@ -8,6 +7,7 @@ standard = $(bin)/standard
 snazzy = $(bin)/snazzy
 mocha = $(bin)/mocha
 
+NODE_PATH = $(shell pwd)
 src = $(shell pwd)/src
 dist = $(shell pwd)/dist
 node_modules = $(shell pwd)/node_modules
@@ -31,11 +31,11 @@ dist_static:
 .PHONY: dist/js
 dist/js:
 	mkdir -p $(dir $@)
-	set -o pipefail && $(MAKE) lint && $(webpack)
+	set -o pipefail && $(MAKE) lint && NODE_PATH=$(NODE_PATH) $(webpack)
 
 .PHONY: watch
 watch:
-	$(webpack) --progress --watch
+	NODE_PATH=$(NODE_PATH) $(webpack) --progress --watch
 
 .PHONY: lint
 lint:
