@@ -44,12 +44,12 @@ lint:
 .PHONY: serve
 serve:
 	@echo serving at http://127.0.0.1:8000
-	@$(node_static) $(dist) -p 8000 -z -c 0 > /dev/null
+	@$(node_static) $(dist) -p 8000 -z -c 0 -H '{"Access-Control-Allow-Origin": "*"}' > /dev/null
 
 .PHONY: serve_lan
 serve_lan:
 	@echo serving at http://helicarrier.local:8000
-	@$(node_static) $(dist) -p 8000 -a helicarrier.local -z -c 0 > /dev/null
+	@$(node_static) $(dist) -p 8000 -a helicarrier.local -z -c 0 -H '{"Access-Control-Allow-Origin": "*"}' > /dev/null
 
 .PHONY: deploy
 deploy:
