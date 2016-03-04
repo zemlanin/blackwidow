@@ -1,6 +1,9 @@
 import Rx from 'rx'
 import _ from 'lodash'
-import { h, render } from 'preact'
+import React from 'react'
+import {render} from 'react-dom'
+const h = React.createElement
+
 import Freezer from 'freezer-js'
 
 import 'whatwg-fetch'
@@ -44,8 +47,7 @@ Rx.Observable.fromEvent(freezer, 'update')
   .pluck('dash')
   .subscribe((dashData) => render(
     h(Dash, dashData),
-    document.getElementById('dash'),
-    document.getElementById('dash').lastChild
+    document.getElementById('dash')
   ))
 
 controls.init(document.getElementById('controls'), freezer)

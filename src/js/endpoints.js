@@ -16,11 +16,21 @@ export const extractEndpoints = ({dash}) => {
           widget.endpoint.body = JSON.stringify(widget.endpoint.body)
         }
 
-        const extractedEndpoint = _.pick(widget.endpoint, ['url', 'method', 'body', 'plain', 'schedule', 'headers'])
-        const endpointHash = hash.MD5(_.pick(widget.endpoint, ['url', 'method', 'body', 'plain']))
+        const extractedEndpoint = _.pick(widget.endpoint, ['url', 'method', 'body', 'plain', 'headers', 'schedule'])
+        const endpointHash = hash.MD5(_.pick(widget.endpoint, ['url', 'method', 'body', 'plain', 'headers']))
 
         widget.endpoint._ref = endpointHash
         widget.endpoint = _.omit(widget.endpoint, _.keys(extractedEndpoint))
+
+        if (extractedEndpoint.headers) {
+          let headers = new Headers()
+
+          for (const key in extractedEndpoint.headers) {
+            headers.set(key, extractedEndpoint.headers[key])
+          }
+
+          extractedEndpoint.headers = headers
+        }
 
         endpoints[endpointHash] = extractedEndpoint
       }

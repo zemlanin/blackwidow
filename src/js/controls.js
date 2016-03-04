@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import Rx from 'rx'
-import { render, h } from 'preact'
+import React from 'react'
+import {render} from 'react-dom'
+const h = React.createElement
 
 import Controls from './components/controls'
 
@@ -48,7 +50,7 @@ export const init = (node, freezer) => {
     .map(_.head)
     .merge(Rx.Observable.fromEvent(freezer, 'update'))
     .subscribe((state) => render(
-      h(Controls, state), node, node.lastChild
+      h(Controls, state), node
     ))
 
   const controlsToggles$ = Rx.Observable.merge(

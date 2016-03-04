@@ -1,5 +1,7 @@
 import _ from 'lodash'
-import { h, Component } from 'preact'
+import React from 'react'
+const Component = React.Component
+const h = React.createElement
 
 import { border, note } from 'css/widgets/text'
 
@@ -26,11 +28,11 @@ export default class Text extends Component {
 
     return h('div', {
       id: data.id,
-      class: border,
+      className: border,
       style: {fontSize: fontSize},
     },
       h('span', null, data.text),
-      data.note ? h('span', {class: note}, data.note) : ''
+      data.note ? h('span', {className: note}, data.note) : ''
     )
   }
 }

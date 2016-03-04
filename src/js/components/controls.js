@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import c from 'classnames'
-import { h, Component } from 'preact'
+import React from 'react'
+const Component = React.Component
+const h = React.createElement
 import * as config from 'config'
 
 import * as css from 'css/controls'
@@ -18,10 +20,11 @@ class githubUser extends Component {
 }
 
 export default class Controls extends Component {
-  render ({controls: {opened, send}, endpoints, auth, dash}) {
+  render () {
+    const {controls: {opened, send}, endpoints, auth, dash} = this.props
     return h(
       'div',
-      {class: c(css.wrapper, {[css.opened]: opened})},
+      {className: c(css.wrapper, {[css.opened]: opened})},
       h('a', {onClick: send.bind(null, {action: 'controlsToggle'})}, 'close'),
       h('br'),
       _(endpoints)
@@ -37,10 +40,10 @@ export default class Controls extends Component {
         .map('ws')
         .uniqBy('url')
         .map((ws) => {
-          return h('div', {class: c(css.ws, {[css.connected]: ws.connected})}, ws.url)
+          return h('div', {className: c(css.ws, {[css.connected]: ws.connected})}, ws.url)
         })
         .value(),
-      config.github ? h('div', {class: css.content},
+      config.github ? h('div', {className: css.content},
         auth.github
           ? h(githubUser, this.props)
           : h('a', {href: `https://github.com/login/oauth/authorize?scope=gist&client_id=${config.github}`}, 'github auth')

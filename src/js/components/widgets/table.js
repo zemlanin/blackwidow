@@ -1,5 +1,7 @@
 import _ from 'lodash'
-import { h, Component } from 'preact'
+import React from 'react'
+const Component = React.Component
+const h = React.createElement
 
 export default class Table extends Component {
   shouldComponentUpdate (nextProps) {

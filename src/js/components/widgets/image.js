@@ -1,5 +1,7 @@
 import _ from 'lodash'
-import { h, Component } from 'preact'
+import React from 'react'
+const Component = React.Component
+const h = React.createElement
 
 import { imageHolder, note } from 'css/widgets/image'
 
@@ -10,13 +12,13 @@ export default class Image extends Component {
 
   render ({ data = {}, container = {} }) {
     return h('div', {
-      class: imageHolder,
+      className: imageHolder,
       style: {
         backgroundImage: data.src ? `url(${data.src})` : '',
       },
     },
       data.note ? h('span', {
-        class: note,
+        className: note,
         style: {fontSize: container.fontSize},
       },
         data.note

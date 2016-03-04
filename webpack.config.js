@@ -48,10 +48,10 @@ module.exports = {
   },
   resolve: {
     modulesDirectories: [
-      'node_modules',
-      'src/js',
       'src',
+      'src/js',
       __dirname,
+      'node_modules',
     ],
     extensions: ['.js', '.css', ''],
     alias: {

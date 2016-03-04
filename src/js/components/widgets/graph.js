@@ -1,12 +1,13 @@
 import _ from 'lodash'
-import { h, Component } from 'preact'
-import SVG from 'preact-svg'
+import React from 'react'
+const Component = React.Component
+const h = React.createElement
 
 const TOP_BAR_LINE_Y = (height) => height * 0.15
 const BOTTOM_BAR_LINE_Y = (height, axesText = true) => axesText ? height * 0.65 : height * 0.85
 
-const LEFT_BAR_LINE_X = (width) => width * 0.1
-const RIGHT_BAR_LINE_X = (width) => width * 0.9
+const LEFT_BAR_LINE_X = (width) => width * 0.05
+const RIGHT_BAR_LINE_X = (width) => width * 0.95
 
 const BAR_SPACING = (width) => width * 0.025
 
@@ -19,8 +20,10 @@ const COLORS = [
   '#00F',
 ]
 
+const FONT_SIZE = 20
+
 function getTextWidth (text) {
-  return 33 * (text || '').toString().length // for font-size 50
+  return FONT_SIZE * 0.66 * (text || '').toString().length
 }
 
 function getTextHeightShift (text, width) {
@@ -31,8 +34,8 @@ function getTextHeightShift (text, width) {
 }
 
 function barChart ([sizeX, sizeY], data, widgetId) {
-  const width = sizeX * 160 * 2
-  const height = sizeY * 90 * 2
+  const width = sizeX * 100
+  const height = sizeY * 100
 
   let {values, baseValues, sortBy} = data || {}
   baseValues = baseValues || {}
@@ -69,9 +72,7 @@ function barChart ([sizeX, sizeY], data, widgetId) {
   const valueLabelShift = _.max(_.map(values, (v) => getTextHeightShift(v.value, barWidth)))
   const barLabelShift = _.max(_.map(values, (v) => getTextHeightShift(v.text, barWidth)))
 
-  return h(SVG, {
-    xmlns: 'http://www.w3.org/2000/svg',
-    'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+  return h('svg', {
     width: '100%',
     height: '100%',
     viewBox: `0 0 ${width} ${height}`,
@@ -83,7 +84,8 @@ function barChart ([sizeX, sizeY], data, widgetId) {
       x2: RIGHT_BAR_LINE_X(width),
       y1: lineY + 3,
       y2: lineY + 3,
-      'stroke-width': 6,
+      strokeWidth: 6,
+      version: '1.1',
     }),
     ..._.map(values, (el, i) => {
       const color = el.color || data.color || COLORS[i % COLORS.length]
@@ -121,38 +123,34 @@ function barChart ([sizeX, sizeY], data, widgetId) {
         h('path', {
           key: 'valuelabelpath' + i,
           id: `path_value_${widgetId}_${i}`,
-          d: [
-            `M ${x} ${y}`,
-            `L ${x + barWidth} ${y - valueLabelShift}`,
-          ].join(' '),
+          d: `M ${x} ${y}
+              L ${x + width} ${y - valueLabelShift}`,
         }),
         h('text', {
           key: 'value_label' + i,
           fill: color,
           stroke: color,
-          'font-size': 50,
+          fontSize: FONT_SIZE,
         },
           h('textPath', {
-            'xlink:href': `#path_value_${widgetId}_${i}`,
+            'xlinkHref': `#path_value_${widgetId}_${i}`,
           }, el.value)
         ),
 
         h('path', {
           key: 'labelpath' + i,
           id: `path_bar_${widgetId}_${i}`,
-          d: [
-            `M ${x} ${BOTTOM_BAR_LINE_Y(height) + 50 + barLabelShift}`,
-            `L ${x + barWidth} ${BOTTOM_BAR_LINE_Y(height) + 50}`,
-          ].join(' '),
+          d: `M ${x} ${BOTTOM_BAR_LINE_Y(height) + 50 + barLabelShift}
+              L ${x + width} ${BOTTOM_BAR_LINE_Y(height) + 50}`,
         }),
         h('text', {
           key: 'label' + i,
           fill: color,
           stroke: color,
-          'font-size': 50,
+          fontSize: FONT_SIZE,
         },
           h('textPath', {
-            'xlink:href': `#path_bar_${widgetId}_${i}`,
+            'xlinkHref': `#path_bar_${widgetId}_${i}`,
           }, el.text)
         ),
       ]
@@ -162,8 +160,8 @@ function barChart ([sizeX, sizeY], data, widgetId) {
 }
 
 function lineChart ([sizeX, sizeY], data, widgetId) {
-  const width = sizeX * 160 * 2
-  const height = sizeY * 90 * 2
+  const width = sizeX * 100
+  const height = sizeY * 100
 
   let {values, baseValues, sortBy} = data || {}
   baseValues = baseValues || {}
@@ -212,7 +210,7 @@ function lineChart ([sizeX, sizeY], data, widgetId) {
     return {el, x, y}
   })
 
-  return h(SVG, {
+  return h('svg', {
     xmlns: 'http://www.w3.org/2000/svg',
     'xmlns:xlink': 'http://www.w3.org/1999/xlink',
     width: '100%',
@@ -226,13 +224,13 @@ function lineChart ([sizeX, sizeY], data, widgetId) {
       x2: RIGHT_BAR_LINE_X(width),
       y1: lineY + 3,
       y2: lineY + 3,
-      'stroke-width': 6,
+      strokeWidth: 6,
     }),
     ..._.map(data.lines, ({x, y}, i) => {
       let lineProps = {
         key: 'extraline_' + x + '_' + y,
         stroke: '#555',
-        'stroke-width': 6,
+        strokeWidth: 6,
       }
 
       if (y !== undefined) {
@@ -246,7 +244,7 @@ function lineChart ([sizeX, sizeY], data, widgetId) {
     h('path', {
       stroke: 'white',
       fill: 'none',
-      'stroke-width': 6,
+      strokeWidth: 6,
       d: _.map(pathPoints, ({x, y}, i) => {
         if (i === 0) {
           return `M ${x} ${y}`
@@ -265,7 +263,7 @@ function lineChart ([sizeX, sizeY], data, widgetId) {
           ry: getTextWidth('+'),
           fill: 'black',
           stroke: color,
-          'stroke-width': 6,
+          strokeWidth: 6,
         }),
         h('text', {
           key: 'value_label_' + i,
@@ -273,7 +271,7 @@ function lineChart ([sizeX, sizeY], data, widgetId) {
           y: y + 18,
           fill: color,
           stroke: color,
-          'font-size': 50,
+          fontSize: FONT_SIZE,
         }, el.value),
       ]
     }),
@@ -286,7 +284,8 @@ export default class Graph extends Component {
     return !_.isEqual(nextProps, this.props)
   }
 
-  render ({data = {}, widgetId, container}) {
+  render () {
+    const {data = {}, widgetId, container} = this.props
     if (data && data.limit && data.values) { data.values.splice(data.limit) }
 
     if (!data.values) { return h('div') }

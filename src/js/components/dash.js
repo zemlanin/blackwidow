@@ -1,5 +1,7 @@
-import { h, Component } from 'preact'
 import _ from 'lodash'
+import React from 'react'
+const Component = React.Component
+const h = React.createElement
 
 import Text from './widgets/text'
 import wImage from './widgets/image'
@@ -9,7 +11,8 @@ import wGraph from './widgets/graph'
 import style from 'css/base.css'
 
 export default class Dash extends Component {
-  render ({ container = {}, widgets = [] }) {
+  render () {
+    const { container = {}, widgets = [] } = this.props
     const [viewportX, viewportY] = (container || {}).size || [10, 10]
 
     return h('div',
@@ -42,7 +45,7 @@ export default class Dash extends Component {
         return h('div', {
           key: widgetId,
           'data-widget-data': process.env.NODE_ENV !== 'production' ? JSON.stringify(widget.data) : null,
-          class: style.widget,
+          className: style.widget,
           style: {
             left: (100 * container.position[0] / viewportX) + '%',
             top: (100 * container.position[1] / viewportY) + '%',
