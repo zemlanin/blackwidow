@@ -1,11 +1,10 @@
 import _ from 'lodash'
 import React from 'react'
-const Component = React.Component
 const h = React.createElement
 
 import { border, note } from 'css/widgets/text'
 
-export default class Text extends Component {
+export default class Text extends React.Component {
   shouldComponentUpdate (nextProps) {
     return !_.isEqual(nextProps, this.props)
   }

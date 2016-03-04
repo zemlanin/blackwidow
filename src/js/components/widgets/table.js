@@ -1,9 +1,8 @@
 import _ from 'lodash'
 import React from 'react'
-const Component = React.Component
 const h = React.createElement
 
-export default class Table extends Component {
+export default class Table extends React.Component {
   shouldComponentUpdate (nextProps) {
     return !_.isEqual(nextProps, this.props)
   }

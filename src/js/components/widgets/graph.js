@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import React from 'react'
-const Component = React.Component
 const h = React.createElement
 
 const TOP_BAR_LINE_Y = (height) => height * 0.15
@@ -278,7 +277,7 @@ function lineChart ([sizeX, sizeY], data, widgetId) {
   )
 }
 
-export default class Graph extends Component {
+export default class Graph extends React.Component {
   shouldComponentUpdate (nextProps) {
     return !_.isEqual(nextProps, this.props)
   }

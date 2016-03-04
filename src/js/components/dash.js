@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import React from 'react'
-const Component = React.Component
 const h = React.createElement
 
 import Text from './widgets/text'
@@ -10,7 +9,7 @@ import wGraph from './widgets/graph'
 
 import style from 'css/base.css'
 
-export default class Dash extends Component {
+export default class Dash extends React.Component {
   render () {
     const { container = {}, widgets = [] } = this.props
     const [viewportX, viewportY] = (container || {}).size || [10, 10]

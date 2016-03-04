@@ -1,11 +1,10 @@
 import _ from 'lodash'
 import React from 'react'
-const Component = React.Component
 const h = React.createElement
 
 import { imageHolder, note } from 'css/widgets/image'
 
-export default class Image extends Component {
+export default class Image extends React.Component {
   shouldComponentUpdate (nextProps) {
     return !_.isEqual(nextProps, this.props)
   }

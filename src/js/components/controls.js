@@ -1,13 +1,12 @@
 import _ from 'lodash'
 import c from 'classnames'
 import React from 'react'
-const Component = React.Component
 const h = React.createElement
 import * as config from 'config'
 
 import * as css from 'css/controls'
 
-class githubUser extends Component {
+class githubUser extends React.Component {
   render ({auth: {github}, controls: {send}}) {
     if (!github.user) { return h('div') }
 
@@ -19,7 +18,7 @@ class githubUser extends Component {
   }
 }
 
-export default class Controls extends Component {
+export default class Controls extends React.Component {
   render () {
     const {controls: {opened, send}, endpoints, auth, dash} = this.props
     return h(
