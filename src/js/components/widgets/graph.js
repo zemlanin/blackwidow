@@ -85,7 +85,6 @@ function barChart ([sizeX, sizeY], data, widgetId) {
       y1: lineY + 3,
       y2: lineY + 3,
       strokeWidth: 6,
-      version: '1.1',
     }),
     ..._.map(values, (el, i) => {
       const color = el.color || data.color || COLORS[i % COLORS.length]
@@ -216,7 +215,7 @@ function lineChart ([sizeX, sizeY], data, widgetId) {
     width: '100%',
     height: '100%',
     viewBox: `0 0 ${width} ${height}`,
-  // preserveAspectRatio: "xMidYMid",
+    preserveAspectRatio: 'xMidYMid',
   },
     h('line', {
       stroke: '#555',
