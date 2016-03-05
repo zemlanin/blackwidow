@@ -7,7 +7,9 @@ import * as config from 'config'
 import * as css from 'css/controls'
 
 class githubUser extends React.Component {
-  render ({auth: {github}, controls: {send}}) {
+  render () {
+    const {auth: {github}, controls: {send}} = this.props
+
     if (!github.user) { return h('div') }
 
     return h('div', {},
@@ -28,18 +30,18 @@ export default class Controls extends React.Component {
       h('br'),
       _(endpoints)
         .pickBy('error')
-        .map(({url, error}) => `${url}: ${error}`)
+        .map(({url, error}, i) => h('div', {key: i}, `${url}: ${error}`))
         .value(),
       _(dash.widgets)
         .pickBy('error')
-        .map('error')
+        .map(({error}, i) => h('div', {key: i}, error))
         .value(),
       _(endpoints)
         .pickBy('ws')
         .map('ws')
         .uniqBy('url')
-        .map((ws) => {
-          return h('div', {className: c(css.ws, {[css.connected]: ws.connected})}, ws.url)
+        .map((ws, i) => {
+          return h('div', {key: i, className: c(css.ws, {[css.connected]: ws.connected})}, ws.url)
         })
         .value(),
       config.github ? h('div', {className: css.content},

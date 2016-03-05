@@ -9,7 +9,9 @@ export default class Image extends React.Component {
     return !_.isEqual(nextProps, this.props)
   }
 
-  render ({ data = {}, container = {} }) {
+  render () {
+    const { data = {}, container = {} } = this.props
+
     return h('div', {
       className: imageHolder,
       style: {

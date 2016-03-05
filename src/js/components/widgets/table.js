@@ -7,7 +7,9 @@ export default class Table extends React.Component {
     return !_.isEqual(nextProps, this.props)
   }
 
-  render ({data = {}}) {
+  render () {
+    const {data = {}} = this.props
+
     return h('table', {
       id: data.id,
     },

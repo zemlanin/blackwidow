@@ -9,7 +9,9 @@ export default class Text extends React.Component {
     return !_.isEqual(nextProps, this.props)
   }
 
-  render ({ data = {}, container = {} }) {
+  render () {
+    const { data = {}, container = {} } = this.props
+
     var fontSize = container.fontSize || '3em'
     if (data.text && !container.fontSize) {
       if (data.text.length > 100) {
