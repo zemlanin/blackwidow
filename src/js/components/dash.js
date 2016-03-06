@@ -10,6 +10,10 @@ import wGraph from './widgets/graph'
 import style from 'css/base.css'
 
 export default class Dash extends React.Component {
+  componentDidMount () {
+    this.forceUpdate()
+  }
+
   render () {
     const { container = {}, widgets = [] } = this.props
     const [viewportX, viewportY] = (container || {}).size || [10, 10]
@@ -20,10 +24,18 @@ export default class Dash extends React.Component {
       },
       _.map(widgets, (widget, widgetId) => {
         const {container} = widget
-        var component
+        let component
+        let pixelSize
 
         if (container === void 0) {
           return ''
+        }
+
+        if (this.refs[widgetId]) {
+          pixelSize = [
+            this.refs[widgetId].offsetWidth,
+            this.refs[widgetId].offsetHeight,
+          ]
         }
 
         switch (widget.type) {
@@ -43,6 +55,7 @@ export default class Dash extends React.Component {
 
         return h('div', {
           key: widgetId,
+          ref: widgetId,
           'data-widget-data': process.env.NODE_ENV !== 'production' ? JSON.stringify(widget.data) : null,
           className: style.widget,
           style: {
@@ -53,7 +66,11 @@ export default class Dash extends React.Component {
             outline: process.env.NODE_ENV !== 'production' ? `1px solid ${container.debug || 'white'}` : '',
           },
         },
-          h(component, {data: widget.data, container, widgetId})
+          h(component, {
+            data: widget.data,
+            container: _.assign({pixelSize}, container),
+            widgetId,
+          })
         )
       })
     )

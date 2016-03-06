@@ -1,0 +1,6 @@
+:local(.graph) .tick {
+  color: white;
+  fill: white;
+  stroke: white;
+  font-size: 20px;
+}
