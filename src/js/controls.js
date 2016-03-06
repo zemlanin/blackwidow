@@ -65,6 +65,7 @@ export const init = (node, freezer) => {
     .flatMapLatest(() => Rx.Observable.of(true).delay(1000).startWith(false))
     .startWith(true)
     .filter(() => !freezer.get().controls.opened)
+    .merge(controlsToggles$.map(() => !freezer.get().controls.opened))
 
   hideCursor$.subscribe((hidden) => send({action: 'hideCursor', data: hidden}))
 }
