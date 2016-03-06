@@ -7,18 +7,25 @@
   margin: 0 5vw 0;
   box-shadow: 0 0 20px -5px black;
   border-radius: 2px 2px 0 0;
-  padding: 0.5em;
-
-  min-height: 50vh;
-  margin-top: 100vh;
-  transition: margin-top 0.4s;
-
+  padding: 0;
   z-index: 100;
+
+  min-height: 0vh;
+  margin-top: 48vh;
+  transform: translateY(52vh);
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition: transform 0.4s, opacity 0s 0.5s, min-height 0s 0.5s, padding 0s 0.5s;
 }
 
 :local(.wrapper.opened) {
-  margin-top: 48vh;
-  transition: margin-top 0.5s 0.2s;
+  transform: translateY(0);
+  opacity: 1;
+  padding: 0.5em;
+  overflow: auto;
+  min-height: 50vh;
+  transition: transform 0.5s 0.2s, opacity 0s 0s, min-height 0s 0s, padding 0s 0s;
 }
 
 :local(.content) {
