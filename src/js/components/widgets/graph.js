@@ -18,6 +18,7 @@ import css from 'css/widgets/graph.css'
 const rd3BarChart = ([width, height], data, widgetId) => {
   return h(rd3.BarChart, {
     className: css.graph,
+    hoverAnimation: false,
     data: [
       {values: data.values.map(({value}, i) => ({x: i, y: value}))},
     ],
@@ -36,6 +37,7 @@ const rd3BarChart = ([width, height], data, widgetId) => {
 const rd3LineChart = ([width, height], data, widgetId) => {
   return h(rd3.LineChart, {
     className: css.graph,
+    hoverAnimation: false,
     data: [
       {values: data.values.map(({value}, i) => ({x: i, y: value, text: value}))},
     ],

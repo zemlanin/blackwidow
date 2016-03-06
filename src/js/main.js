@@ -1,4 +1,6 @@
 import Rx from 'rx'
+import 'rx-dom-concurrency'
+
 import _ from 'lodash'
 import React from 'react'
 import {render} from 'react-dom'
@@ -45,6 +47,11 @@ getDash()
 
 Rx.Observable.fromEvent(freezer, 'update')
   .pluck('dash')
+  .combineLatest(
+    Rx.Observable.fromEvent(window, 'resize').startWith(null),
+    _.identity
+  )
+  .subscribeOn(Rx.Scheduler.requestAnimationFrame)
   .subscribe((dashData) => render(
     h(Dash, dashData),
     document.getElementById('dash')

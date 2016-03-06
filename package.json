@@ -15,6 +15,7 @@
     "react-d3": "^0.4.0",
     "react-dom": "^0.14.7",
     "rx": "^4.0.7",
+    "rx-dom-concurrency": "^7.0.3",
     "url-parse": "^1.0.5",
     "whatwg-fetch": "^0.11.0"
   },
