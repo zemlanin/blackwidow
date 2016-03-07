@@ -30,6 +30,14 @@ const updates = {
 
     return [freezer.pivot().auth.remove('github')]
   },
+
+  selectWidget: ({data}, freezer) => {
+    return [freezer.pivot().controls.set('path', ['widgets', 'view', data])]
+  },
+
+  addWidget: ({data}, freezer) => {
+    return [freezer.pivot().controls.set('path', ['widgets', 'add'])]
+  },
 }
 
 const update = (msg, state) => msg ? updates[msg.action](msg, state) : [state]

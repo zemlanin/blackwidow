@@ -25,6 +25,7 @@ const freezer = new Freezer({
   dash: {},
   controls: {
     opened: false,
+    path: ['widgets'],
   },
   auth: {},
 })
