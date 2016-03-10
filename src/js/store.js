@@ -34,14 +34,16 @@ function dashErrorCallback (err) {
 
 const GIST_PARAM_REGEX = /[?&]gist=([0-9a-f]{20}\/?[a-z0-9\.\-\_]*)/i
 
+const isHashLoadable = () => location.hash && location.hash.match(/^#(https?|file):/)
+
 export function getDash () {
-  if (location.hash && location.hash.match(/^#(https?|file):/)) {
-    if (location.hash.match(/^#(https?|file):/)) {
-      const url = location.hash.replace(/^#/, '')
-      return getAjaxStream(url)
-        .map((dash) => ({dash}))
-        .catch(dashErrorCallback)
-    }
+  window.addEventListener('hashchange', () => isHashLoadable() ? window.location.reload() : null)
+
+  if (isHashLoadable()) {
+    const url = location.hash.replace(/^#/, '')
+    return getAjaxStream(url)
+      .map((dash) => ({dash}))
+      .catch(dashErrorCallback)
   }
 
   if (location.search.match(GIST_PARAM_REGEX)) {
