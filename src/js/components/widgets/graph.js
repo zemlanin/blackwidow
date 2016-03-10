@@ -6,22 +6,21 @@ import rd3 from 'react-d3'
 
 import css from 'css/widgets/graph.css'
 
-// const COLORS = [
-//   '#00A500',
-//   '#0FF',
-//   '#F0F',
-//   '#FF0',
-//   '#F00',
-//   '#00F',
-// ]
+const COLORS = [
+  '#00A500',
+  '#0FF',
+  '#F0F',
+  '#FF0',
+  '#F00',
+  '#00F',
+]
 
 const rd3BarChart = ([width, height], data, widgetId) => {
   return h(rd3.BarChart, {
     className: css.graph,
     hoverAnimation: false,
-    data: [
-      {values: data.values.map(({value}, i) => ({x: i, y: value}))},
-    ],
+    gridHorizontal: true,
+    data: data.series,
     width,
     height,
     viewBoxObject: {
@@ -38,9 +37,10 @@ const rd3LineChart = ([width, height], data, widgetId) => {
   return h(rd3.LineChart, {
     className: css.graph,
     hoverAnimation: false,
-    data: [
-      {values: data.values.map(({value}, i) => ({x: i, y: value, text: value}))},
-    ],
+    gridHorizontal: true,
+    legend: _.some(data.series, (s) => s.name),
+    data: data.series,
+    colors: (i) => data.series[i].color || COLORS[i % COLORS.length],
     width,
     height,
     viewBoxObject: {
@@ -60,27 +60,28 @@ export default class Graph extends React.Component {
 
   render () {
     const {data = {}, widgetId, container} = this.props
-    if (data && data.limit && data.values) { data.values.splice(data.limit) }
 
-    if (!data.values || !container.pixelSize) { return h('div') }
+    let series = _.cloneDeep(data.series)
+    let values = _.cloneDeep(data.values)
 
-    const {values, sortBy} = data
-    let parsedValues = _.map(values, (v) => v.value ? v : {value: v})
+    if ((!values && !series) || !container.pixelSize) { return h('div') }
+    if (values && !series) { series = [{values}] }
 
-    if (sortBy) {
-      parsedValues = _.orderBy(
-        parsedValues,
-        [sortBy.replace(/^-/, '')],
-        [!sortBy.startsWith('-')]
+    series = series.map((s, seriesIdx) => {
+      s.strokeWidth = data.strokeWidth || 5
+      s.values = s.values.map(
+        (v, i) => _.isNumber(v) ? {x: i, y: v} : _.defaults(v, {x: i})
       )
-    }
 
-    switch (data && data.style) {
+      return s
+    })
+
+    switch (data.style) {
       case 'line-chart':
-        return rd3LineChart(container.pixelSize, _.merge({}, data, {values: parsedValues}), widgetId)
+        return rd3LineChart(container.pixelSize, {series}, widgetId)
       case 'bar-chart':
       default:
-        return rd3BarChart(container.pixelSize, _.merge({}, data, {values: parsedValues}), widgetId)
+        return rd3BarChart(container.pixelSize, {series}, widgetId)
     }
   }
 }

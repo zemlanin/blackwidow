@@ -9,7 +9,7 @@
     "angular-expressions": "^0.3.0",
     "classnames": "^2.2.3",
     "freezer-js": "^0.9.6",
-    "lodash": "^4.0.1",
+    "lodash": "^4.6.1",
     "object-hash": "^1.1.0",
     "react": "^0.14.7",
     "react-d3": "^0.4.0",
