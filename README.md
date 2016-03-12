@@ -43,6 +43,8 @@ Dashboard is a table (10×10 by default) described by JSON object:
 }
 ```
 
+:warning: Any undocumented attributes are prone to changes. A lot of changes :warning:
+
 * `Object.<string, Object>` **dashboard**: full dashboard
 * `DashContainer` **dashboard.container**: dashboard container object
     * `number[]` **DashContainer.size**: dashboard size in [x, y] format (`[10, 10]` by default)
@@ -85,7 +87,6 @@ Dashboard is a table (10×10 by default) described by JSON object:
         * `string?` **WidgetData.note**: text if lower right corner of a widget. its fontSize is equal half of `Container.fontSize`
         * `string?` **WidgetData.text**: text for `Widget.type = "text"`
         * `string?` **WidgetData.src**: image url for `Widget.type = "image"`
-        * `Object[]?|number[]?` **WidgetData.values**: values for `Widget.type = "graph"`
     * `Endpoint` **Widget.endpoint**: widget's HTTP(S) endpoint object
         * `string` **Endpoint.url**: url with WidgetData
         * `string?` **Endpoint.method**: HTTP method for WidgetData requests. `"GET"` by default
