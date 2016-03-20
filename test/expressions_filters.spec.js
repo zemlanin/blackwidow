@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { filters } from '../src/js/expressions_filters'
+import { filters } from 'js/expressions_filters'
 
 describe('./expressions_filters', function () {
   describe('get', function () {

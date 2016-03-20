@@ -59,4 +59,4 @@ deploy:
 
 .PHONY: test
 test:
-	$(mocha) --compilers js:babel-register
+	NODE_PATH=$(src) $(mocha) --compilers js:babel-register --recursive --require ignore-styles

@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { endpointMapper } from '../src/js/endpoints'
+import { endpointMapper } from 'js/endpoints'
 
 describe('./endpoints', function () {
   describe('endpointMapper', function () {
