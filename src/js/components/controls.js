@@ -5,6 +5,7 @@ const h = React.createElement
 import * as config from 'config'
 
 import widgetsControls from './widgets_controls'
+import dashboardsControls from './dashboards_controls'
 
 import * as css from 'css/controls'
 
@@ -29,6 +30,8 @@ export default class Controls extends React.Component {
 
     if (path[0] === 'widgets') {
       route = widgetsControls
+    } else if (path[0] === 'dashboards') {
+      route = dashboardsControls
     }
 
     return h(

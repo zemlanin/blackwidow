@@ -38,6 +38,21 @@ const updates = {
   addWidget: ({data}, freezer) => {
     return [freezer.pivot().controls.set('path', ['widgets', 'add'])]
   },
+
+  showDashboards: ({data}, freezer) => {
+    return [
+      freezer.pivot().controls.set('path', ['dashboards']),
+      () => Rx.Observable.of({action: 'controlsToggle'}),
+      () => Rx.Observable.of({action: 'hideCursor'}),
+    ]
+  },
+
+  selectDash: ({data}, freezer) => {
+    return [
+      freezer.pivot().controls.set('path', ['widgets']),
+      () => Rx.Observable.of({action: 'controlsToggle'}),
+    ]
+  },
 }
 
 const update = (msg, state) => msg ? updates[msg.action](msg, state) : [state]
@@ -54,7 +69,7 @@ export const init = (node, freezer) => {
 
   window.event$
     .map((msg) => update(msg, freezer.get()))
-    .do(([state, effect]) => effect ? effect(freezer).subscribe(send) : null)
+    .do(([state, ...effects]) => effects.map((effect) => effect(freezer).subscribe(send)))
     .map(_.head)
     .merge(Rx.Observable.fromEvent(freezer, 'update'))
     .subscribe((state) => render(

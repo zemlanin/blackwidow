@@ -34,11 +34,9 @@ function dashErrorCallback (err) {
 
 const GIST_PARAM_REGEX = /[?&]gist=([0-9a-f]{20}\/?[a-z0-9\.\-\_]*)/i
 
-const isHashLoadable = () => location.hash && location.hash.match(/^#(https?|file):/)
+const isHashLoadable = () => location.hash && location.hash.match(/^#(https?:|file:|\/)/)
 
 export function getDash () {
-  window.addEventListener('hashchange', () => isHashLoadable() ? window.location.reload() : null)
-
   if (isHashLoadable()) {
     const url = location.hash.replace(/^#/, '')
     return getAjaxStream(url)
@@ -55,7 +53,12 @@ export function getDash () {
       .catch(dashErrorCallback)
   }
 
-  return getAjaxStream('./examples/mockDashes.json')
-    .map((dash) => ({dash}))
-    .catch(dashErrorCallback)
+  window.event$.onNext({action: 'showDashboards'})
+
+  return window.event$
+    .filter((msg) => msg.action === 'selectDash')
+    .do((msg) => window.history.replaceState({}, '', msg.data))
+    .take(1)
+    .flatMap(getDash)
+    .take(1)
 }

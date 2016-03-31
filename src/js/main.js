@@ -34,6 +34,8 @@ window.event$ = new Rx.Subject()
 
 github.init(freezer)
 
+controls.init(document.getElementById('controls'), freezer)
+
 getDash()
   .flatMap(loadExternalWidgets)
   .map(copyLocalWidgets)
@@ -57,8 +59,6 @@ Rx.Observable.fromEvent(freezer, 'update')
     h(Dash, dashData),
     document.getElementById('dash')
   ))
-
-controls.init(document.getElementById('controls'), freezer)
 
 const endpoints = diffFrom(freezer, ['endpoints'], 'schedule.timeInterval')
 const locals = diffFrom(freezer, ['dash', 'widgets'], 'local.schedule.timeInterval')
