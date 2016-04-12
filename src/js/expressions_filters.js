@@ -23,6 +23,8 @@ function toUnits (seconds, units) {
 let filters = {}
 
 filters.get = (v, key) => _.get(v, key)
+filters.head = (v) => _.head(v)
+filters.last = (v) => _.last(v)
 filters.map = (vs, structure) => vs.map((v) => endpointMapper(v, {}, structure))
 filters.format = (v, tmpl) => tmpl.replace(/{(\d*)}/ig, (match, p1) => p1 ? v[parseInt(p1, 10)] : v)
 filters.match = (v, regex, flags) => v.match(new RegExp(regex, flags))
@@ -31,6 +33,8 @@ filters.timeSince = (v, units) => toUnits((Date.now() - new Date(v).getTime()) /
 filters.juxt = (v, ...structures) => structures.map((structure) => endpointMapper(v, {}, structure))
 filters['+'] = (v, b) => b + v
 filters['-'] = (v, b) => b - v
+filters['*'] = (v, b) => b * v
+filters['/'] = (v, b) => b / v
 
 _.assign(expressions.filters, filters)
 
