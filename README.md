@@ -137,7 +137,9 @@ Endpoint Expressions are evaluated via [angular-expressions](https://github.com/
 }
 ```
 
-A few filters are available for manipulating response before rendering:
+#### [Expression Filters](src/js/expressions_filters.js#L23)
+
+A few filters are available for manipulating response before rendering. Some of them are:
 * `format:[template]` formats `template` with basic Python-like syntax
 
   ```js
