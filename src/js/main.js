@@ -160,9 +160,16 @@ Rx.Observable.merge(endpointWidgetUpdates, localWidgetUpdates)
     ({widgetId, update, mapping}) => {
       const widget = freezer.get().dash.widgets[widgetId]
 
-      widget.set('data', endpointMapper(
-        update, widget.data && widget.data.toJS(), mapping
-      ))
+      try {
+        widget.set('data', endpointMapper(
+          update, widget.data && widget.data.toJS(), mapping
+        ))
+      } catch (e) {
+        widget.set('error', e.message)
+
+        e.message = `error with widget "${widgetId}": ${e.message}`
+        console.error(e)
+      }
     },
     (error) => console.error(error),
     (v) => console.log('completed')
