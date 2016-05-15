@@ -2,6 +2,8 @@ import _ from 'lodash'
 import React from 'react'
 const h = React.createElement
 
+import wError from './internal_widgets/error'
+
 import Text from './widgets/text'
 import wImage from './widgets/image'
 import wTable from './widgets/table'
@@ -27,6 +29,7 @@ export default class Dash extends React.Component {
         const {container} = widget
         let component
         let pixelSize
+        let outline
 
         if (container === void 0) {
           return ''
@@ -39,7 +42,14 @@ export default class Dash extends React.Component {
           ]
         }
 
-        switch (widget.type) {
+        if (widget.error) {
+          component = wError
+          outline = '1px solid red'
+        } else {
+          outline = process.env.NODE_ENV !== 'production' ? `1px solid ${container.debug || 'white'}` : ''
+        }
+
+        switch (!component && widget.type) {
           case 'text':
             component = Text
             break
@@ -67,11 +77,12 @@ export default class Dash extends React.Component {
             top: (100 * container.position[1] / viewportY) + '%',
             width: (100 * container.size[0] / viewportX) + '%',
             height: (100 * container.size[1] / viewportY) + '%',
-            outline: process.env.NODE_ENV !== 'production' ? `1px solid ${container.debug || 'white'}` : '',
+            outline: outline,
           },
         },
           h(component, {
             data: widget.data,
+            error: widget.error,
             container: _.assign({pixelSize}, container),
             widgetId,
           })

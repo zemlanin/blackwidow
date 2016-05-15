@@ -43,7 +43,7 @@ export default class Controls extends React.Component {
         .value(),
       _(dash.widgets)
         .pickBy('error')
-        .map(({error}, i) => h('div', {key: i}, h('b', {style: {color: 'red'}}, `${i}: `), error))
+        .map(({error}, i) => h('div', {key: i}, h('b', {style: {color: 'red'}}, `${i}: `), JSON.stringify(error)))
         .value(),
       _(endpoints)
         .pickBy('ws')
