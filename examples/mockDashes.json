@@ -45,27 +45,6 @@
         "note": "gif"
       }
     },
-    "flagBigl": {
-      "type": "image",
-      "container": {
-        "position": [9, 2],
-        "size": [1, 1]
-      },
-      "data": {"src": "http://static-cache.ua.uaprom.net/bigl/favicons/android-chrome-192x192.png"}
-    },
-    "productionBigl": {
-      "src": {"copy": "productionUA"},
-      "container": {
-        "position": [10, 2],
-        "size": [6, 1],
-        "fontSize": "6em"
-      },
-      "endpoint": {
-        "map": {
-          "text": {"_project": "buprom"}
-        }
-      }
-    },
     "flagUA": {
       "type": "image",
       "container": {
