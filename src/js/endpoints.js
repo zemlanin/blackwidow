@@ -5,6 +5,7 @@ import expressions from 'angular-expressions'
 
 import './expressions_filters'
 import { getAjaxStream, getGistStream, findJSONFile, findNamedFile } from './store'
+import { getBasicAuthHeader } from './auth'
 
 export const extractEndpoints = ({dash}) => {
   let endpoints = []
@@ -16,20 +17,33 @@ export const extractEndpoints = ({dash}) => {
           widget.endpoint.body = JSON.stringify(widget.endpoint.body)
         }
 
-        const extractedEndpoint = _.pick(widget.endpoint, ['url', 'method', 'body', 'plain', 'headers', 'schedule'])
-        const endpointHash = hash.MD5(_.pick(widget.endpoint, ['url', 'method', 'body', 'plain', 'headers']))
+        const extractedEndpoint = _.pick(widget.endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth', 'schedule'])
+        const endpointHash = hash.MD5(_.pick(widget.endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth']))
 
         widget.endpoint._ref = endpointHash
         widget.endpoint = _.omit(widget.endpoint, _.keys(extractedEndpoint))
 
-        if (extractedEndpoint.headers) {
-          let headers = new Headers()
+        let headers = new Headers()
 
+        if (extractedEndpoint.headers) {
           for (const key in extractedEndpoint.headers) {
             headers.set(key, extractedEndpoint.headers[key])
           }
+        }
 
-          extractedEndpoint.headers = headers
+        extractedEndpoint.headers = headers
+
+        if (extractedEndpoint.auth && extractedEndpoint.auth.service) {
+          const authHeader = getBasicAuthHeader(extractedEndpoint.auth.service)
+
+          if (authHeader) {
+            extractedEndpoint.headers.set('Authorization', authHeader)
+          } else {
+            widget.error = {
+              basicAuthFailed: true,
+              service: extractedEndpoint.auth.service,
+            }
+          }
         }
 
         endpoints[endpointHash] = extractedEndpoint

@@ -14,6 +14,9 @@ export default class Error extends React.Component {
 
     if (_.isString(error)) {
       message = error
+    } else if (error.basicAuthFailed) {
+      message = 'Authorization required'
+      // controlsPath = ['auth', error.service]
     } else {
       message = JSON.stringify(error)
     }

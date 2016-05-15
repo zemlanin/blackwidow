@@ -2,11 +2,13 @@ import _ from 'lodash'
 import Rx from 'rx'
 import parse from 'url-parse'
 
+import { getTokenAuthHeader, setTokenAuthHeader } from './auth'
+
 const BASE_API_URL = 'https://api.github.com'
 const resourceETags = {}
 
 export const api = (path) => {
-  const token = localStorage.getItem('github:token')
+  const token = getTokenAuthHeader('github')
   let headers = new Headers()
 
   if (token) {
@@ -35,18 +37,18 @@ export const api = (path) => {
 export function init (freezer) {
   const parsedLocation = parse(location.href, true)
   const justAuthed = !!parsedLocation.query.access_token
-  let accessToken = localStorage.getItem('github:token')
+  let accessToken = getTokenAuthHeader('github')
 
   if (justAuthed) {
     accessToken = parsedLocation.query.access_token
-    localStorage.setItem('github:token', accessToken)
+    setTokenAuthHeader('github', accessToken)
 
     parsedLocation.set('query', _.omit(parsedLocation.query, ['access_token', 'scope', 'token_type']))
     history.replaceState(history.state, '', parsedLocation.href)
   }
 
   if (accessToken) {
-    freezer.get().auth.set('github', {accessToken})
+    freezer.get().auth.set('github', {})
 
     api('/user')
       .subscribe((user) => {
