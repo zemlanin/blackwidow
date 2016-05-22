@@ -10,21 +10,21 @@ class addWidget extends React.Component {
 
 class viewWidget extends React.Component {
   render () {
-    const {controls: {path}, dash} = this.props
+    const {path: [widgetId], dash} = this.props
 
-    return h('span', {}, JSON.stringify(dash.widgets[path[2]]))
+    return h('span', {}, JSON.stringify(dash.widgets[widgetId]))
   }
 }
 
 export default class widgetsControls extends React.Component {
   render () {
-    const {controls: {send, path}, dash} = this.props
+    const {path: [pathHead, ...pathTail], send, dash} = this.props
 
     let route
 
-    if (path[1] === 'add') {
+    if (pathHead === 'add') {
       route = addWidget
-    } else if (path[1] === 'view' && path[2]) {
+    } else if (pathHead === 'view' && pathTail.length) {
       route = viewWidget
     }
 
@@ -34,7 +34,7 @@ export default class widgetsControls extends React.Component {
         .map((widget, widgetId) => h('li', {key: 'w/' + widgetId}, h('a', {onClick: send.bind(null, {action: 'selectWidget', data: widgetId})}, widgetId)))
         // .concat(h('li', {key: 'add'}, h('a', {onClick: send.bind(null, {action: 'addWidget'})}, '+')))
         .value(),
-      route ? h(route, this.props) : null
+      route ? h(route, {dash, path: pathTail}) : null
     )
   }
 }

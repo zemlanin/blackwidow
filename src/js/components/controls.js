@@ -11,7 +11,7 @@ import * as css from 'css/controls'
 
 class githubUser extends React.Component {
   render () {
-    const {auth: {github}, controls: {send}} = this.props
+    const {github, send} = this.props
 
     if (!github.user) { return h('div') }
 
@@ -24,13 +24,13 @@ class githubUser extends React.Component {
 
 export default class Controls extends React.Component {
   render () {
-    const {controls: {opened, path}, endpoints, auth, dash} = this.props
+    const {controls: {opened, path: [pathHead, ...pathTail], send}, endpoints, auth, dash} = this.props
 
     let route
 
-    if (path[0] === 'widgets') {
+    if (pathHead === 'widgets') {
       route = widgetsControls
-    } else if (path[0] === 'dashboards') {
+    } else if (pathHead === 'dashboards') {
       route = dashboardsControls
     }
 
@@ -55,11 +55,11 @@ export default class Controls extends React.Component {
         .value(),
       config.github ? h('div', {className: css.content},
         auth.github
-          ? h(githubUser, this.props)
+          ? h(githubUser, {send, github: auth.github})
           : h('a', {href: `https://github.com/login/oauth/authorize?scope=gist&client_id=${config.github}`}, 'github auth')
       ) : '',
       h('hr'),
-      route ? h(route, this.props) : null
+      route ? h(route, {path: pathTail, send, dash}) : null
     )
   }
 }
