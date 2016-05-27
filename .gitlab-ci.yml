@@ -10,7 +10,7 @@ dist:
   only: [master]
   script:
   - vagga dist
-  - gitlab-publish dist blackwidow
+  - gitlab-publish dist bwd
 
 cleanup:
   stage: cleanup

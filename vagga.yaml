@@ -2,7 +2,10 @@ containers:
   dist:
     setup:
     - !Alpine v3.3
-    - !Install [alpine-base, make]
+    - !Install
+      - alpine-base
+      - make
+      - bash
     - !Depends package.json
     - !NpmDependencies
     environ:
@@ -13,7 +16,7 @@ commands:
   dist: !Command
     description: Build dist
     container: dist
-    run: [make, clean_dist, build]
+    run: [make, build]
     epilog: |
       --------------------------------------
       Project is built under dist/index.html
