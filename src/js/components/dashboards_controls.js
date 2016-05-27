@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 const h = React.createElement
-import * as config from 'config'
+const BWD_EXAMPLES = process.env.BWD_EXAMPLES
 
 export default class dashboardsControls extends React.Component {
   render () {
@@ -9,7 +9,7 @@ export default class dashboardsControls extends React.Component {
 
     return h('ul',
       {},
-      _(config.examples)
+      _(BWD_EXAMPLES)
         .map((example, i) => h(
           'li',
           {key: i},

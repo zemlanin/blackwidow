@@ -2,18 +2,24 @@ var fs = require('fs')
 var path = require('path')
 var webpack = require('webpack')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
-var dependencies = require('package.json').dependencies
-var config
+var dependencies = require('./package.json').dependencies
 
-if (process.env.NODE_ENV === 'production') {
-  config = process.env.BWD_CONFIG
-} else {
-  config = process.env.BWD_CONFIG || 'config/example.js'
-}
+require('dotenv').config({
+  path: process.env.DOTENV || '.env.example',
+})
+
+var examples = fs.readdirSync(path.join(__dirname, '/dist/examples'))
+  .map((name) => ({name, url: `/#/examples/${name}`}))
 
 var plugins = [
   new webpack.DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    'process.env': {
+      NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+      GITHUB_API_KEY: JSON.stringify(process.env.GITHUB_API_KEY),
+      BWD_EXAMPLES: JSON.stringify(
+        (process.env.BWD_EXAMPLES ? JSON.parse(process.env.BWD_EXAMPLES) : []).concat(examples)
+      ),
+    },
   }),
   new webpack.optimize.CommonsChunkPlugin('core', 'js/core.js'),
   new ExtractTextPlugin('css/[name].css', {allChunks: true}),
@@ -41,7 +47,6 @@ module.exports = {
     loaders: [
       {test: /\.js$/, exclude: /node_modules/, loader: 'babel'},
       {test: /\.json$/, loader: 'json5-loader'},
-      {test: /config/, loader: 'callback?loadExamples'},
       {test: /\.css$/, loader: ExtractTextPlugin.extract(
           'style-loader',
           'css-loader?-url' + (process.env.NODE_ENV === 'production' ? ',minimize' : '')
@@ -56,22 +61,6 @@ module.exports = {
       'node_modules',
     ],
     extensions: ['.js', '.css', ''],
-    alias: {
-      config: config,
-    },
   },
   plugins: plugins,
-  callbackLoader: {
-    loadExamples: function () {
-      return JSON.stringify(
-        fs.readdirSync(path.join(__dirname, '/dist/examples'))
-          .map(function (filename) {
-            return {
-              name: filename,
-              url: '/#/examples/' + filename,
-            }
-          })
-      )
-    },
-  },
 }

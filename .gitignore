@@ -1,12 +1,10 @@
 .DS_Store
 .sublimelinterrc
+.env
+.env.dev
 CNAME
 deploy.sh
 node_modules/
 dist/
-examples/_*.json
-
-config/*
-!config/example.json
 
 *.sublime-workspace

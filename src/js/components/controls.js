@@ -2,7 +2,7 @@ import _ from 'lodash'
 import c from 'classnames'
 import React from 'react'
 const h = React.createElement
-import * as config from 'config'
+const GITHUB_API_KEY = process.env.GITHUB_API_KEY
 
 import widgetsControls from './widgets_controls'
 import dashboardsControls from './dashboards_controls'
@@ -53,10 +53,10 @@ export default class Controls extends React.Component {
           return h('div', {key: i, className: c(css.ws, {[css.connected]: ws.connected})}, ws.url)
         })
         .value(),
-      config.github ? h('div', {className: css.content},
+      GITHUB_API_KEY ? h('div', {className: css.content},
         auth.github
           ? h(githubUser, {send, github: auth.github})
-          : h('a', {href: `https://github.com/login/oauth/authorize?scope=gist&client_id=${config.github}`}, 'github auth')
+          : h('a', {href: `https://github.com/login/oauth/authorize?scope=gist&client_id=${GITHUB_API_KEY}`}, 'github auth')
       ) : '',
       h('hr'),
       route ? h(route, {path: pathTail, send, dash}) : null

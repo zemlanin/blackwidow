@@ -54,7 +54,7 @@ serve_lan:
 .PHONY: deploy
 deploy:
 	$(MAKE) clean_dist
-	NODE_ENV=production $(MAKE)
+	DOTENV=.env $(MAKE)
 	[ -x deploy.sh ] && ./deploy.sh || echo "no executable deploy.sh found"
 
 .PHONY: test
