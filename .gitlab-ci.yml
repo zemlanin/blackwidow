@@ -1,0 +1,18 @@
+stages:
+- dist
+- cleanup
+
+before_script:
+- vagga _init_storage_dir blackwidow-dist
+
+dist:
+  stage: dist
+  only: [master]
+  script:
+  - vagga dist
+  - gitlab-publish dist blackwidow
+
+cleanup:
+  stage: cleanup
+  script:
+  - vagga _clean --unused
