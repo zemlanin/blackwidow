@@ -5,7 +5,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var dependencies = require('./package.json').dependencies
 
 require('dotenv').config({
-  path: process.env.DOTENV || '.env.example',
+  path: process.env.DOTENV || '.env.example'
 })
 
 var examples = fs.readdirSync(path.join(__dirname, '/dist/examples'))
@@ -18,11 +18,11 @@ var plugins = [
       GITHUB_API_KEY: JSON.stringify(process.env.GITHUB_API_KEY),
       BWD_EXAMPLES: JSON.stringify(
         (process.env.BWD_EXAMPLES ? JSON.parse(process.env.BWD_EXAMPLES) : []).concat(examples)
-      ),
-    },
+      )
+    }
   }),
   new webpack.optimize.CommonsChunkPlugin('core', 'js/core.js'),
-  new ExtractTextPlugin('css/[name].css', {allChunks: true}),
+  new ExtractTextPlugin('css/[name].css', {allChunks: true})
 ]
 
 if (process.env.NODE_ENV === 'production') {
@@ -33,34 +33,31 @@ module.exports = {
   entry: {
     core: Object.keys(dependencies),
     cast: 'cast',
-    main: 'main',
+    main: 'main'
   },
   output: {
     path: 'dist/',
     publicPath: '',
-    filename: 'js/[name].js',
+    filename: 'js/[name].js'
   },
   module: {
-    preLoaders: [
-      // {test: /\.js$/, exclude: /node_modules/, loader: 'standard'},
-    ],
     loaders: [
       {test: /\.js$/, exclude: /node_modules/, loader: 'babel'},
       {test: /\.json$/, loader: 'json5-loader'},
       {test: /\.css$/, loader: ExtractTextPlugin.extract(
           'style-loader',
           'css-loader?-url' + (process.env.NODE_ENV === 'production' ? ',minimize' : '')
-      )},
-    ],
+      )}
+    ]
   },
   resolve: {
     modulesDirectories: [
       'src',
       'src/js',
       __dirname,
-      'node_modules',
+      'node_modules'
     ],
-    extensions: ['.js', '.css', ''],
+    extensions: ['.js', '.css', '']
   },
-  plugins: plugins,
+  plugins: plugins
 }

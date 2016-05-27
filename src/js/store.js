@@ -32,7 +32,7 @@ function dashErrorCallback (err) {
   })
 }
 
-const GIST_PARAM_REGEX = /[?&]gist=([0-9a-f]{20}\/?[a-z0-9\.\-\_]*)/i
+const GIST_PARAM_REGEX = /[?&]gist=([0-9a-f]{20}\/?[a-z0-9\.\-_]*)/i
 
 const isHashLoadable = () => location.hash && location.hash.match(/^#(https?:|file:|\/)/)
 

@@ -5,8 +5,6 @@ dashboard. works best with [quicksilver](http://github.com/zemlanin/quicksilver)
 ```bash
 npm install   # install dependencies
 make          # recompile
-make serve    # start a server at http://127.0.0.1:8000
-make deploy   # deploy via ./deploy.sh
 ```
 
 ## Demo

@@ -1,7 +1,6 @@
 SHELL := /bin/bash
 
 bin = $(shell npm bin)
-node_static = $(bin)/static
 webpack = $(bin)/webpack
 standard = $(bin)/standard
 snazzy = $(bin)/snazzy
@@ -30,8 +29,7 @@ dist_static:
 
 .PHONY: dist/js
 dist/js:
-	mkdir -p $(dir $@)
-	set -o pipefail && $(MAKE) lint && NODE_PATH=$(NODE_PATH) $(webpack)
+	NODE_PATH=$(NODE_PATH) npm run webpack
 
 .PHONY: watch
 watch:
@@ -41,18 +39,8 @@ watch:
 lint:
 	$(standard) --verbose | $(snazzy)
 
-.PHONY: serve
-serve:
-	@echo serving at http://127.0.0.1:8000
-	@$(node_static) $(dist) -p 8000 -z -c 0 -H '{"Access-Control-Allow-Origin": "*"}' > /dev/null
-
-.PHONY: serve_lan
-serve_lan:
-	@echo serving at http://helicarrier.local:8000
-	@$(node_static) $(dist) -p 8000 -a helicarrier.local -z -c 0 -H '{"Access-Control-Allow-Origin": "*"}' > /dev/null
-
 .PHONY: deploy
-deploy:
+deploy: test
 	$(MAKE) clean_dist
 	DOTENV=.env $(MAKE)
 	[ -x deploy.sh ] && ./deploy.sh || echo "no executable deploy.sh found"
