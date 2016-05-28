@@ -11,7 +11,8 @@ import * as css from 'css/controls'
 
 class githubUser extends React.Component {
   render () {
-    const {github, send} = this.props
+    const {github} = this.props
+    const {send} = this.context
 
     if (!github.user) { return h('div') }
 
@@ -22,9 +23,19 @@ class githubUser extends React.Component {
   }
 }
 
+githubUser.contextTypes = {
+  send: React.PropTypes.function
+}
+
 export default class Controls extends React.Component {
+  getChildContext () {
+    return {
+      send: this.props.controls.send
+    }
+  }
+
   render () {
-    const {controls: {opened, path: [pathHead, ...pathTail], send}, endpoints, auth, dash} = this.props
+    const {controls: {opened, path: [pathHead, ...pathTail]}, endpoints, auth, dash} = this.props
 
     let route
 
@@ -55,11 +66,15 @@ export default class Controls extends React.Component {
         .value(),
       GITHUB_API_KEY ? h('div', {className: css.content},
         auth.github
-          ? h(githubUser, {send, github: auth.github})
+          ? h(githubUser, {github: auth.github})
           : h('a', {href: `https://github.com/login/oauth/authorize?scope=gist&client_id=${GITHUB_API_KEY}`}, 'github auth')
       ) : '',
       h('hr'),
-      route ? h(route, {path: pathTail, send, dash}) : null
+      route ? h(route, {path: pathTail, dash}) : null
     )
   }
+}
+
+Controls.childContextTypes = {
+  send: React.PropTypes.func
 }

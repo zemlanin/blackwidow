@@ -5,7 +5,7 @@ const BWD_EXAMPLES = process.env.BWD_EXAMPLES
 
 export default class dashboardsControls extends React.Component {
   render () {
-    const {send} = this.props
+    const {send} = this.context
 
     return h('ul',
       {},
@@ -14,10 +14,14 @@ export default class dashboardsControls extends React.Component {
           'li',
           {key: i},
           h('a', {
-            onClick: send.bind(null, {action: 'selectDash', data: example.url}),
+            onClick: send.bind(null, {action: 'selectDash', data: example.url})
           }, example.name || example.url)
         ))
         .value()
     )
   }
+}
+
+dashboardsControls.contextTypes = {
+  send: React.PropTypes.func
 }

@@ -18,7 +18,8 @@ class viewWidget extends React.Component {
 
 export default class widgetsControls extends React.Component {
   render () {
-    const {path: [pathHead, ...pathTail], send, dash} = this.props
+    const {path: [pathHead, ...pathTail], dash} = this.props
+    const {send} = this.context
 
     let route
 
@@ -37,4 +38,8 @@ export default class widgetsControls extends React.Component {
       route ? h(route, {dash, path: pathTail}) : null
     )
   }
+}
+
+widgetsControls.contextTypes = {
+  send: React.PropTypes.func
 }
