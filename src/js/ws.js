@@ -85,7 +85,7 @@ function getWsStream (wsUrl) {
   var result = {
     incomingStream: incomingStream.share(),
     outgoingStream: outgoingStream,
-    connectedProperty: connectedProperty,
+    connectedProperty: connectedProperty
   }
 
   wsRegistry[wsUrl] = result
@@ -93,6 +93,6 @@ function getWsStream (wsUrl) {
 }
 
 module.exports = {
-  getWsStream: getWsStream,
+  getWsStream: getWsStream
 // TODO: close streams
 }

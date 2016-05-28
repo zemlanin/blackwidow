@@ -62,14 +62,14 @@ export default class Chartd extends React.Component {
       data.step ? 'step=1' : '',
       data.hl ? 'hl=1' : '',
       data.ol ? 'ol=1' : '',
-      data.or ? 'or=1' : '',
+      data.or ? 'or=1' : ''
     ].filter(_.trim).join('&')})`
 
     return h('div', {
       className: imageHolder,
       style: {
-        backgroundImage: url,
-      },
+        backgroundImage: url
+      }
     })
   }
 }

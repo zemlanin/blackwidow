@@ -30,7 +30,7 @@ export default class Text extends React.Component {
     return h('div', {
       id: data.id,
       className: border,
-      style: {fontSize: fontSize},
+      style: {fontSize: fontSize}
     },
       h('span', null, data.text),
       data.note ? h('span', {className: note}, data.note) : ''

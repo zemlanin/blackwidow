@@ -23,7 +23,7 @@ export default class Dash extends React.Component {
 
     return h('div',
       {
-        style: container.style || null,
+        style: container.style || null
       },
       _.map(widgets, (widget, widgetId) => {
         const {container} = widget
@@ -38,7 +38,7 @@ export default class Dash extends React.Component {
         if (this.refs[widgetId]) {
           pixelSize = [
             this.refs[widgetId].offsetWidth,
-            this.refs[widgetId].offsetHeight,
+            this.refs[widgetId].offsetHeight
           ]
         }
 
@@ -77,14 +77,14 @@ export default class Dash extends React.Component {
             top: (100 * container.position[1] / viewportY) + '%',
             width: (100 * container.size[0] / viewportX) + '%',
             height: (100 * container.size[1] / viewportY) + '%',
-            outline: outline,
-          },
+            outline: outline
+          }
         },
           h(component, {
             data: widget.data,
             error: widget.error,
             container: _.assign({pixelSize}, container),
-            widgetId,
+            widgetId
           })
         )
       })

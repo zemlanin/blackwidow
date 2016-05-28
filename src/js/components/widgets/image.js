@@ -15,12 +15,12 @@ export default class Image extends React.Component {
     return h('div', {
       className: imageHolder,
       style: {
-        backgroundImage: data.src ? `url(${data.src})` : null,
-      },
+        backgroundImage: data.src ? `url(${data.src})` : null
+      }
     },
       data.note ? h('span', {
         className: note,
-        style: {fontSize: container.fontSize},
+        style: {fontSize: container.fontSize}
       },
         data.note
       ) : ''

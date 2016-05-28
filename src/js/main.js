@@ -25,9 +25,9 @@ const freezer = new Freezer({
   dash: {},
   controls: {
     opened: false,
-    path: ['widgets'],
+    path: ['widgets']
   },
-  auth: {},
+  auth: {}
 })
 
 window.event$ = new Rx.Subject()
@@ -72,19 +72,19 @@ const endpointSchedules = endpointAdded
   .flatMap(([ref, endpoint]) => repeat({
     value: [ref, endpoint],
     each: endpoint.schedule.timeInterval,
-    until: endpoints.pluck('removed', ref).filter(_.identity),
+    until: endpoints.pluck('removed', ref).filter(_.identity)
   }).skip(1))
 
 const localWidgetUpdates = localsAdded
   .flatMap(([widgetId, widget]) => repeat({
     value: [widgetId, widget],
     each: widget.local.schedule.timeInterval,
-    until: locals.pluck('removed', widgetId).filter(_.identity),
+    until: locals.pluck('removed', widgetId).filter(_.identity)
   }))
   .map(([widgetId, widget]) => ({
     widgetId: widgetId,
     update: {},
-    mapping: widget.local.map,
+    mapping: widget.local.map
   }))
 
 const websocketsUpdates = websocketsAdded
@@ -114,7 +114,7 @@ const endpointResponses = Rx.Observable.merge(
       fetch(endpoint.url, {
         headers: endpoint.headers,
         method: endpoint.method || 'GET',
-        body: endpoint.body,
+        body: endpoint.body
       })
       .then(endpoint.plain ? _.method('text') : _.method('json'))
     )
@@ -138,7 +138,7 @@ const endpointWidgetUpdates = endpointResponses
     .map(([widgetId, widget]) => ({
       widgetId: widgetId,
       update: response,
-      mapping: widget.endpoint.map,
+      mapping: widget.endpoint.map
     }))
   )
 

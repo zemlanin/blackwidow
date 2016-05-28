@@ -43,16 +43,16 @@ const updates = {
     return [
       freezer.pivot().controls.set('path', ['dashboards']),
       () => Rx.Observable.of({action: 'controlsToggle'}),
-      () => Rx.Observable.of({action: 'hideCursor'}),
+      () => Rx.Observable.of({action: 'hideCursor'})
     ]
   },
 
   selectDash: ({data}, freezer) => {
     return [
       freezer.pivot().controls.set('path', ['widgets']),
-      () => Rx.Observable.of({action: 'controlsToggle'}),
+      () => Rx.Observable.of({action: 'controlsToggle'})
     ]
-  },
+  }
 }
 
 const update = (msg, state) => msg ? updates[msg.action](msg, state) : [state]

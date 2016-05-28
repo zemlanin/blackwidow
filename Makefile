@@ -38,5 +38,5 @@ deploy: test
 	[ -x deploy.sh ] && ./deploy.sh || echo "no executable deploy.sh found"
 
 .PHONY: test
-test:
+test: lint
 	NODE_PATH=$(src) $(mocha) --compilers js:babel-register --recursive --require ignore-styles

@@ -19,7 +19,7 @@ describe('./endpoints', function () {
         ),
         {
           project: {rev: '15.9.13(154321)a9324a63ed24'},
-          text: '15.9.13 /154321',
+          text: '15.9.13 /154321'
         }
       )
 
@@ -28,7 +28,7 @@ describe('./endpoints', function () {
           {text: 'Mal|Zoe|Wash'}, {},
           {values: {
             _expr: "text | match:'[a-z]+':'ig' | map:_map",
-            _map: {value: '$'},
+            _map: {value: '$'}
           }}
         ),
         {
@@ -36,8 +36,8 @@ describe('./endpoints', function () {
           values: [
             {value: 'Mal'},
             {value: 'Zoe'},
-            {value: 'Wash'},
-          ],
+            {value: 'Wash'}
+          ]
         }
       )
 
@@ -48,7 +48,7 @@ describe('./endpoints', function () {
             _expr: 'text | juxt:_plus:_minus:_plus_minus',
             _plus: '$ | +:1',
             _minus: '$ | -:1',
-            _plus_minus: '$ | +:-1',
+            _plus_minus: '$ | +:-1'
           }}
         ),
         {text: 0, values: [1, 1, -1]}

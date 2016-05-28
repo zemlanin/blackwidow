@@ -41,7 +41,7 @@ export const extractEndpoints = ({dash}) => {
           } else {
             widget.error = {
               basicAuthFailed: true,
-              service: extractedEndpoint.auth.service,
+              service: extractedEndpoint.auth.service
             }
           }
         }
@@ -80,14 +80,14 @@ const splitSrc = (src) => {
   if (src.url) {
     return {
       shared: _.pick(src, 'url'),
-      local: _.pick(src, 'map'),
+      local: _.pick(src, 'map')
     }
   }
 
   if (src.gist) {
     return {
       shared: _.pick(src, 'gist'),
-      local: _.pick(src, 'file', 'map'),
+      local: _.pick(src, 'file', 'map')
     }
   }
 
@@ -133,7 +133,7 @@ export const loadExternalWidgets = ({dash}) => {
 
           return {
             widgetId,
-            widget: _.merge(endpointMapper(localResp, {}, widget.src.map), widget),
+            widget: _.merge(endpointMapper(localResp, {}, widget.src.map), widget)
           }
         }))
     })

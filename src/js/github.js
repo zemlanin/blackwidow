@@ -20,9 +20,7 @@ export const api = (path) => {
   }
 
   return Rx.Observable.fromPromise(
-    fetch(BASE_API_URL + path, {
-      headers,
-    })
+    fetch(BASE_API_URL + path, {headers})
     .then((resp) => {
       const ETag = resp.headers.get('ETag')
       if (ETag) {

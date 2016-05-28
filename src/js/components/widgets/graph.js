@@ -12,7 +12,7 @@ const COLORS = [
   '#F0F',
   '#FF0',
   '#F00',
-  '#00F',
+  '#00F'
 ]
 
 const rd3BarChart = ([width, height], data, widgetId) => {
@@ -27,9 +27,9 @@ const rd3BarChart = ([width, height], data, widgetId) => {
       x: 0,
       y: 0,
       width,
-      height,
+      height
     },
-    axesColor: 'white',
+    axesColor: 'white'
   })
 }
 
@@ -47,9 +47,9 @@ const rd3LineChart = ([width, height], data, widgetId) => {
       x: 0,
       y: 0,
       width,
-      height,
+      height
     },
-    axesColor: 'white',
+    axesColor: 'white'
   })
 }
 

@@ -11,7 +11,7 @@ export default class Table extends React.Component {
     const {data = {}} = this.props
 
     return h('table', {
-      id: data.id,
+      id: data.id
     },
       h('tbody',
         null,

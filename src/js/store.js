@@ -23,12 +23,12 @@ function dashErrorCallback (err) {
           type: 'text',
           container: {
             position: [0, 0],
-            size: [10, 10],
+            size: [10, 10]
           },
-          data: {text: err.message},
-        },
-      },
-    },
+          data: {text: err.message}
+        }
+      }
+    }
   })
 }
 

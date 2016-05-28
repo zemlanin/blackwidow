@@ -38,7 +38,7 @@ export default class Error extends React.Component {
 
     return h('div', {
       id: data.id,
-      style: {fontSize: fontSize},
+      style: {fontSize: fontSize}
     },
       h('span', null, message)
     )
