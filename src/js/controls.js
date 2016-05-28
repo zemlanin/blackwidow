@@ -73,7 +73,7 @@ export const init = (node, freezer) => {
     .map(_.head)
     .merge(Rx.Observable.fromEvent(freezer, 'update'))
     .subscribe((state) => render(
-      h(Controls, state), node
+      h(Controls, state.toJS()), node
     ))
 
   const controlsToggles$ = Rx.Observable.merge(

@@ -5,7 +5,7 @@ const BWD_EXAMPLES = process.env.BWD_EXAMPLES
 
 export default class dashboardsControls extends React.Component {
   render () {
-    const {controls: {send}} = this.props
+    const {send} = this.props
 
     return h('ul',
       {},

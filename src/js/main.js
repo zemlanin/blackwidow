@@ -56,7 +56,7 @@ Rx.Observable.fromEvent(freezer, 'update')
   )
   .subscribeOn(Rx.Scheduler.requestAnimationFrame)
   .subscribe((dashData) => render(
-    h(Dash, dashData),
+    h(Dash, dashData.toJS()),
     document.getElementById('dash')
   ))
 

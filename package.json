@@ -8,12 +8,12 @@
   "dependencies": {
     "angular-expressions": "^0.3.0",
     "classnames": "^2.2.3",
-    "freezer-js": "^0.9.6",
+    "freezer-js": "^0.11.1",
     "lodash": "^4.6.1",
     "object-hash": "^1.1.0",
-    "react": "^0.14.7",
+    "react": "^15.1.0",
     "react-d3": "^0.4.0",
-    "react-dom": "^0.14.7",
+    "react-dom": "^15.1.0",
     "rx": "^4.0.7",
     "rx-dom-concurrency": "^7.0.3",
     "url-parse": "^1.0.5",
@@ -34,15 +34,18 @@
     "json5": "^0.4.0",
     "json5-loader": "^0.6.0",
     "mocha": "^2.4.5",
-    "react-addons-test-utils": "^0.14.7",
+    "react-addons-test-utils": "^15.1.0",
     "snazzy": "^4.0.0",
     "standard": "^7.1.1",
     "style-loader": "^0.13.0",
-    "webpack": "^1.12.12"
+    "webpack": "^1.13.1"
   },
   "scripts": {
     "test": "make test",
+    "mocha": "mocha",
+    "snazzy": "snazzy",
     "webpack": "webpack",
+    "standard": "standard",
     "postinstall": "touch package.json; make"
   },
   "standard": {

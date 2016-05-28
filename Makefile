@@ -1,24 +1,16 @@
 SHELL := /bin/bash
 
 bin = $(shell npm bin)
-webpack = $(bin)/webpack
-standard = $(bin)/standard
-snazzy = $(bin)/snazzy
 mocha = $(bin)/mocha
 
-NODE_PATH = $(shell pwd)
 src = $(shell pwd)/src
 dist = $(shell pwd)/dist
-node_modules = $(shell pwd)/node_modules
 
 .PHONY: build
 build: dist_static dist/js
 
 clean_dist:
 	rm -rf $(dist)
-
-clean: clean_dist
-	rm -rf $(node_modules)
 
 .PHONY: dist_static
 dist_static:
@@ -29,15 +21,15 @@ dist_static:
 
 .PHONY: dist/js
 dist/js:
-	NODE_PATH=$(NODE_PATH) npm run webpack
+	npm run webpack
 
 .PHONY: watch
 watch:
-	NODE_PATH=$(NODE_PATH) $(webpack) --progress --watch
+	npm run webpack -- --progress --watch
 
 .PHONY: lint
 lint:
-	$(standard) --verbose | $(snazzy)
+	npm run standard -- --verbose | npm run snazzy
 
 .PHONY: deploy
 deploy: test

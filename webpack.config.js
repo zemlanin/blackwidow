@@ -4,11 +4,15 @@ var webpack = require('webpack')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var dependencies = require('./package.json').dependencies
 
+var resolveRoot = process.env.NODE_PATH
+  ? process.env.NODE_PATH.split(';')
+  : []
+
 require('dotenv').config({
   path: process.env.DOTENV || '.env.example'
 })
 
-var examples = fs.readdirSync(path.join(__dirname, '/dist/examples'))
+var examples = fs.readdirSync(path.join(__dirname, '/examples'))
   .map((name) => ({name, url: `/#/examples/${name}`}))
 
 var plugins = [
@@ -42,7 +46,7 @@ module.exports = {
   },
   module: {
     loaders: [
-      {test: /\.js$/, exclude: /node_modules/, loader: 'babel'},
+      {test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'},
       {test: /\.json$/, loader: 'json5-loader'},
       {test: /\.css$/, loader: ExtractTextPlugin.extract(
           'style-loader',
@@ -51,6 +55,7 @@ module.exports = {
     ]
   },
   resolve: {
+    root: resolveRoot.concat(path.join(__dirname, 'node_modules')),
     modulesDirectories: [
       'src',
       'src/js',
@@ -58,6 +63,9 @@ module.exports = {
       'node_modules'
     ],
     extensions: ['.js', '.css', '']
+  },
+  resolveLoader: {
+    root: resolveRoot.concat(path.join(__dirname, 'node_modules'))
   },
   plugins: plugins
 }
