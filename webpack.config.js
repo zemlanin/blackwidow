@@ -36,7 +36,6 @@ if (process.env.NODE_ENV === 'production') {
 module.exports = {
   entry: {
     core: Object.keys(dependencies),
-    cast: 'cast',
     main: 'main'
   },
   output: {

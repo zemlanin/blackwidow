@@ -174,9 +174,3 @@ Rx.Observable.merge(endpointWidgetUpdates, localWidgetUpdates)
     (error) => console.error(error),
     (v) => console.log('completed')
   )
-
-if (window.castMessageStream) {
-  window.castMessageStream
-    .filter((msg) => msg === 'refresh')
-    .subscribe((msg) => location.reload())
-}
