@@ -10,7 +10,7 @@ dist = $(shell pwd)/dist
 build: dist_static dist/js
 
 clean_dist:
-	rm -rf $(dist)
+	[ -f $(dist) ] && rm -rf $(dist) || :
 
 .PHONY: dist_static
 dist_static:

@@ -15,7 +15,7 @@ commands:
   dist: !Command
     description: Build dist
     container: dist
-    run: [make, build]
+    run: [make, clean_dist, build]
     epilog: |
       --------------------------------------
       Project is built under dist/index.html
