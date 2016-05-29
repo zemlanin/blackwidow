@@ -47,7 +47,7 @@
         ],
         "ymin": 0,
         "t": "lines",
-        "scale": 2,
+        "scale": 2
       }
     }
   }
