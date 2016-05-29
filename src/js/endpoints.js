@@ -7,51 +7,71 @@ import './expressions_filters'
 import { getAjaxStream, getGistStream, findJSONFile, findNamedFile } from './store'
 import { getBasicAuthHeader } from './auth'
 
+function extractSharedEndpoint (endpoints, widget) {
+  if (widget.endpoint && widget.endpoint.url) {
+    if (_.isObject(widget.endpoint.body)) {
+      widget.endpoint.body = JSON.stringify(widget.endpoint.body)
+    }
+
+    const extractedEndpoint = _.pick(widget.endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth', 'schedule'])
+    const endpointHash = hash.MD5(_.pick(widget.endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth']))
+
+    widget.endpoint._ref = endpointHash
+    endpoints[endpointHash] = extractedEndpoint
+    widget.endpoint = _.omit(widget.endpoint, _.keys(extractedEndpoint))
+  }
+
+  return widget
+}
+
+function applySharedEndpointsHeaders (endpoints, widget) {
+  const extractedEndpoint = (
+    widget.endpoint && widget.endpoint._ref && endpoints[widget.endpoint._ref]
+  )
+  if (extractedEndpoint && extractedEndpoint.headers) {
+    let headers = new Headers()
+    for (const key in extractedEndpoint.headers) {
+      headers.set(key, extractedEndpoint.headers[key])
+    }
+    extractedEndpoint.headers = headers
+  }
+
+  return widget
+}
+
+function applySharedEndpointsAuth (endpoints, widget) {
+  const extractedEndpoint = (
+    widget.endpoint && widget.endpoint._ref && endpoints[widget.endpoint._ref]
+  )
+  const service = (
+    extractedEndpoint && extractedEndpoint.auth && extractedEndpoint.auth.service
+  )
+
+  if (!service) { return widget }
+
+  const authHeader = getBasicAuthHeader(service)
+  if (authHeader) {
+    let headers = extractedEndpoint.headers || new Headers()
+    headers.set('Authorization', authHeader)
+    extractedEndpoint.headers = headers
+  } else {
+    widget.error = {
+      basicAuthFailed: true,
+      service: extractedEndpoint.auth.service
+    }
+  }
+
+  return widget
+}
+
 export const extractEndpoints = ({dash}) => {
-  let endpoints = []
+  let endpoints = {}
 
-  dash.widgets = _(dash.widgets)
-    .mapValues((widget) => {
-      if (widget.endpoint && widget.endpoint.url) {
-        if (_.isObject(widget.endpoint.body)) {
-          widget.endpoint.body = JSON.stringify(widget.endpoint.body)
-        }
-
-        const extractedEndpoint = _.pick(widget.endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth', 'schedule'])
-        const endpointHash = hash.MD5(_.pick(widget.endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth']))
-
-        widget.endpoint._ref = endpointHash
-        widget.endpoint = _.omit(widget.endpoint, _.keys(extractedEndpoint))
-
-        let headers = new Headers()
-
-        if (extractedEndpoint.headers) {
-          for (const key in extractedEndpoint.headers) {
-            headers.set(key, extractedEndpoint.headers[key])
-          }
-        }
-
-        extractedEndpoint.headers = headers
-
-        if (extractedEndpoint.auth && extractedEndpoint.auth.service) {
-          const authHeader = getBasicAuthHeader(extractedEndpoint.auth.service)
-
-          if (authHeader) {
-            extractedEndpoint.headers.set('Authorization', authHeader)
-          } else {
-            widget.error = {
-              basicAuthFailed: true,
-              service: extractedEndpoint.auth.service
-            }
-          }
-        }
-
-        endpoints[endpointHash] = extractedEndpoint
-      }
-
-      return widget
-    })
-    .value()
+  dash.widgets = _.mapValues(dash.widgets, _.flow(
+    extractSharedEndpoint.bind(null, endpoints),
+    applySharedEndpointsHeaders.bind(null, endpoints),
+    applySharedEndpointsAuth.bind(null, endpoints)
+  ))
 
   return {dash, endpoints}
 }
