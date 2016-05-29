@@ -3,6 +3,7 @@ import 'rx-dom-concurrency'
 
 import _ from 'lodash'
 import React from 'react'
+import queryString from 'query-string'
 import {render} from 'react-dom'
 const h = React.createElement
 
@@ -26,7 +27,7 @@ const freezer = new Freezer({
   dash: {},
   controls: {
     opened: false,
-    path: ['widgets']
+    path: decodeURIComponent(queryString.parse(location.search).controls || 'widgets').split('/')
   },
   auth: {}
 })

@@ -1,23 +1,29 @@
 import _ from 'lodash'
 import React from 'react'
+import {getUrl, catchClick} from '../controls.js'
 const h = React.createElement
 const BWD_EXAMPLES = process.env.BWD_EXAMPLES
 
 export default class dashboardsControls extends React.Component {
+  onExampleClick ({target: {dataset: {example}}}) {
+    this.context.send({action: 'selectDash', data: example})
+  }
   render () {
-    const {send} = this.context
-
     return h('ul',
       {},
-      _(BWD_EXAMPLES)
-        .map((example, i) => h(
+      _.map(
+        BWD_EXAMPLES,
+        (dash, i) => h(
           'li',
           {key: i},
           h('a', {
-            onClick: send.bind(null, {action: 'selectDash', data: example.url})
-          }, example.name || example.url)
-        ))
-        .value()
+            // TODO: remove controls=widgets after adding navigation to controls
+            href: getUrl({controls: 'widgets', dash: dash.name}),
+            dataExample: dash.url,
+            onClickCapture: catchClick.bind(this, this.onExampleClick.bind(this))
+          }, dash.name || dash.url)
+        )
+      )
     )
   }
 }

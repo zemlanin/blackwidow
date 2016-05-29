@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import {getUrl, catchClick} from '../controls.js'
 const h = React.createElement
 
 class addWidget extends React.Component {
@@ -12,6 +13,8 @@ class viewWidget extends React.Component {
   render () {
     const {path: [widgetId], dash} = this.props
 
+    if (!widgetId || !dash.widgets) { return null }
+
     return h('span', {}, JSON.stringify(dash.widgets[widgetId]))
   }
 }
@@ -19,7 +22,6 @@ class viewWidget extends React.Component {
 export default class widgetsControls extends React.Component {
   render () {
     const {path: [pathHead, ...pathTail], dash} = this.props
-    const {send} = this.context
 
     let route
 
@@ -31,15 +33,24 @@ export default class widgetsControls extends React.Component {
 
     return h('ul',
       {},
-      _(dash.widgets)
-        .map((widget, widgetId) => h('li', {key: 'w/' + widgetId}, h('a', {onClick: send.bind(null, {action: 'selectWidget', data: widgetId})}, widgetId)))
-        // .concat(h('li', {key: 'add'}, h('a', {onClick: send.bind(null, {action: 'addWidget'})}, '+')))
-        .value(),
+      _.map(
+        dash.widgets,
+        (widget, widgetId) => h(
+          'li',
+          {key: 'w/' + widgetId},
+          h(
+            'a',
+            {href: getUrl({controls: `widgets/view/${widgetId}`}), onClickCapture: catchClick},
+            widgetId
+          )
+        )
+      ),
       route ? h(route, {dash, path: pathTail}) : null
     )
   }
 }
 
 widgetsControls.contextTypes = {
-  send: React.PropTypes.func
+  send: React.PropTypes.func,
+  open: React.PropTypes.func
 }

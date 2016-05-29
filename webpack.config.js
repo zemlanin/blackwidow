@@ -13,7 +13,7 @@ require('dotenv').config({
 })
 
 var examples = fs.readdirSync(path.join(__dirname, '/examples'))
-  .map((name) => ({name, url: `/#/examples/${name}`}))
+  .map((name) => ({name, url: `/examples/${name}`}))
 
 var plugins = [
   new webpack.DefinePlugin({

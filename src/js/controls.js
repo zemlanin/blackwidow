@@ -1,12 +1,24 @@
 import _ from 'lodash'
 import Rx from 'rx'
 import React from 'react'
+import queryString from 'query-string'
 import {render} from 'react-dom'
 const h = React.createElement
 
 import Controls from './components/controls'
 
 const TILDA = 96
+
+export function getUrl (searchObj) {
+  return (
+    '?' +
+    queryString.stringify(Object.assign(
+      queryString.parse(location.search),
+      searchObj
+    )) +
+    location.hash
+  )
+}
 
 const updates = {
   controlsToggle: ({data}, freezer) => {
@@ -15,7 +27,7 @@ const updates = {
     return [freezer.pivot().controls.set('opened', !freezer.controls.opened)]
   },
 
-  hideCursor: ({data}, freezer) => {
+  cursorToggle: ({data}, freezer) => {
     if (data) {
       document.body.classList.add('no-cursor')
     } else {
@@ -31,27 +43,29 @@ const updates = {
     return [freezer.pivot().auth.remove('github')]
   },
 
-  selectWidget: ({data}, freezer) => {
-    return [freezer.pivot().controls.set('path', ['widgets', 'view', data])]
-  },
-
-  addWidget: ({data}, freezer) => {
-    return [freezer.pivot().controls.set('path', ['widgets', 'add'])]
-  },
-
   showDashboards: ({data}, freezer) => {
     return [
-      freezer.pivot().controls.set('path', ['dashboards']),
+      freezer,
+      () => Rx.Observable.of({action: 'open', data: {url: getUrl({controls: 'dashboards'})}}),
       () => Rx.Observable.of({action: 'controlsToggle'}),
-      () => Rx.Observable.of({action: 'hideCursor'})
+      () => Rx.Observable.of({action: 'cursorToggle'})
     ]
   },
 
   selectDash: ({data}, freezer) => {
     return [
-      freezer.pivot().controls.set('path', ['widgets']),
+      freezer,
       () => Rx.Observable.of({action: 'controlsToggle'})
     ]
+  },
+
+  open: ({data: {url}}, freezer) => {
+    history.pushState({}, '', url)
+    const controlsPath = queryString.parse(location.search).controls
+    const path = controlsPath
+      ? decodeURIComponent(controlsPath).split('/')
+      : 'widgets'
+    return [freezer.pivot().controls.set('path', path)]
   }
 }
 
@@ -84,11 +98,22 @@ export const init = (node, freezer) => {
 
   controlsToggles$.subscribe(() => send({action: 'controlsToggle'}))
 
-  const hideCursor$ = mouseMove$
+  const cursorToggle$ = mouseMove$
     .flatMapLatest(() => Rx.Observable.of(true).delay(1000).startWith(false))
     .startWith(true)
     .filter(() => !freezer.get().controls.opened)
     .merge(controlsToggles$.map(() => !freezer.get().controls.opened))
 
-  hideCursor$.subscribe((hidden) => send({action: 'hideCursor', data: hidden}))
+  cursorToggle$.subscribe((hidden) => send({action: 'cursorToggle', data: hidden}))
+}
+
+export function catchClick (callback, event) {
+  if (typeof callback === 'function') {
+    callback(event)
+  } else {
+    event = callback
+  }
+
+  event.preventDefault()
+  window.event$.onNext({action: 'open', data: {url: event.target.href}})
 }
