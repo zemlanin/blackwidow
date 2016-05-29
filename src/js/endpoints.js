@@ -77,10 +77,10 @@ export const extractEndpoints = ({dash}) => {
 }
 
 export function endpointMapper (update, prevData, structure) {
-  let result = _.assign({}, prevData, _.isObject(update) ? update : null)
+  let result = Object.assign({}, prevData, _.isObject(update) ? update : null)
 
   if (_.isString(structure)) {
-    return expressions.compile(structure)(_.assign({}, update, {$: _.cloneDeep(update)}))
+    return expressions.compile(structure)(Object.assign({}, update, {$: _.cloneDeep(update)}))
   }
 
   if (!structure) {
@@ -90,7 +90,7 @@ export function endpointMapper (update, prevData, structure) {
   for (let key in structure) {
     result[key] = expressions.compile(
       structure[key]._expr || structure[key]
-    )(_.assign({}, update, structure[key]._expr ? structure[key] : null, {$: _.cloneDeep(update)}))
+    )(Object.assign({}, update, structure[key]._expr ? structure[key] : null, {$: _.cloneDeep(update)}))
   }
 
   return result

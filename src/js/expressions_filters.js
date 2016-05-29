@@ -36,6 +36,6 @@ filters['-'] = (v, b) => b - v
 filters['*'] = (v, b) => b * v
 filters['/'] = (v, b) => b / v
 
-_.assign(expressions.filters, filters)
+Object.assign(expressions.filters, filters)
 
 export { filters }

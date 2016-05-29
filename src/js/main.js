@@ -9,6 +9,7 @@ const h = React.createElement
 import Freezer from 'freezer-js'
 
 import 'whatwg-fetch'
+if (typeof Object.assign !== 'function') { Object.assign = _.assign }
 
 import { getDash } from './store'
 import { getWsStream } from './ws'

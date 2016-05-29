@@ -17,7 +17,7 @@ export default class Dash extends React.Component {
   }
 
   render () {
-    const { container = {}, widgets = [] } = this.props
+    const { container = {}, widgets = {} } = this.props
     const [viewportX, viewportY] = (container || {}).size || [10, 10]
 
     return h('div',
@@ -30,9 +30,7 @@ export default class Dash extends React.Component {
         let pixelSize
         let outline
 
-        if (container === void 0) {
-          return ''
-        }
+        if (container === void 0) { return null }
 
         if (this.refs[widgetId]) {
           pixelSize = [
@@ -79,7 +77,7 @@ export default class Dash extends React.Component {
           h(component, {
             data: widget.data,
             error: widget.error,
-            container: _.assign({pixelSize}, container),
+            container: Object.assign({pixelSize}, container),
             widgetId
           })
         )
