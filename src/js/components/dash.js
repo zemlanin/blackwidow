@@ -7,7 +7,6 @@ import wError from './internal_widgets/error'
 import Text from './widgets/text'
 import wImage from './widgets/image'
 import wTable from './widgets/table'
-import wGraph from './widgets/graph'
 import wChartd from './widgets/chartd'
 
 import style from 'css/base.css'
@@ -58,9 +57,6 @@ export default class Dash extends React.Component {
             break
           case 'table':
             component = wTable
-            break
-          case 'graph':
-            component = wGraph
             break
           case 'chartd':
             component = wChartd

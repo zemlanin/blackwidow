@@ -12,7 +12,6 @@
     "lodash": "^4.6.1",
     "object-hash": "^1.1.0",
     "react": "^15.1.0",
-    "react-d3": "^0.4.0",
     "react-dom": "^15.1.0",
     "rx": "^4.0.7",
     "rx-dom-concurrency": "^7.0.3",
