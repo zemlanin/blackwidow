@@ -6,8 +6,8 @@ import { api } from './github'
 
 const BWD_EXAMPLES = process.env.BWD_EXAMPLES
 
-export function getAjaxStream (url) {
-  return Rx.Observable.fromPromise(fetch(url).then(_.method('json')))
+export function getAjaxStream (url, options) {
+  return Rx.Observable.fromPromise(fetch(url, options).then(_.method('json')))
 }
 
 export const findJSONFile = (files) => _.find(files, (file) => file.language === 'JSON')
@@ -61,7 +61,6 @@ export function getDash () {
     isLoadable(location.hash.replace(/^#/, '')) && location.hash.replace(/^#/, '')
   )
 
-  console.log(parsedSearch)
   if (dashUrl) { return loadDashboardFromUrl(dashUrl) }
 
   const dashGist = (
