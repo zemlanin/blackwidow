@@ -74,6 +74,20 @@ describe('./expressions_filters', function () {
         'a,b,cx', filters.format(['a', 'b', 'c'], '{}x')
       )
     })
+
+    it('works with object as a value', function () {
+      assert.deepEqual(
+        'x%', filters.format({a: 'x', b: 'y'}, '{a}%')
+      )
+
+      assert.deepEqual(
+        'x%y', filters.format({a: 'x', b: 'y'}, '{a}%{b}')
+      )
+
+      assert.deepEqual(
+        'yyy', filters.format({a: 'x', b: 'y'}, '{b}{b}{b}')
+      )
+    })
   })
 
   describe('match', function () {
