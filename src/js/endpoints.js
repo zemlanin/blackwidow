@@ -153,7 +153,7 @@ export const loadExternalWidgets = ({dash}) => {
 
           return {
             widgetId,
-            widget: _.merge(endpointMapper(localResp, {}, widget.src.map), widget)
+            widget: _.merge({}, endpointMapper(localResp, {}, widget.src.map), widget)
           }
         }))
     })
