@@ -32,7 +32,7 @@ export default class Chartd extends React.Component {
     let values = _.cloneDeep(data.values)
 
     if ((!values && !series) || !container.pixelSize) { return h('div') }
-    if (values && !series) { series = [{values, stroke: data.stroke}] }
+    if (values && !series) { series = [{values, stroke: data.stroke, fill: data.fill}] }
 
     const allValues = _(series).map('values').flatten().value()
 
