@@ -1,6 +1,7 @@
 var fs = require('fs')
 var path = require('path')
 var webpack = require('webpack')
+var CopyWebpackPlugin = require('copy-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var dependencies = require('./package.json').dependencies
 
@@ -26,7 +27,12 @@ var plugins = [
     }
   }),
   new webpack.optimize.CommonsChunkPlugin('core', 'js/core.js'),
-  new ExtractTextPlugin('css/[name].css', {allChunks: true})
+  new ExtractTextPlugin('css/[name].css', {allChunks: true}),
+  new CopyWebpackPlugin([
+    {from: 'src/views'},
+    {from: 'CNAME'},
+    {from: 'examples', to: 'examples'}
+  ])
 ]
 
 if (process.env.NODE_ENV === 'production') {

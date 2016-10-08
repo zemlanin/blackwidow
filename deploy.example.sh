@@ -1,9 +1,20 @@
 #!/usr/bin/env bash
 
-# # deploy to surge.sh
-# ./node_modules/.bin/surge dist
+if [[ -d dist ]]; then rm -rf dist; fi
 
-# # deploy to own hosting
+if [[ ! -f .env ]]; then
+  echo "\`.env\` file is required to deploy. use \`.env.example\` as an example"
+  exit 1
+fi
+
+DOTENV=.env npm install
+
+npm test
+
+# # uncomment next line to deploy to surge.sh
+# npm run surge dist
+
+# # uncomment next line to deploy to your own hosting
 # TDIR=`mktemp -d`
 # REMOTE_HOST=''
 # cp -r dist $TDIR

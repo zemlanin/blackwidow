@@ -1,10 +1,11 @@
 # blackwidow [![Build Status](https://travis-ci.org/zemlanin/blackwidow.svg?branch=master)](https://travis-ci.org/zemlanin/blackwidow)
-dashboard. works best with [quicksilver](http://github.com/zemlanin/quicksilver) server, but you can use any backend to supply data for widgets
+dashboard. works best with [quicksilver](http://github.com/zemlanin/quicksilver) server, but you can use any backend to get data for widgets
 
 ## setup
 ```bash
 npm install   # install dependencies
-make          # recompile
+npm start     # recompile (or `npm start` to start watcher)
+npm test      # run tests
 ```
 
 ## Demo

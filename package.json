@@ -26,6 +26,7 @@
     "babel-plugin-transform-strict-mode": "^6.3.13",
     "babel-preset-es2015": "^6.3.13",
     "babel-register": "^6.4.3",
+    "copy-webpack-plugin": "^3.0.1",
     "css-loader": "^0.23.1",
     "dotenv": "^2.0.0",
     "enzyme": "^2.1.0",
@@ -41,12 +42,13 @@
     "webpack": "^1.13.1"
   },
   "scripts": {
-    "test": "make test",
+    "start": "webpack --progress --watch",
+    "test": "npm run lint && NODE_PATH=src/ mocha",
     "mocha": "mocha",
-    "snazzy": "snazzy",
     "webpack": "webpack",
     "standard": "standard",
-    "postinstall": "touch package.json; make"
+    "lint": "standard --verbose | snazzy",
+    "postinstall": "webpack --progress"
   },
   "standard": {
     "parser": "babel-eslint",
