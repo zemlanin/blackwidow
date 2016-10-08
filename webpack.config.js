@@ -47,10 +47,13 @@ module.exports = {
     loaders: [
       {test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'},
       {test: /\.json$/, loader: 'json5-loader'},
-      {test: /\.css$/, loader: ExtractTextPlugin.extract(
+      {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract(
           'style-loader',
           'css-loader?-url' + (process.env.NODE_ENV === 'production' ? ',minimize' : '')
-      )}
+        )
+      }
     ]
   },
   resolve: {
