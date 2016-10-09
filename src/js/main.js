@@ -7,7 +7,7 @@ import {render} from 'react-dom'
 const h = React.createElement
 
 import 'whatwg-fetch'
-if (typeof Object.assign !== 'function') { Object.assign = _.assign }
+import 'babel-polyfill'
 
 import { getDash, createFreezer } from './store'
 import { getWsStream } from './ws'

@@ -103,5 +103,25 @@ describe('./endpoints', function () {
         })
       })
     })
+
+    describe('cases/zen_v2.json', function () {
+      it('extracts correctly', function () {
+        const dash = require('./cases/zen_v2.json')
+        const res = extractEndpoints({dash})
+        const ref = 'github/zen'
+
+        assert.deepEqual(res, {
+          dash: dash,
+          endpoints: {
+            [ref]: {
+              ref: ref,
+              plain: dash.dataSources[ref].plain,
+              url: dash.dataSources[ref].url,
+              schedule: dash.dataSources[ref].schedule
+            }
+          }
+        })
+      })
+    })
   })
 })

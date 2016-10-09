@@ -33,6 +33,18 @@ function extractSharedEndpoint (endpoints, widget) {
   return widget
 }
 
+function extractDataSources ({dataSources}) {
+  if (!dataSources) {
+    return {}
+  }
+
+  return Object.entries(dataSources)
+    .reduce(
+      (acc, [ref, source]) => ({...acc, [ref]: {...source, ref}}),
+      {}
+    )
+}
+
 function applySharedEndpointsHeaders (endpoints, widget) {
   const extractedEndpoint = (
     widget.endpoint && widget.endpoint._ref && endpoints[widget.endpoint._ref]
@@ -74,7 +86,8 @@ function applySharedEndpointsAuth (endpoints, widget) {
 }
 
 export const extractEndpoints = ({dash}) => {
-  let endpoints = {}
+  let endpoints = extractDataSources(dash)
+
   const widgets = _.mapValues(dash.widgets, _.flow(
     extractSharedEndpoint.bind(null, endpoints),
     applySharedEndpointsHeaders.bind(null, endpoints),

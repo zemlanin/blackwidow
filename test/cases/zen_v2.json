@@ -1,0 +1,29 @@
+{
+  "widgets": {
+    "zen": {
+      "type": "text",
+      "container": {
+        "position": [0, 3],
+        "size": [6, 4],
+        "debug": "green"
+      },
+      "data": {
+        "text": {
+          "_source": "github/zen",
+          "_expr": "$"
+        },
+        "note": "github zen"
+      }
+    }
+  },
+  "dataSources": {
+    "github/zen": {
+      "url": "https://api.github.com/zen",
+      "plain": true,
+      "schedule": {
+        "type": ["timeInterval"],
+        "timeInterval": 1200
+      }
+    }
+  }
+}
