@@ -8,7 +8,10 @@ import './expressions_filters'
 import { getAjaxStream, getGistStream, findJSONFile, findNamedFile } from './store'
 // https://github.com/feross/standard/issues/599
 // eslint-disable-next-line no-duplicate-imports
-import type { State, Dash, Endpoints } from './store'
+import type {
+  State, Dash, Endpoints, Widget,
+  WEndpointExtracted
+} from './store'
 
 import { getBasicAuthHeader } from './auth'
 
@@ -38,7 +41,7 @@ function extractSharedEndpoint (endpoints, widget) {
   return widget
 }
 
-function extractDataSources (dash: Dash) {
+function extractDataSources (dash: Dash): Endpoints {
   if (!dash.dataSources) { return {} }
 
   return Object.entries(dash.dataSources)
@@ -89,9 +92,11 @@ function applySharedEndpointsAuth (endpoints, widget) {
 }
 
 export function extractEndpoints (state: State): State {
-  let endpoints: Endpoints = extractDataSources(state.dash)
+  let endpoints = extractDataSources(state.dash)
 
-  const widgets = _.mapValues(state.dash.widgets, _.flow(
+  const widgets: {
+    [id: string]: Widget<WEndpointExtracted>
+  } = _.mapValues(state.dash.widgets, _.flow(
     extractSharedEndpoint.bind(null, endpoints),
     applySharedEndpointsHeaders.bind(null, endpoints),
     applySharedEndpointsAuth.bind(null, endpoints)

@@ -2,29 +2,40 @@
 import type Freezer from 'freezer-js'
 export type { getDash, getAjaxStream, getGistStream, findJSONFile, findNamedFile} from './store.js'
 
+export type WEndpoint = {
+  url: string,
+  method?: string,
+  body?: any,
+  headers?: any,
+  auth?: any,
+  schedule: any,
+  plain?: boolean,
+  map: any
+}
+
+export type WEndpointExtracted = {_ref: string, map: any}
+
+export type Widget<E: WEndpointExtracted | WEndpoint> = {
+  endpoint?: E
+}
+
 export type Dash = {
   widgets?: {
-    [id: string]: {
-      endpoint: {
-        url: string,
-        method: string,
-        body: any,
-        plain: boolean,
-        headers: any,
-        auth: any,
-        schedule: any,
-        _ref: string
-      }
-    }
+    [id: string]: Widget<*>
   },
   dataSources?: any
 }
 
 export type Endpoints = {
-  [ref: string]: {
+  [k: string]: {
     ref: string,
     url: string,
-    asfasf: number
+    method?: string,
+    body?: any,
+    headers?: any,
+    auth?: any,
+    schedule: any,
+    plain?: boolean
   }
 }
 
