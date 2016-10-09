@@ -75,7 +75,7 @@ const endpointSchedules = endpointAdded
     value: [ref, endpoint],
     each: endpoint.schedule.timeInterval,
     until: endpoints.pluck('removed', ref).filter(_.identity)
-  }).skip(1))
+  }))
 
 const localWidgetUpdates = localsAdded
   .flatMap(([widgetId, widget]) => repeat({
@@ -107,7 +107,6 @@ const websocketsConnection = websocketsAdded
   )
 
 const endpointResponses = Rx.Observable.merge(
-  endpointAdded,
   websocketsUpdates,
   endpointSchedules
 )
