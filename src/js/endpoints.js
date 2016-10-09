@@ -197,8 +197,9 @@ export const loadExternalWidgets = ({dash}) => {
 }
 
 export const copyLocalWidgets = ({dash}) => {
-  dash.widgets = _(dash.widgets)
-    .mapValues((widget) => {
+  dash.widgets = _.mapValues(
+    dash.widgets,
+    (widget) => {
       if (widget.src && widget.src.copy) {
         const baseWidget = dash.widgets[widget.src.copy]
 
@@ -220,8 +221,8 @@ export const copyLocalWidgets = ({dash}) => {
       }
 
       return widget
-    })
-    .value()
+    }
+  )
 
   return {dash}
 }
