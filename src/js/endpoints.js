@@ -17,7 +17,10 @@ function extractSharedEndpoint (endpoints, widget) {
     const extractedEndpoint = _.pick(endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth', 'schedule'])
     const endpointHash = hash.MD5(_.pick(endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth']))
 
-    endpoints[endpointHash] = extractedEndpoint
+    endpoints[endpointHash] = {
+      ...extractedEndpoint,
+      ref: endpointHash
+    }
     return {
       ...widget,
       endpoint: {

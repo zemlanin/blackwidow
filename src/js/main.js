@@ -62,14 +62,13 @@ const endpointSchedules = endpointAdded
 
 const localWidgetUpdates = localsAdded
   .flatMap(([widgetId, widget]) => repeat({
-    value: [widgetId, widget],
+    value: {
+      widgetId: widgetId,
+      update: {},
+      mapping: widget.local.map
+    },
     each: widget.local.schedule.timeInterval,
     until: locals.pluck('removed', widgetId).filter(_.identity)
-  }))
-  .map(([widgetId, widget]) => ({
-    widgetId: widgetId,
-    update: {},
-    mapping: widget.local.map
   }))
 
 const websocketsUpdates = websocketsAdded

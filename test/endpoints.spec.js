@@ -63,7 +63,7 @@ describe('./endpoints', function () {
     })
   })
 
-  describe('extract', function () {
+  describe('extractEndpoints', function () {
     describe('smoke', function () {
       for (const c of cases) {
         it(c, function () {
@@ -78,11 +78,29 @@ describe('./endpoints', function () {
       it('extracts correctly', function () {
         const dash = require('./cases/zen.json')
         const res = extractEndpoints({dash})
+        const ref = res.dash.widgets.zen.endpoint._ref
 
-        assert.equal(
-          dash.widgets.zen.endpoint.url,
-          res.endpoints[res.dash.widgets.zen.endpoint._ref].url
-        )
+        assert.deepEqual(res, {
+          dash: {
+            widgets: {
+              zen: {
+                ...dash.widgets.zen,
+                endpoint: {
+                  _ref: ref,
+                  map: { text: '$' }
+                }
+              }
+            }
+          },
+          endpoints: {
+            [ref]: {
+              ref: ref,
+              plain: dash.widgets.zen.plain,
+              url: dash.widgets.zen.url,
+              schedule: dash.widgets.zen.schedule
+            }
+          }
+        })
       })
     })
   })
