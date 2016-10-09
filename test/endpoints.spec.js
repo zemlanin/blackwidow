@@ -1,5 +1,12 @@
+import fs from 'fs'
+import path from 'path'
 import assert from 'assert'
-import { endpointMapper } from 'js/endpoints'
+import { endpointMapper, extractEndpoints } from 'js/endpoints'
+
+const cases = (
+  fs.readdirSync(path.join(__dirname, 'cases'))
+  .filter(name => name.match(/\.json$/))
+)
 
 describe('./endpoints', function () {
   describe('endpointMapper', function () {
@@ -53,6 +60,30 @@ describe('./endpoints', function () {
         ),
         {text: 0, values: [1, 1, -1]}
       )
+    })
+  })
+
+  describe('extract', function () {
+    describe('smoke', function () {
+      for (const c of cases) {
+        it(c, function () {
+          extractEndpoints({
+            dash: require('./cases/' + c)
+          })
+        })
+      }
+    })
+
+    describe('cases/zen.json', function () {
+      it('extracts correctly', function () {
+        const dash = require('./cases/zen.json')
+        const res = extractEndpoints({dash})
+
+        assert.equal(
+          dash.widgets.zen.endpoint.url,
+          res.endpoints[res.dash.widgets.zen.endpoint._ref].url
+        )
+      })
     })
   })
 })

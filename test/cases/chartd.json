@@ -1,0 +1,54 @@
+{
+  "container": {
+    "size": [10, 9]
+  },
+  "widgets": {
+    "chartd": {
+      "type": "chartd",
+      "container": {
+        "size": [4, 7],
+        "position": [1, 1]
+      },
+      "local": {
+        "map": {
+          "xmin": {"_expr": "0 | timeSince:'seconds' | +:-1200"},
+          "xmax": {"_expr": "0 | timeSince:'seconds'"}
+        },
+        "schedule": {
+          "timeInterval": 100
+        }
+      },
+      "data": {
+        "values": [1, 4, 8, 0, 0, 10, 5, 0],
+        "ymin": 0,
+        "t": "lol!",
+        "step": 1
+      }
+    },
+    "chartd2": {
+      "type": "chartd",
+      "container": {
+        "size": [4, 7],
+        "position": [5, 1]
+      },
+      "local": {
+        "map": {
+          "xmin": {"_expr": "0 | timeSince:'seconds' | +:-1200"},
+          "xmax": {"_expr": "0 | timeSince:'seconds'"}
+        },
+        "schedule": {
+          "timeInterval": 100
+        }
+      },
+      "data": {
+        "series": [
+          {"values": [1, 4, 8, 0, 0, 10, 5, 0]},
+          {"values": [5, 7, 0, 0, 10, 7, 7, 1]}
+        ],
+        "ymin": 0,
+        "t": "lines",
+        "scale": 2
+      }
+    }
+  }
+}

@@ -8,17 +8,23 @@ import { getAjaxStream, getGistStream, findJSONFile, findNamedFile } from './sto
 import { getBasicAuthHeader } from './auth'
 
 function extractSharedEndpoint (endpoints, widget) {
-  if (widget.endpoint && widget.endpoint.url) {
-    if (_.isObject(widget.endpoint.body)) {
-      widget.endpoint.body = JSON.stringify(widget.endpoint.body)
+  const endpoint = {...widget.endpoint}
+  if (widget.endpoint && endpoint.url) {
+    if (_.isObject(endpoint.body)) {
+      endpoint.body = JSON.stringify(endpoint.body)
     }
 
-    const extractedEndpoint = _.pick(widget.endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth', 'schedule'])
-    const endpointHash = hash.MD5(_.pick(widget.endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth']))
+    const extractedEndpoint = _.pick(endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth', 'schedule'])
+    const endpointHash = hash.MD5(_.pick(endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth']))
 
-    widget.endpoint._ref = endpointHash
     endpoints[endpointHash] = extractedEndpoint
-    widget.endpoint = _.omit(widget.endpoint, _.keys(extractedEndpoint))
+    return {
+      ...widget,
+      endpoint: {
+        ..._.omit(widget.endpoint, _.keys(extractedEndpoint)),
+        _ref: endpointHash
+      }
+    }
   }
 
   return widget
@@ -66,14 +72,16 @@ function applySharedEndpointsAuth (endpoints, widget) {
 
 export const extractEndpoints = ({dash}) => {
   let endpoints = {}
-
-  dash.widgets = _.mapValues(dash.widgets, _.flow(
+  const widgets = _.mapValues(dash.widgets, _.flow(
     extractSharedEndpoint.bind(null, endpoints),
     applySharedEndpointsHeaders.bind(null, endpoints),
     applySharedEndpointsAuth.bind(null, endpoints)
   ))
 
-  return {dash, endpoints}
+  return {
+    dash: {...dash, widgets},
+    endpoints
+  }
 }
 
 export function endpointMapper (update, prevData, structure) {
