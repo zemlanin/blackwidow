@@ -3,18 +3,15 @@ import 'rx-dom-concurrency'
 
 import _ from 'lodash'
 import React from 'react'
-import queryString from 'query-string'
 import {render} from 'react-dom'
 const h = React.createElement
-
-import Freezer from 'freezer-js'
 
 import 'whatwg-fetch'
 if (typeof Object.assign !== 'function') { Object.assign = _.assign }
 
-import { getDash } from './store'
+import { getDash, createFreezer } from './store'
 import { getWsStream } from './ws'
-import { extractEndpoints, endpointMapper, loadExternalWidgets, copyLocalWidgets } from './endpoints'
+import { endpointMapper } from './endpoints'
 import Dash from './components/dash'
 import * as controls from './controls'
 import * as github from './github'
@@ -22,26 +19,12 @@ import { repeat, diffFrom } from './stream_utils'
 
 import 'css/base.css'
 
-const freezer = new Freezer({
-  endpoints: {},
-  dash: {},
-  controls: {
-    opened: false,
-    path: decodeURIComponent(queryString.parse(location.search).controls || 'widgets').split('/')
-  },
-  auth: {}
-})
-
+const freezer = createFreezer()
 window.event$ = new Rx.Subject()
-
 github.init(freezer)
-
 controls.init(document.getElementById('controls'), freezer)
 
 getDash()
-  .flatMap(loadExternalWidgets)
-  .map(copyLocalWidgets)
-  .map(extractEndpoints)
   .subscribe(({dash, endpoints}) => {
     freezer.get().dash.set(dash)
 

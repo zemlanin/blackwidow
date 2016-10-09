@@ -12,12 +12,14 @@ const cases = (
   .filter(name => name.match(/\.json$/))
 )
 
-describe('Dash render', function () {
+describe('./main', function () {
   jsdom()
 
-  for (const c of cases) {
-    it(c, function () {
-      mount(h(Dash, require('./cases/' + c)))
-    })
-  }
+  describe('render', function () {
+    for (const c of cases) {
+      it(c, function () {
+        mount(h(Dash, require(`./cases/${c}`)))
+      })
+    }
+  })
 })

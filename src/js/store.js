@@ -1,10 +1,24 @@
 import _ from 'lodash'
 import Rx from 'rx'
+import Freezer from 'freezer-js'
 import queryString from 'query-string'
 
 import { api } from './github'
+import { extractEndpoints, loadExternalWidgets, copyLocalWidgets } from './endpoints'
 
 const BWD_EXAMPLES = process.env.BWD_EXAMPLES
+
+export function createFreezer () {
+  return new Freezer({
+    endpoints: {},
+    dash: {},
+    controls: {
+      opened: false,
+      path: decodeURIComponent(queryString.parse(location.search).controls || 'widgets').split('/')
+    },
+    auth: {}
+  })
+}
 
 export function getAjaxStream (url, options) {
   return Rx.Observable.fromPromise(fetch(url, options).then(_.method('json')))
@@ -52,7 +66,7 @@ function loadDashboardFromGist (gist) {
     .catch(dashErrorCallback)
 }
 
-export function getDash () {
+function waitForDashUrl () {
   const parsedSearch = queryString.parse(location.search)
   const example = _.find(BWD_EXAMPLES, ['name', parsedSearch.dash])
 
@@ -80,5 +94,14 @@ export function getDash () {
     .filter((name) => _.find(BWD_EXAMPLES, ['name', name]))
     .distinctUntilChanged()
     .take(1)
-    .flatMap(getDash)
+    .flatMap(waitForDashUrl)
+}
+
+export function getDash (dashSource) {
+  if (dashSource === undefined) { dashSource = waitForDashUrl }
+
+  return dashSource()
+    .flatMap(loadExternalWidgets)
+    .map(copyLocalWidgets)
+    .map(extractEndpoints)
 }
