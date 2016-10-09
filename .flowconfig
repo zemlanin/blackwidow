@@ -1,0 +1,10 @@
+[ignore]
+.*/node_modules/fbjs/.*
+.*/node_modules/.*/test/.*
+
+[include]
+
+[libs]
+src/types/
+
+[options]

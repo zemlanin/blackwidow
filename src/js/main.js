@@ -1,3 +1,4 @@
+/* @flow */
 import Rx from 'rx'
 import 'rx-dom-concurrency'
 
@@ -17,7 +18,7 @@ import * as controls from './controls'
 import * as github from './github'
 import { repeat, diffFrom } from './stream_utils'
 
-import 'css/base.css'
+import '../css/base.css'
 
 const freezer = createFreezer()
 window.event$ = new Rx.Subject()

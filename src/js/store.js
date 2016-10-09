@@ -1,3 +1,4 @@
+/* @flow */
 import _ from 'lodash'
 import Rx from 'rx'
 import Freezer from 'freezer-js'
@@ -20,14 +21,19 @@ export function createFreezer () {
   })
 }
 
-export function getAjaxStream (url, options) {
-  return Rx.Observable.fromPromise(fetch(url, options).then(_.method('json')))
+export function getAjaxStream (url: string, options: fetch.RequestOptions) {
+  return Rx.Observable.fromPromise(fetch(url, options).then(r => r.json()))
 }
 
-export const findJSONFile = (files) => _.find(files, (file) => file.language === 'JSON')
-export const findNamedFile = (fileName) => (files) => _.find(files, (file) => file.filename === fileName)
+type GistFile = {
+  language: string,
+  filename: string
+}
 
-export function getGistStream (gistId) {
+export const findJSONFile = (files: GistFile[]) => _.find(files, (file: GistFile) => file.language === 'JSON')
+export const findNamedFile = (fileName: string) => (files: GistFile[]) => _.find(files, (file: GistFile) => file.filename === fileName)
+
+export function getGistStream (gistId: string) {
   return api(`/gists/${gistId}`).pluck('files')
 }
 
@@ -51,13 +57,13 @@ function dashErrorCallback (err) {
 
 const GIST_PARAM_REGEX = /([0-9a-f]{20}\/?[a-z0-9\.\-_]*)/i
 
-const isLoadable = (url) => url && url.match(/^(https?:|file:|\/)/)
+const isLoadable = (url: string) => url && url.match(/^(https?:|file:|\/)/)
 
-function loadDashboardFromUrl (url) {
+function loadDashboardFromUrl (url: string) {
   return getAjaxStream(url).map((dash) => ({dash})).catch(dashErrorCallback)
 }
 
-function loadDashboardFromGist (gist) {
+function loadDashboardFromGist (gist: string) {
   const [gistId, fileName] = gist.split('/')
   return getGistStream(gistId)
     .map(fileName ? findNamedFile(fileName) : findJSONFile)
@@ -97,7 +103,7 @@ function waitForDashUrl () {
     .flatMap(waitForDashUrl)
 }
 
-export function getDash (dashSource) {
+export function getDash (dashSource?: () => Rx.Observable) {
   if (dashSource === undefined) { dashSource = waitForDashUrl }
 
   return dashSource()

@@ -2,6 +2,8 @@
   "presets": ["es2015"],
   "plugins": [
   	"transform-strict-mode",
-  	["transform-object-rest-spread", { "useBuiltIns": true }]
+  	["transform-object-rest-spread", { "useBuiltIns": true }],
+  	"transform-flow-strip-types",
+  	"syntax-flow"
   ]
 }

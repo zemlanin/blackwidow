@@ -1,0 +1,41 @@
+/* @flow */
+import type Freezer from 'freezer-js'
+export type { getDash, getAjaxStream, getGistStream, findJSONFile, findNamedFile} from './store.js'
+
+export type Dash = {
+  widgets?: {
+    [id: string]: {
+      endpoint: {
+        url: string,
+        method: string,
+        body: any,
+        plain: boolean,
+        headers: any,
+        auth: any,
+        schedule: any,
+        _ref: string
+      }
+    }
+  },
+  dataSources?: any
+}
+
+export type Endpoints = {
+  [ref: string]: {
+    ref: string,
+    url: string,
+    asfasf: number
+  }
+}
+
+export type State = {
+  endpoints: Endpoints,
+  dash: Dash,
+  controls: {
+    opened: boolean,
+    path: string[]
+  },
+  auth: any
+}
+
+declare export function createFreezer () : Freezer<State>

@@ -1,0 +1,15 @@
+declare module 'freezer-js' {
+  declare class Freezer<T> {
+    constructor(initialValue: T): Freezer<T>,
+    get(): Frozen<T>
+  }
+
+  declare type Frozen<T> = {
+    [key: $Enum<T>]: Frozen<*>,
+
+    toJS(): T,
+    set(value: T): Frozen<T>
+  }
+
+  declare export default typeof Freezer
+}

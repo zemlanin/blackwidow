@@ -1,3 +1,4 @@
+/* @flow */
 import _ from 'lodash'
 import Rx from 'rx'
 import hash from 'object-hash'
@@ -5,6 +6,10 @@ import expressions from 'angular-expressions'
 
 import './expressions_filters'
 import { getAjaxStream, getGistStream, findJSONFile, findNamedFile } from './store'
+// https://github.com/feross/standard/issues/599
+// eslint-disable-next-line no-duplicate-imports
+import type { State, Dash, Endpoints } from './store'
+
 import { getBasicAuthHeader } from './auth'
 
 function extractSharedEndpoint (endpoints, widget) {
@@ -33,12 +38,10 @@ function extractSharedEndpoint (endpoints, widget) {
   return widget
 }
 
-function extractDataSources ({dataSources}) {
-  if (!dataSources) {
-    return {}
-  }
+function extractDataSources (dash: Dash) {
+  if (!dash.dataSources) { return {} }
 
-  return Object.entries(dataSources)
+  return Object.entries(dash.dataSources)
     .reduce(
       (acc, [ref, source]) => ({...acc, [ref]: {...source, ref}}),
       {}
@@ -85,22 +88,23 @@ function applySharedEndpointsAuth (endpoints, widget) {
   return widget
 }
 
-export const extractEndpoints = ({dash}) => {
-  let endpoints = extractDataSources(dash)
+export function extractEndpoints (state: State): State {
+  let endpoints: Endpoints = extractDataSources(state.dash)
 
-  const widgets = _.mapValues(dash.widgets, _.flow(
+  const widgets = _.mapValues(state.dash.widgets, _.flow(
     extractSharedEndpoint.bind(null, endpoints),
     applySharedEndpointsHeaders.bind(null, endpoints),
     applySharedEndpointsAuth.bind(null, endpoints)
   ))
 
   return {
-    dash: {...dash, widgets},
+    ...state,
+    dash: {...state.dash, widgets},
     endpoints
   }
 }
 
-export function endpointMapper (update, prevData, structure) {
+export function endpointMapper (update: any, prevData: any, structure: any) {
   let result = Object.assign({}, prevData, _.isObject(update) ? update : null)
 
   if (_.isString(structure)) {
@@ -138,7 +142,9 @@ const splitSrc = (src) => {
   return {}
 }
 
-export const loadExternalWidgets = ({dash}) => {
+export const loadExternalWidgets = ({dash}: State) => {
+  if (!dash || !dash.widgets) { return Rx.Observable.of({dash}) }
+
   return Rx.Observable.pairs(dash.widgets)
     .filter(([widgetId, widget]) => widget.src && (widget.src.url || widget.src.gist))
     .reduce((acc, [widgetId, widget]) => {
@@ -190,17 +196,21 @@ export const loadExternalWidgets = ({dash}) => {
       },
       () => Rx.Observable.empty()
     )
-    .do(({widgetId, widget}) => { dash.widgets[widgetId] = widget })
+    .do(({widgetId, widget}) => {
+      if (dash.widgets) { dash.widgets[widgetId] = widget }
+    })
     .startWith(null)
     .takeLast(1)
     .map({dash})
 }
 
-export const copyLocalWidgets = ({dash}) => {
-  dash.widgets = _.mapValues(
+export const copyLocalWidgets = ({dash}: State) => {
+  if (!dash.widgets) { return {dash} }
+
+  const widgets = _.mapValues(
     dash.widgets,
     (widget) => {
-      if (widget.src && widget.src.copy) {
+      if (dash.widgets && widget.src && widget.src.copy) {
         const baseWidget = dash.widgets[widget.src.copy]
 
         if (!baseWidget) {
@@ -224,5 +234,10 @@ export const copyLocalWidgets = ({dash}) => {
     }
   )
 
-  return {dash}
+  return {
+    dash: {
+      ...dash,
+      widgets
+    }
+  }
 }
