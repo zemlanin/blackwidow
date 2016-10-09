@@ -95,9 +95,9 @@ describe('./endpoints', function () {
           endpoints: {
             [ref]: {
               ref: ref,
-              plain: dash.widgets.zen.plain,
-              url: dash.widgets.zen.url,
-              schedule: dash.widgets.zen.schedule
+              plain: dash.widgets.zen.endpoint.plain,
+              url: dash.widgets.zen.endpoint.url,
+              schedule: dash.widgets.zen.endpoint.schedule
             }
           }
         })
