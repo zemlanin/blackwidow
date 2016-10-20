@@ -16,7 +16,8 @@ export type WEndpoint = {
 export type WEndpointExtracted = {_ref: string, map: any}
 
 export type Widget<E: WEndpointExtracted | WEndpoint> = {
-  endpoint?: E
+  endpoint?: E,
+  data?: any
 }
 
 export type Dash = {

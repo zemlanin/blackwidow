@@ -6,6 +6,7 @@ import queryString from 'query-string'
 
 import { api } from './github'
 import { extractEndpoints, loadExternalWidgets, copyLocalWidgets } from './endpoints'
+import type { State } from './store'
 
 const BWD_EXAMPLES = process.env.BWD_EXAMPLES
 
@@ -103,6 +104,41 @@ function waitForDashUrl () {
     .flatMap(waitForDashUrl)
 }
 
+function removeComputableData (data) {
+  const result = {}
+
+  for (const key in data) {
+    if (!data[key].hasOwnProperty('_expr')) { result[key] = data[key] }
+  }
+
+  return result
+}
+
+export function extractSourceData (state: State) {
+  if (!state || !state.dash) { return state }
+
+  const { dash } = state
+
+  const newWidgets = {}
+
+  for (const id in dash.widgets) {
+    const widget = dash.widgets[id]
+    newWidgets[id] = {
+      ...widget,
+      sourceData: widget.data,
+      data: removeComputableData(widget.data)
+    }
+  }
+
+  return {
+    ...state,
+    dash: {
+      ...dash,
+      widgets: newWidgets
+    }
+  }
+}
+
 export function getDash (dashSource?: () => Rx.Observable) {
   if (dashSource === undefined) { dashSource = waitForDashUrl }
 
@@ -110,4 +146,5 @@ export function getDash (dashSource?: () => Rx.Observable) {
     .flatMap(loadExternalWidgets)
     .map(copyLocalWidgets)
     .map(extractEndpoints)
+    .map(extractSourceData)
 }

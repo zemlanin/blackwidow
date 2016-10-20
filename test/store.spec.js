@@ -2,7 +2,7 @@ import Rx from 'rx'
 import fs from 'fs'
 import path from 'path'
 import assert from 'assert'
-import { getDash } from 'js/store'
+import { getDash, extractSourceData } from 'js/store'
 
 const cases = (
   fs.readdirSync(path.join(__dirname, 'cases'))
@@ -36,5 +36,37 @@ describe('./store', function () {
           done
         )
     })
+  })
+
+  describe('extractSourceData', function () {
+    const expressionlessData = { text: 'lol' }
+    const expressionData = { src: {_expr: '$', _source: 'ref'} }
+    const mixedData = { text: 'lol', src: {_expr: '$', _source: 'ref'} }
+
+    const dashWithData = (data) => ({dash: {widgets: {a: {data}}}})
+
+    assert.deepEqual(
+      extractSourceData(dashWithData(expressionlessData)).dash.widgets.a,
+      {
+        data: expressionlessData,
+        sourceData: expressionlessData
+      }
+    )
+
+    assert.deepEqual(
+      extractSourceData(dashWithData(expressionData)).dash.widgets.a,
+      {
+        data: {},
+        sourceData: expressionData
+      }
+    )
+
+    assert.deepEqual(
+      extractSourceData(dashWithData(mixedData)).dash.widgets.a,
+      {
+        data: expressionlessData,
+        sourceData: mixedData
+      }
+    )
   })
 })
