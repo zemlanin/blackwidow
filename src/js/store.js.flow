@@ -20,14 +20,14 @@ type ComputableData = {
   _expr: string
 }
 
-export type dataMapping = {
-  [k: string]: ComputableData | dataMapping
+export type DataMapping = {
+  [k: string]: ComputableData | DataMapping
 }
 
 export type Widget<E: WEndpointExtracted | WEndpoint> = {
   endpoint?: E,
   data: any,
-  dataMapping: dataMapping
+  dataMapping: DataMapping
 }
 
 export type Dash = {

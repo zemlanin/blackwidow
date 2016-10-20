@@ -6,7 +6,7 @@ import queryString from 'query-string'
 
 import { api } from './github'
 import { extractEndpoints, loadExternalWidgets, copyLocalWidgets } from './endpoints'
-import type { State, SourceData } from './store'
+import type { State, DataMapping } from './store'
 
 const BWD_EXAMPLES = process.env.BWD_EXAMPLES
 
@@ -104,7 +104,7 @@ function waitForDashUrl () {
     .flatMap(waitForDashUrl)
 }
 
-export function keepComputableData (data: any): SourceData | null {
+export function keepComputableData (data: any): DataMapping | null {
   if (_.isArray(data)) {
     const result = data.map(keepComputableData).filter(Boolean)
     return result.length ? result : null
