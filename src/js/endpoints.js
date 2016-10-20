@@ -113,17 +113,16 @@ export function endpointMapper (update: any, prevData: any, structure: any) {
   let result = Object.assign({}, prevData, _.isObject(update) ? update : null)
 
   if (_.isString(structure)) {
-    return expressions.compile(structure)(Object.assign({}, update, {$: _.cloneDeep(update)}))
+    return expressions.compile(structure)({...update, $: _.cloneDeep(update)})
   }
 
-  if (!structure) {
-    return result
-  }
+  if (!structure) { return result }
 
-  for (let key in structure) {
+  for (const [key, innerStructure] of Object.entries(structure)) {
+    if (key.startsWith('_')) { continue }
     result[key] = expressions.compile(
-      structure[key]._expr || structure[key]
-    )(Object.assign({}, update, structure[key]._expr ? structure[key] : null, {$: _.cloneDeep(update)}))
+      innerStructure._expr || innerStructure
+    )(Object.assign({}, update, innerStructure._expr ? innerStructure : null, {$: _.cloneDeep(update)}))
   }
 
   return result

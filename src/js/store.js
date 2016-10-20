@@ -6,7 +6,7 @@ import queryString from 'query-string'
 
 import { api } from './github'
 import { extractEndpoints, loadExternalWidgets, copyLocalWidgets } from './endpoints'
-import type { State } from './store'
+import type { State, SourceData } from './store'
 
 const BWD_EXAMPLES = process.env.BWD_EXAMPLES
 
@@ -104,14 +104,74 @@ function waitForDashUrl () {
     .flatMap(waitForDashUrl)
 }
 
-function removeComputableData (data) {
-  const result = {}
-
-  for (const key in data) {
-    if (!data[key].hasOwnProperty('_expr')) { result[key] = data[key] }
+export function keepComputableData (data: any): SourceData | null {
+  if (_.isArray(data)) {
+    const result = data.map(keepComputableData).filter(Boolean)
+    return result.length ? result : null
   }
 
-  return result
+  if (_.isObject(data)) {
+    if (!Object.keys(data).length) { return null }
+
+    if (data._source) {
+      return {
+        _expr: data._expr || '$',
+        _source: data._source
+      }
+    }
+
+    if (data._expr && !data._source) { return null }
+
+    const result = Object.entries(data).reduce(
+      (acc, [k, v]) => {
+        if (k.startsWith('_')) { return acc }
+
+        const cleanValue = keepComputableData(v)
+
+        if (cleanValue) { return { ...acc, [k]: cleanValue } }
+
+        return acc
+      },
+      {}
+    )
+
+    return Object.keys(result).length ? result : null
+  }
+
+  return null
+}
+
+export function removeComputableData (data: any) {
+  if (_.isArray(data)) {
+    return data.map(removeComputableData)
+  }
+
+  if (!_.isObject(data)) {
+    return data
+  }
+
+  return Object.entries(data).reduce(
+    (acc, [k, v]) => {
+      if (k.startsWith('_')) { return acc }
+
+      if (_.isObject(v)) {
+        const cleanValue = removeComputableData(v)
+
+        if (Object.keys(cleanValue).length) {
+          return { ...acc, [k]: cleanValue }
+        }
+
+        return acc
+      }
+
+      if (_.isArray(v)) {
+        return { ...acc, [k]: (v: any).map(removeComputableData) }
+      }
+
+      return { ...acc, [k]: v }
+    },
+    {}
+  )
 }
 
 export function extractSourceData (state: State) {
@@ -121,12 +181,11 @@ export function extractSourceData (state: State) {
 
   const newWidgets = {}
 
-  for (const id in dash.widgets) {
-    const widget = dash.widgets[id]
+  for (const [id, widget] of Object.entries(dash.widgets)) {
     newWidgets[id] = {
       ...widget,
-      sourceData: widget.data,
-      data: removeComputableData(widget.data)
+      data: removeComputableData(widget.data || {}),
+      dataMapping: keepComputableData(widget.data || {}) || {}
     }
   }
 

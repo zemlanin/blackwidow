@@ -15,9 +15,19 @@ export type WEndpoint = {
 
 export type WEndpointExtracted = {_ref: string, map: any}
 
+type ComputableData = {
+  _source: string,
+  _expr: string
+}
+
+export type dataMapping = {
+  [k: string]: ComputableData | dataMapping
+}
+
 export type Widget<E: WEndpointExtracted | WEndpoint> = {
   endpoint?: E,
-  data?: any
+  data: any,
+  dataMapping: dataMapping
 }
 
 export type Dash = {

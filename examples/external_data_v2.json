@@ -1,0 +1,51 @@
+{
+  "widgets": {
+    "zen": {
+      "type": "text",
+      "container": {
+        "position": [0, 3],
+        "size": [6, 4],
+        "debug": "green"
+      },
+      "data": {
+        "note": "github zen",
+        "text": {
+          "_expr": "$",
+          "_source": "zen"
+        }
+      }
+    },
+    "gif": {
+      "type": "image",
+      "container": {
+        "position": [6, 3],
+        "size": [4, 4],
+        "debug": "green"
+      },
+      "data": {
+        "note": "giphy trending",
+        "src": {
+          "_expr": "data.0.images.original.url",
+          "_source": "giphyTrending"
+        }
+      }
+    }
+  },
+  "dataSources": {
+    "zen": {
+      "url": "https://api.github.com/zen",
+      "plain": true,
+      "schedule": {
+        "type": ["timeInterval"],
+        "timeInterval": 1200
+      }
+    },
+    "giphyTrending": {
+      "url": "https://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=1",
+      "schedule": {
+        "type": ["timeInterval"],
+        "timeInterval": 3600
+      }
+    }
+  }
+}

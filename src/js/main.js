@@ -114,7 +114,7 @@ const endpointResponses = Rx.Observable.merge(
   })
   .share()
 
-const endpointWidgetUpdates = endpointResponses
+const deprecatedEndpointWidgetUpdates = endpointResponses
   .filter(({err}) => !err)
   .flatMap(({ref, response}) => Rx.Observable
     .pairs(freezer.get().dash.widgets)
@@ -123,6 +123,21 @@ const endpointWidgetUpdates = endpointResponses
       widgetId: widgetId,
       update: response,
       mapping: widget.endpoint.map
+    }))
+  )
+
+// dataSource based updates
+const endpointWidgetUpdates = endpointResponses
+  .filter(({err}) => !err)
+  .flatMap(({ref, response}) => Rx.Observable
+    .pairs(freezer.get().dash.widgets)
+    .filter(([widgetId, widget]) =>
+      Object.values(widget.dataMapping).some(v => v && v._source && v._source === ref)
+    )
+    .map(([widgetId, widget]) => ({
+      widgetId: widgetId,
+      update: response,
+      mapping: widget.dataMapping.toJS()
     }))
   )
 
@@ -139,7 +154,11 @@ endpointResponses
     freezer.get().endpoints[ref].set('ws', ws)
   })
 
-Rx.Observable.merge(endpointWidgetUpdates, localWidgetUpdates)
+Rx.Observable.merge(
+  deprecatedEndpointWidgetUpdates,
+  endpointWidgetUpdates,
+  localWidgetUpdates
+)
   .subscribe(
     ({widgetId, update, mapping}) => {
       const widget = freezer.get().dash.widgets[widgetId]

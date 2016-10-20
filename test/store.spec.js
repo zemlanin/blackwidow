@@ -2,7 +2,7 @@ import Rx from 'rx'
 import fs from 'fs'
 import path from 'path'
 import assert from 'assert'
-import { getDash, extractSourceData } from 'js/store'
+import { getDash, extractSourceData, keepComputableData } from 'js/store'
 
 const cases = (
   fs.readdirSync(path.join(__dirname, 'cases'))
@@ -49,7 +49,7 @@ describe('./store', function () {
       extractSourceData(dashWithData(expressionlessData)).dash.widgets.a,
       {
         data: expressionlessData,
-        sourceData: expressionlessData
+        dataMapping: {}
       }
     )
 
@@ -57,7 +57,7 @@ describe('./store', function () {
       extractSourceData(dashWithData(expressionData)).dash.widgets.a,
       {
         data: {},
-        sourceData: expressionData
+        dataMapping: expressionData
       }
     )
 
@@ -65,8 +65,31 @@ describe('./store', function () {
       extractSourceData(dashWithData(mixedData)).dash.widgets.a,
       {
         data: expressionlessData,
-        sourceData: mixedData
+        dataMapping: expressionData
       }
+    )
+  })
+
+  describe('keepComputableData', function () {
+    assert.deepEqual(null, keepComputableData({}), 'ø')
+    assert.deepEqual(null, keepComputableData({a: 1}), 'a')
+    assert.deepEqual(null, keepComputableData({b: [1, 2, 3]}), 'b')
+    assert.deepEqual(null, keepComputableData({c: [{}, {}, {}]}), 'c')
+    assert.deepEqual(null, keepComputableData({d: {_expr: '$'}}), 'd')
+    assert.deepEqual(
+      {e: {_expr: '$', _source: 'ref'}},
+      keepComputableData({e: {_source: 'ref'}}),
+      'e'
+    )
+    assert.deepEqual(
+      {f: {a: {_expr: '$', _source: 'ref'}}},
+      keepComputableData({f: {a: {_source: 'ref'}}}),
+      'f'
+    )
+    assert.deepEqual(
+      {g: {a: {_expr: '$', _source: 'ref'}}},
+      keepComputableData({g: {a: {_source: 'ref'}, b: {}}, g1: {}}),
+      'g'
     )
   })
 })
