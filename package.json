@@ -36,6 +36,7 @@
     "enzyme": "^2.1.0",
     "extract-text-webpack-plugin": "^0.9.1",
     "flow-bin": "^0.33.0",
+    "flow-status-webpack-plugin": "^0.1.7",
     "ignore-styles": "^1.2.0",
     "jsdom": "^9.6.0",
     "json5": "^0.4.0",

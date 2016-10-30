@@ -3,6 +3,7 @@ var path = require('path')
 var webpack = require('webpack')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
+var FlowStatusWebpackPlugin = require('flow-status-webpack-plugin');
 var dependencies = require('./package.json').dependencies
 
 var resolveRoot = process.env.NODE_PATH
@@ -37,6 +38,11 @@ var plugins = [
 
 if (process.env.NODE_ENV === 'production') {
   plugins.push(new webpack.optimize.UglifyJsPlugin({warnings: false}))
+} else {
+  plugins.push(new FlowStatusWebpackPlugin({
+    onError: console.error.bind(console),
+    binaryPath: require('flow-bin')
+  }))
 }
 
 module.exports = {
