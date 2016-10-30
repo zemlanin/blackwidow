@@ -12,8 +12,8 @@
       "local": {
         "map": {
           "text": {
-            "_expr": "_time | timeSince:'seconds' | format:'{} seconds of epoch'",
-            "_time": 0
+            "_expr": "time | timeSince:'seconds' | format:'{} seconds of epoch'",
+            "time": 0
           }
         },
         "schedule": {

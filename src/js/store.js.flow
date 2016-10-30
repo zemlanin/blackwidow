@@ -9,11 +9,8 @@ export type WEndpoint = {
   headers?: any,
   auth?: any,
   schedule: any,
-  plain?: boolean,
-  map: any
+  plain?: boolean
 }
-
-export type WEndpointExtracted = {_ref: string, map: any}
 
 type ComputableData = {
   _source: string,
@@ -24,34 +21,46 @@ export type DataMapping = {
   [k: string]: ComputableData | DataMapping
 }
 
-export type Widget<E: WEndpointExtracted | WEndpoint> = {
-  endpoint?: E,
+export type Widget = {
   data: any,
-  dataMapping: DataMapping
+  dataMapping: DataMapping, // internal value
+  error?: string
 }
+
+export type ReflessEndpoint = {
+  url: string,
+  method?: string,
+  body?: any,
+  headers?: any,
+  auth?: any,
+  schedule: any,
+  plain?: boolean
+}
+
+export type Endpoint = {
+  ref: string
+} & ReflessEndpoint
 
 export type Dash = {
   widgets?: {
-    [id: string]: Widget<*>
+    [id: string]: Widget
   },
-  dataSources?: any
-}
-
-export type Endpoints = {
-  [k: string]: {
-    ref: string,
-    url: string,
-    method?: string,
-    body?: any,
-    headers?: any,
-    auth?: any,
-    schedule: any,
-    plain?: boolean
+  dataSources?: {
+    [id: string]: Endpoint | ReflessEndpoint
   }
 }
 
+export type LocalDataSource = {
+  schedule: {
+    timeInterval: number
+  },
+  local: true
+}
+
 export type State = {
-  endpoints: Endpoints,
+  dataSources: {
+    [k: string]: Endpoint | LocalDataSource
+  },
   dash: Dash,
   controls: {
     opened: boolean,

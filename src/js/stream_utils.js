@@ -6,12 +6,12 @@ import Freezer from 'freezer-js'
 export function diffFrom (
   freezer: Freezer<*>,
   keys: string[],
-  innerPickBy: string
+  innerPickBy: (v: any) => boolean
 ): Rx.Observable {
   return Rx.Observable
     .fromEvent(freezer, 'update')
     .pluck(...keys)
-    .map((vs) => _.pickBy(vs, (v) => _.has(v, innerPickBy)))
+    .map((vs) => _.pickBy(vs, innerPickBy))
     .startWith({})
     .bufferWithCount(2, 1)
     .map(([prev, cur]) => ({

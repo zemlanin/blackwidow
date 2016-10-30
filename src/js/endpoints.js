@@ -8,47 +8,19 @@ import './expressions_filters'
 import { getAjaxStream, getGistStream, findJSONFile, findNamedFile } from './store'
 // https://github.com/feross/standard/issues/599
 // eslint-disable-next-line no-duplicate-imports
-import type {
-  State, Dash, Endpoints, Widget,
-  WEndpointExtracted
-} from './store'
+import type { State } from './store'
 
 import { getBasicAuthHeader } from './auth'
 
-function extractSharedEndpoint (endpoints, widget) {
-  const endpoint = {...widget.endpoint}
-  if (widget.endpoint && endpoint.url) {
-    if (_.isObject(endpoint.body)) {
-      endpoint.body = JSON.stringify(endpoint.body)
-    }
-
-    const extractedEndpoint = _.pick(endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth', 'schedule'])
-    const endpointHash = hash.MD5(_.pick(endpoint, ['url', 'method', 'body', 'plain', 'headers', 'auth']))
-
-    endpoints[endpointHash] = {
-      ...extractedEndpoint,
-      ref: endpointHash
-    }
-    return {
-      ...widget,
-      endpoint: {
-        ..._.omit(widget.endpoint, _.keys(extractedEndpoint)),
-        _ref: endpointHash
-      }
-    }
+export function addRefsToDataSources (state: State): State {
+  return {
+    ...state,
+    dataSources: Object.entries(state.dash.dataSources || {})
+      .reduce(
+        (acc, [id, source]) => source.id ? acc : ({...acc, [id]: {...source, id}}),
+        {}
+      )
   }
-
-  return widget
-}
-
-function extractDataSources (dash: Dash): Endpoints {
-  if (!dash.dataSources) { return {} }
-
-  return Object.entries(dash.dataSources)
-    .reduce(
-      (acc, [ref, source]) => ({...acc, [ref]: {...source, ref}}),
-      {}
-    )
 }
 
 function applySharedEndpointsHeaders (endpoints, widget) {
@@ -92,20 +64,15 @@ function applySharedEndpointsAuth (endpoints, widget) {
 }
 
 export function extractEndpoints (state: State): State {
-  let endpoints = extractDataSources(state.dash)
-
-  const widgets: {
-    [id: string]: Widget<WEndpointExtracted>
-  } = _.mapValues(state.dash.widgets, _.flow(
-    extractSharedEndpoint.bind(null, endpoints),
-    applySharedEndpointsHeaders.bind(null, endpoints),
-    applySharedEndpointsAuth.bind(null, endpoints)
-  ))
+  const { dataSources, ...dash } = state.dash
 
   return {
     ...state,
-    dash: {...state.dash, widgets},
-    endpoints
+    dash,
+    dataSources: _.mapValues(dataSources, _.flow(
+      applySharedEndpointsHeaders,
+      applySharedEndpointsAuth
+    ))
   }
 }
 
@@ -118,8 +85,11 @@ export function endpointMapper (update: any, prevData: any, structure: any) {
 
   if (!structure) { return result }
 
+  if (structure._expr) {
+    return expressions.compile(structure._expr)(Object.assign({}, update, structure, {$: _.cloneDeep(update)}))
+  }
+
   for (const [key, innerStructure] of Object.entries(structure)) {
-    if (key.startsWith('_')) { continue }
     result[key] = expressions.compile(
       innerStructure._expr || innerStructure
     )(Object.assign({}, update, innerStructure._expr ? innerStructure : null, {$: _.cloneDeep(update)}))

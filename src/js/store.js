@@ -5,8 +5,9 @@ import Freezer from 'freezer-js'
 import queryString from 'query-string'
 
 import { api } from './github'
-import { extractEndpoints, loadExternalWidgets, copyLocalWidgets } from './endpoints'
+import { loadExternalWidgets, copyLocalWidgets, addRefsToDataSources } from './endpoints'
 import type { State, DataMapping } from './store'
+import { preDataSourcesCompatability } from './compatability/pre_dataSources'
 
 const BWD_EXAMPLES = process.env.BWD_EXAMPLES
 
@@ -18,7 +19,8 @@ export function createFreezer () {
       opened: false,
       path: decodeURIComponent(queryString.parse(location.search).controls || 'widgets').split('/')
     },
-    auth: {}
+    auth: {},
+    dataSources: {}
   })
 }
 
@@ -115,6 +117,7 @@ export function keepComputableData (data: any): DataMapping | null {
 
     if (data._source) {
       return {
+        ...data,
         _expr: data._expr || '$',
         _source: data._source
       }
@@ -150,12 +153,16 @@ export function removeComputableData (data: any) {
     return data
   }
 
+  if (Object.keys(data || {}).some(v => v === '_expr' || v === '_source')) {
+    return null
+  }
+
   return Object.entries(data).reduce(
     (acc, [k, v]) => {
       if (k.startsWith('_')) { return acc }
 
       if (_.isObject(v)) {
-        const cleanValue = removeComputableData(v)
+        const cleanValue = removeComputableData(v) || {}
 
         if (Object.keys(cleanValue).length) {
           return { ...acc, [k]: cleanValue }
@@ -174,7 +181,7 @@ export function removeComputableData (data: any) {
   )
 }
 
-export function extractSourceData (state: State) {
+export function extractDataMapping (state: State): State {
   if (!state || !state.dash) { return state }
 
   const { dash } = state
@@ -198,12 +205,13 @@ export function extractSourceData (state: State) {
   }
 }
 
-export function getDash (dashSource?: () => Rx.Observable) {
+export function getDash (dashSource?: () => Rx.Observable): {dash: any, dataSources: any} {
   if (dashSource === undefined) { dashSource = waitForDashUrl }
 
   return dashSource()
     .flatMap(loadExternalWidgets)
     .map(copyLocalWidgets)
-    .map(extractEndpoints)
-    .map(extractSourceData)
+    .map(preDataSourcesCompatability)
+    .map(addRefsToDataSources)
+    .map(extractDataMapping)
 }

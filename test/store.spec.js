@@ -2,7 +2,7 @@ import Rx from 'rx'
 import fs from 'fs'
 import path from 'path'
 import assert from 'assert'
-import { getDash, extractSourceData, keepComputableData } from 'js/store'
+import { getDash, extractDataMapping, keepComputableData } from 'js/store'
 
 const cases = (
   fs.readdirSync(path.join(__dirname, 'cases'))
@@ -38,7 +38,7 @@ describe('./store', function () {
     })
   })
 
-  describe('extractSourceData', function () {
+  describe('extractDataMapping', function () {
     const expressionlessData = { text: 'lol' }
     const expressionData = { src: {_expr: '$', _source: 'ref'} }
     const mixedData = { text: 'lol', src: {_expr: '$', _source: 'ref'} }
@@ -46,7 +46,7 @@ describe('./store', function () {
     const dashWithData = (data) => ({dash: {widgets: {a: {data}}}})
 
     assert.deepEqual(
-      extractSourceData(dashWithData(expressionlessData)).dash.widgets.a,
+      extractDataMapping(dashWithData(expressionlessData)).dash.widgets.a,
       {
         data: expressionlessData,
         dataMapping: {}
@@ -54,7 +54,7 @@ describe('./store', function () {
     )
 
     assert.deepEqual(
-      extractSourceData(dashWithData(expressionData)).dash.widgets.a,
+      extractDataMapping(dashWithData(expressionData)).dash.widgets.a,
       {
         data: {},
         dataMapping: expressionData
@@ -62,7 +62,7 @@ describe('./store', function () {
     )
 
     assert.deepEqual(
-      extractSourceData(dashWithData(mixedData)).dash.widgets.a,
+      extractDataMapping(dashWithData(mixedData)).dash.widgets.a,
       {
         data: expressionlessData,
         dataMapping: expressionData

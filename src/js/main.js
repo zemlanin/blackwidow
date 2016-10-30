@@ -26,10 +26,10 @@ github.init(freezer)
 controls.init(document.getElementById('controls'), freezer)
 
 getDash()
-  .subscribe(({dash, endpoints}) => {
+  .subscribe(({dash, dataSources}) => {
     freezer.get().dash.set(dash)
 
-    if (endpoints) { freezer.get().endpoints.set(endpoints) }
+    if (dataSources) { freezer.get().dataSources.set(dataSources) }
   })
 
 // freezer.on('update', (u) => { console.log('u', u) })
@@ -46,9 +46,9 @@ Rx.Observable.fromEvent(freezer, 'update')
     document.getElementById('dash')
   ))
 
-const endpoints = diffFrom(freezer, ['endpoints'], 'schedule.timeInterval')
-const locals = diffFrom(freezer, ['dash', 'widgets'], 'local.schedule.timeInterval')
-const websockets = diffFrom(freezer, ['endpoints'], 'ws.url')
+const endpoints = diffFrom(freezer, ['dataSources'], (v) => v.url && v.schedule && v.schedule.timeInterval)
+const locals = diffFrom(freezer, ['dataSources'], (v) => v.local)
+const websockets = diffFrom(freezer, ['dataSources'], (v) => v && v.ws && v.ws.url)
 
 const endpointAdded = endpoints.pluck('added').flatMap(_.toPairs).share()
 const localsAdded = locals.pluck('added').flatMap(_.toPairs).share()
@@ -61,15 +61,14 @@ const endpointSchedules = endpointAdded
     until: endpoints.pluck('removed', ref).filter(_.identity)
   }))
 
-const localWidgetUpdates = localsAdded
-  .flatMap(([widgetId, widget]) => repeat({
+const localResponses = localsAdded
+  .flatMap(([ref, dataSource]) => repeat({
     value: {
-      widgetId: widgetId,
-      update: {},
-      mapping: widget.local.map
+      ref,
+      response: {}
     },
-    each: widget.local.schedule.timeInterval,
-    until: locals.pluck('removed', widgetId).filter(_.identity)
+    each: dataSource.schedule.timeInterval,
+    until: locals.pluck('removed', ref).filter(_.identity)
   }))
 
 const websocketsUpdates = websocketsAdded
@@ -89,6 +88,10 @@ const websocketsConnection = websocketsAdded
     .map((connected) => ({ref, connected}))
   )
 
+websocketsConnection.subscribe(({ref, connected}) => {
+  freezer.get().dataSources[ref].ws.set('connected', connected)
+})
+
 const endpointResponses = Rx.Observable.merge(
   websocketsUpdates,
   endpointSchedules
@@ -107,27 +110,26 @@ const endpointResponses = Rx.Observable.merge(
   )
   .do(({ref, err}) => {
     if (err) {
-      freezer.get().endpoints[ref].set('error', err)
-    } else if (freezer.get().endpoints[ref].error) {
-      freezer.get().endpoints[ref].remove('error')
+      freezer.get().dataSources[ref].set('error', err)
+    } else if (freezer.get().dataSources[ref].error) {
+      freezer.get().dataSources[ref].remove('error')
     }
   })
   .share()
 
-const deprecatedEndpointWidgetUpdates = endpointResponses
+endpointResponses
   .filter(({err}) => !err)
-  .flatMap(({ref, response}) => Rx.Observable
-    .pairs(freezer.get().dash.widgets)
-    .filter(([widgetId, widget]) => widget.endpoint && widget.endpoint._ref === ref)
-    .map(([widgetId, widget]) => ({
-      widgetId: widgetId,
-      update: response,
-      mapping: widget.endpoint.map
-    }))
-  )
+  .map(({ref, response: {ws}}) => ({ref, ws}))
+  .filter(({ws}) => ws && ws.url && ws.conds)
+  .catch(() => Rx.Observable.empty())
+  .subscribe(({ref, ws}) => {
+    freezer.get().dataSources[ref].set('ws', ws)
+  })
 
-// dataSource based updates
-const endpointWidgetUpdates = endpointResponses
+const dataSourceWidgetUpdates = Rx.Observable.merge(
+  endpointResponses,
+  localResponses
+)
   .filter(({err}) => !err)
   .flatMap(({ref, response}) => Rx.Observable
     .pairs(freezer.get().dash.widgets)
@@ -141,24 +143,7 @@ const endpointWidgetUpdates = endpointResponses
     }))
   )
 
-websocketsConnection.subscribe(({ref, connected}) => {
-  freezer.get().endpoints[ref].ws.set('connected', connected)
-})
-
-endpointResponses
-  .filter(({err}) => !err)
-  .map(({ref, response: {ws}}) => ({ref, ws}))
-  .filter(({ws}) => ws && ws.url && ws.conds)
-  .catch(() => Rx.Observable.empty())
-  .subscribe(({ref, ws}) => {
-    freezer.get().endpoints[ref].set('ws', ws)
-  })
-
-Rx.Observable.merge(
-  deprecatedEndpointWidgetUpdates,
-  endpointWidgetUpdates,
-  localWidgetUpdates
-)
+dataSourceWidgetUpdates
   .subscribe(
     ({widgetId, update, mapping}) => {
       const widget = freezer.get().dash.widgets[widgetId]
