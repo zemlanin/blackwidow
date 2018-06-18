@@ -9,21 +9,21 @@ npm test      # run tests
 ```
 
 ## Demo
-* https://bwd.cat/
-* https://bwd.cat/?gist=00fd9405043a98c96a68
-* https://bwd.cat/?gist=8be4e5c03405ab26c9f4/mobileDash.json
-* https://bwd.cat/#https://bwd.cat/examples/static_data.json
-* https://bwd.cat/#https://bwd.cat/examples/external_data.json
-* https://bwd.cat/#https://bwd.cat/examples/chartd.json
-* https://bwd.cat/#https://bwd.cat/examples/countdown.json
+* https://blackwidow.surge.sh/
+* https://blackwidow.surge.sh/?gist=8be4e5c03405ab26c9f4/mobileDash.json
+* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/static_data.json
+* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/external_data.json
+* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/chartd.json
+* https://blackwidow.surge.sh/#https://blackwidow.surge.sh/examples/countdown.json
+* https://blackwidow.surge.sh/?gist=00fd9405043a98c96a68 (turned off the backend, so this one stopped working)
 
 ### Example dashboards
 * https://gist.github.com/zemlanin/00fd9405043a98c96a68
 * https://gist.github.com/zemlanin/8be4e5c03405ab26c9f4
-* https://bwd.cat/examples/static_data.json
-* https://bwd.cat/examples/external_data.json
-* https://bwd.cat/examples/chartd.json
-* https://bwd.cat/examples/countdown.json
+* https://blackwidow.surge.sh/examples/static_data.json
+* https://blackwidow.surge.sh/examples/external_data.json
+* https://blackwidow.surge.sh/examples/chartd.json
+* https://blackwidow.surge.sh/examples/countdown.json
 
 ## Dashboard API
 Dashboard is a table (10×10 by default) described by JSON object:
