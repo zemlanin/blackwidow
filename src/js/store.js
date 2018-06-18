@@ -56,7 +56,7 @@ function dashErrorCallback (err) {
   })
 }
 
-const GIST_PARAM_REGEX = /([0-9a-f]{20}\/?[a-z0-9\.\-_]*)/i
+const GIST_PARAM_REGEX = /([0-9a-f]{20}\/?[a-z0-9.\-_]*)/i
 
 const isLoadable = (url: string) => url && url.match(/^(https?:|file:|\/)/)
 
