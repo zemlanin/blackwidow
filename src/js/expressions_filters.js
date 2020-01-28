@@ -31,10 +31,11 @@ filters.match = (v, regex, flags) => v.match(new RegExp(regex, flags))
 filters.timeUntil = (v, units) => toUnits((new Date(v).getTime() - Date.now()) / 1000, units)
 filters.timeSince = (v, units) => toUnits((Date.now() - new Date(v).getTime()) / 1000, units)
 filters.juxt = (v, ...structures) => structures.map((structure) => endpointMapper(v, {}, structure))
-filters['+'] = (v, b) => b + v
-filters['-'] = (v, b) => b - v
-filters['*'] = (v, b) => b * v
-filters['/'] = (v, b) => b / v
+
+filters.add = (v, b) => b + v
+filters.subtract = (v, b) => b - v
+filters.multiply = (v, b) => b * v
+filters.divide = (v, b) => b / v
 
 Object.assign(expressions.filters, filters)
 
