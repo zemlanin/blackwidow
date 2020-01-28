@@ -64,11 +64,6 @@ export default class Controls extends React.Component {
           return h('div', {key: i, className: c(css.ws, {[css.connected]: ws.connected})}, ws.url)
         })
         .value(),
-      GITHUB_API_KEY ? h('div', {className: css.content},
-        auth.github
-          ? h(githubUser, {github: auth.github})
-          : h('a', {href: `https://github.com/login/oauth/authorize?scope=gist&client_id=${GITHUB_API_KEY}`}, 'github auth')
-      ) : '',
       h('hr'),
       route ? h(route, {path: pathTail, dash}) : null
     )

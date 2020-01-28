@@ -21,7 +21,6 @@ var plugins = [
   new webpack.DefinePlugin({
     'process.env': {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
-      GITHUB_API_KEY: JSON.stringify(process.env.GITHUB_API_KEY),
       BWD_EXAMPLES: JSON.stringify(
         (process.env.BWD_EXAMPLES ? JSON.parse(process.env.BWD_EXAMPLES) : []).concat(examples)
       )
