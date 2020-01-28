@@ -11,7 +11,7 @@
       },
       "local": {
         "map": {
-          "xmin": {"_expr": "0 | timeSince:'seconds' | +:-1200"},
+          "xmin": {"_expr": "0 | timeSince:'seconds' | add:-1200"},
           "xmax": {"_expr": "0 | timeSince:'seconds'"}
         },
         "schedule": {
@@ -33,7 +33,7 @@
       },
       "local": {
         "map": {
-          "xmin": {"_expr": "0 | timeSince:'seconds' | +:-1200"},
+          "xmin": {"_expr": "0 | timeSince:'seconds' | add:-1200"},
           "xmax": {"_expr": "0 | timeSince:'seconds'"}
         },
         "schedule": {

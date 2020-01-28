@@ -37,7 +37,7 @@ describe('./expressions_filters', function () {
 
     it('applies nested expressions', function () {
       assert.deepEqual(
-        [[2], [3], [4]], filters.map([[1], [2], [3]], "$ | map:'$ | +:1'")
+        [[2], [3], [4]], filters.map([[1], [2], [3]], "$ | map:'$ | add:1'")
       )
     })
 
