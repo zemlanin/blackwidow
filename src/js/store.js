@@ -17,8 +17,7 @@ export function createFreezer () {
     controls: {
       opened: false,
       path: decodeURIComponent(queryString.parse(location.search).controls || 'widgets').split('/')
-    },
-    auth: {}
+    }
   })
 }
 

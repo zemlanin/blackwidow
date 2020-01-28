@@ -2,7 +2,6 @@ import _ from 'lodash'
 import c from 'classnames'
 import React from 'react'
 const h = React.createElement
-const GITHUB_API_KEY = process.env.GITHUB_API_KEY
 
 import widgetsControls from './widgets_controls'
 import dashboardsControls from './dashboards_controls'
@@ -35,7 +34,7 @@ export default class Controls extends React.Component {
   }
 
   render () {
-    const {controls: {opened, path: [pathHead, ...pathTail]}, endpoints, auth, dash} = this.props
+    const {controls: {opened, path: [pathHead, ...pathTail]}, endpoints, dash} = this.props
 
     let route
 

@@ -56,8 +56,7 @@ export type State = {
   controls: {
     opened: boolean,
     path: string[]
-  },
-  auth: any
+  }
 }
 
 declare export function createFreezer () : Freezer<State>
