@@ -10,14 +10,14 @@
     "babel-polyfill": "^6.16.0",
     "classnames": "^2.2.3",
     "freezer-js": "^0.11.1",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.15",
     "object-hash": "^1.1.0",
     "query-string": "^4.1.0",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "rx": "^4.0.7",
     "rx-dom-concurrency": "^7.0.3",
-    "url-parse": "^1.0.5",
+    "url-parse": "^1.4.7",
     "whatwg-fetch": "^0.11.0"
   },
   "devDependencies": {
