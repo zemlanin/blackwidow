@@ -25,7 +25,7 @@
       "data": {
         "note": "giphy trending",
         "src": {
-          "_expr": "data.0.images.original.url",
+          "_expr": "data[0].images.original.url",
           "_source": "giphyTrending"
         }
       }
