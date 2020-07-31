@@ -39,7 +39,7 @@
           "timeInterval": 3600
         },
         "map": {
-          "src": "data.0.images.original.url"
+          "src": "data[0].images.original.url"
         }
       }
     }
