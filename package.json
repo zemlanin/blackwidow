@@ -39,7 +39,7 @@
     "flow-status-webpack-plugin": "^0.1.7",
     "ignore-styles": "^1.2.0",
     "jsdom": "^11.11.0",
-    "json5": "^0.4.0",
+    "json5": "^1.0.2",
     "json5-loader": "^0.6.0",
     "mocha": "^5.2.0",
     "mocha-jsdom": "^1.2.0",
